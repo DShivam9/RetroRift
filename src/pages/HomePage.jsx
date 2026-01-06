@@ -68,7 +68,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
     <div className="w-full min-h-screen">
       {/* Full viewport hero section */}
       <section 
-        className="content-section hero-background relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden py-16"
+        className="content-section hero-background relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden pt-8 pb-4"
         onMouseMove={(e) => {
           const section = e.currentTarget
           const rect = section.getBoundingClientRect()
@@ -123,7 +123,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
         <div className="relative z-10 text-center space-y-12 px-4">
           {/* Main Title */}
           <div className="flex flex-col items-center">
-            <h2 className="hero-title text-5xl md:text-7xl lg:text-8xl font-press font-bold text-white">
+            <h2 className="hero-title text-4xl md:text-5xl lg:text-6xl font-bold text-white" style={{ fontFamily: 'Orbitron, sans-serif', fontWeight: '900', letterSpacing: '0.12em' }}>
               <div className="flex justify-center mb-2">
                 {"RELIVE".split("").map((ch, i) => (
                   <span 
@@ -176,7 +176,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
           </div>
 
           {/* Subtitle */}
-          <p className="hero-sub text-xl md:text-2xl font-mono tracking-wide max-w-2xl mx-auto">
+          <p className="hero-sub text-lg md:text-xl font-mono tracking-wide max-w-2xl mx-auto">
             {"No Downloads. No Setup. Just Play.".split("").map((ch, i) => (
               <span 
                 key={i} 
@@ -191,18 +191,39 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
             ))}
           </p>
 
-          {/* CTA Button */}
-          <div className="mt-12">
+          {/* Marquee integrated into hero with seamless infinite loop */}
+          <div className="marquee-container mt-8 mb-4">
+            <div className="marquee-content">
+              {[...Array(40)].map((_, i) => (
+                <span key={i} className="marquee-item" style={{
+                  color: i % 3 === 0 ? 'rgba(0, 247, 255, 0.8)' : i % 3 === 1 ? 'rgba(124, 58, 237, 0.8)' : 'rgba(255, 45, 212, 0.8)'
+                }}>
+                  {i % 2 === 0 ? '★ ARCADE TIME ★' : '◆ RETRO LEGENDS ◆'}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA Button with decorative elements */}
+          <div className="mt-6 relative">
+            {/* Decorative elements around button */}
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-2xl text-cyan-400 animate-pulse">
+              ◆ ◆ ◆
+            </div>
             <button 
               onClick={() => navigate('library')} 
               className="cta-button rounded-lg inline-flex items-center justify-center"
             >
               <span className="label">START PLAYING</span>
             </button>
+            {/* Bottom decorative elements */}
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-2xl text-purple-500 animate-pulse">
+              ★ ★ ★
+            </div>
           </div>
           
-          {/* Bottom tagline - positioned with more space */}
-          <div className="center-tagline mt-16 pt-8">
+          {/* Bottom tagline */}
+          <div className="center-tagline mt-4 pt-2">
             <div className="center-title font-press text-2xl md:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-neon.cyan to-neon.purple mb-3">
               START THE RETRO ADVENTURE
             </div>
@@ -224,7 +245,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
         return (
           <section 
             ref={continueRef}
-            className={`content-section py-12 relative continue-section transition-all duration-1000 ${continueVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}
+            className={`content-section py-12 relative continue-section section-enter-up ${continueVisible ? 'opacity-100' : 'opacity-0'}`}
             onMouseMove={(e) => {
               const section = e.currentTarget
               const rect = section.getBoundingClientRect()
@@ -309,7 +330,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
   <section 
     id="featured" 
     ref={featuredRef} 
-    className={`content-section py-16 bg-opacity-50 backdrop-blur-sm relative min-h-[70vh] flex items-center featured-section transition-all duration-1000 ${featuredVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}
+    className={`content-section py-16 bg-opacity-50 backdrop-blur-sm relative min-h-[70vh] flex items-center featured-section section-enter-up ${featuredVisible ? 'opacity-100' : 'opacity-0'}`}
     onMouseMove={(e) => {
       const section = e.currentTarget
       const rect = section.getBoundingClientRect()

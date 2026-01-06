@@ -69,4 +69,4 @@ This project is for educational purposes. Please respect all applicable laws and
 
 - RetroArch team for the emulation cores
 - React and Vite communities
-- All contributors to open-source emulation
+- All contributors to open-source emulation.

@@ -1,14 +1,16 @@
-/* Navbar entrance animations */
+/* Navbar entrance animations - optimized for performance */
 .navbar-enter {
   opacity: 0;
   transform: translateY(-20px);
   animation: navbarSlideDown 0.6s ease forwards;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 
 @keyframes navbarSlideDown {
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
   }
 }
 
@@ -17,12 +19,14 @@
   transform: translateX(-30px);
   animation: logoSlideIn 0.6s ease forwards;
   animation-delay: 0.2s;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 
 @keyframes logoSlideIn {
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) translateZ(0);
   }
 }
 
@@ -40,18 +44,21 @@
 .nav-title-char {
   opacity: 0;
   animation: navTitleReveal 0.5s ease forwards;
+  will-change: opacity, transform;
 }
 
 .nav-button-enter {
   opacity: 0;
   transform: translateY(-15px) scale(0.9);
   animation: navButtonPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 
 @keyframes navButtonPop {
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1) translateZ(0);
   }
 }
 
@@ -66,6 +73,7 @@
   border-radius: 0.25rem;
   overflow: hidden;
   z-index: 1;
+  will-change: transform;
 }
 
 .nav-link::before {

@@ -3,6 +3,19 @@
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
+  contain: layout;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  contain: layout style paint;
 }
 
 .logo {
@@ -10,6 +23,7 @@
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
+  contain: layout style;
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
@@ -94,32 +108,87 @@
   z-index: 1;
 }
 
-/* Loading Animation */
+/* ====== ENHANCED NEON LOADING SCREEN ====== */
+
 .loading-ring {
-  display: inline-flex;
-  gap: 1rem;
-  align-items: center;
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  border: 3px solid rgba(0, 247, 255, 0.2);
+  border-top-color: #00f7ff;
+  border-right-color: rgba(0, 247, 255, 0.5);
+  border-radius: 50%;
+  animation: neonSpin 1.2s linear infinite;
+  box-shadow: 
+    0 0 15px rgba(0, 247, 255, 0.6),
+    0 0 30px rgba(0, 247, 255, 0.3),
+    inset 0 0 20px rgba(0, 247, 255, 0.1);
+}
+
+.loading-ring::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 2px solid transparent;
+  border-top-color: rgba(123, 97, 255, 0.4);
+  border-radius: 50%;
+  animation: neonSpin 2s linear reverse infinite;
+}
+
+.loading-ring::after {
+  content: '';
+  position: absolute;
+  inset: 15px;
+  border: 1px solid rgba(0, 247, 255, 0.3);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 247, 255, 0.2), transparent);
+  animation: glowPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes neonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 10px rgba(0, 247, 255, 0.4),
+      inset 0 0 10px rgba(0, 247, 255, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 20px rgba(0, 247, 255, 0.8),
+      inset 0 0 15px rgba(0, 247, 255, 0.3);
+  }
+}
+
+/* Scanline effect on loading container */
+.flex.items-center.justify-center.min-h-\[60vh\]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 247, 255, 0.03) 0px,
+    rgba(0, 247, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlineScroll 8s linear infinite;
+  z-index: 1;
+}
+
+@keyframes scanlineScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(10px); }
 }
 
 .loading-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #00f7ff, #7b61ff);
-  animation: loading-dot 1.5s ease-in-out infinite;
-}
-
-.loading-dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loading-dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes loading-dot {
-  0%, 100% { transform: scale(0.5); opacity: 0.5; }
-  50% { transform: scale(1.2); opacity: 1; }
+  display: none;
 }
 
 /* ===== RETRO ARCADE CABINET STYLE ===== */
@@ -860,46 +929,15 @@
 }
 
 .crt-flicker {
-  position: fixed;
-  inset: 0;
-  background: rgba(18, 16, 16, 0.1);
-  opacity: 0;
-  pointer-events: none;
-  animation: flicker 0.15s infinite;
-  z-index: 2;
+  display: none;
 }
 
-.noise::before {
-  position: fixed;
-  inset: 0;
-  content: "";
-  opacity: 0.1;
-  z-index: 1000;
-  pointer-events: none;
-  background: repeating-conic-gradient(
-    rgba(255, 255, 255, 0.03) 30deg,
-    rgba(0, 0, 0, 0.03) 60deg
-  );
-  animation: noise 8s steps(10) infinite;
-}
-
-.retro-glow {
-  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0ff, 0 0 20px #0ff;
-  animation: textPulse 2s infinite;
+.noise {
+  display: none;
 }
 
 .smoke-effect {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background: 
-    radial-gradient(circle at 50% 50%, 
-      rgba(76, 0, 255, 0) 0%,
-      rgba(76, 0, 255, 0.25) 100%);
-  filter: blur(40px);
-  mix-blend-mode: screen;
-  animation: smoke 20s ease infinite;
-  pointer-events: none;
+  display: none;
 }
 
 /* Cursor trail effect */
@@ -1528,23 +1566,44 @@
   50% { text-shadow: 0 0 5px #fff, 0 0 8px #fff, 0 0 10px #0ff, 0 0 15px #0ff; }
 }
 
-@keyframes smoke {
-  0% { 
-    transform: translate(0, 0) scale(1);
-    opacity: 0.5;
+/* Optimized background grid animation - reduced motion for performance */
+@keyframes grid-shift {
+  0% {
+    background-position: 0 0;
   }
-  33% { 
-    transform: translate(30px, -50px) scale(1.2);
-    opacity: 0.3;
+  100% {
+    background-position: 50px 50px;
   }
-  66% { 
-    transform: translate(-20px, -20px) scale(0.9);
-    opacity: 0.4;
-  }
-  100% { 
-    transform: translate(0, 0) scale(1);
-    opacity: 0.5;
-  }
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(0, 247, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 247, 255, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-shift 30s linear infinite;
+  will-change: background-position;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.animate-grid-shift {
+  animation: grid-shift 30s linear infinite;
+  will-change: background-position;
+  backface-visibility: hidden;
+}
+
+/* Optimize crt-scanlines for performance */
+.crt-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  will-change: auto;
+  pointer-events: none;
 }
 
 @keyframes scanline {
@@ -1730,4 +1789,273 @@
   60% { content: '..'; }
   80% { content: '...'; }
   100% { content: ''; }
+}
+/* ====== PROFESSIONAL CARD ANIMATIONS ====== */
+
+/* Enhanced game card with professional effects */
+.game-card-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.game-card-wrapper .game-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Professional glow effect on hover */
+@keyframes professionalGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.4)) drop-shadow(0 0 24px rgba(123, 97, 255, 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.6)) drop-shadow(0 0 40px rgba(123, 97, 255, 0.4));
+  }
+}
+
+.game-card-wrapper:hover .game-card {
+  animation: professionalGlow 1.8s ease-in-out;
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(6, 182, 212, 0.25), 0 0 30px rgba(123, 97, 255, 0.15);
+}
+
+/* Smooth thumbnail zoom */
+.game-card img {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.game-card-wrapper:hover img {
+  transform: scale(1.12) !important;
+}
+
+/* Enhanced favorite button animation */
+.game-card-wrapper button[aria-label="favorite"] {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.game-card-wrapper:hover button[aria-label="favorite"] {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Professional button with smooth interaction */
+.arcade-play-button {
+  background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(123, 97, 255, 0.2));
+  border: 2px solid rgba(6, 182, 212, 0.5);
+  color: #06b6d4;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.arcade-play-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.arcade-play-button:hover {
+  background: linear-gradient(135deg, rgba(0, 247, 255, 0.35), rgba(123, 97, 255, 0.35));
+  border-color: rgba(6, 182, 212, 0.8);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.5), inset 0 0 15px rgba(6, 182, 212, 0.1);
+  transform: translateY(-2px);
+  color: #00f7ff;
+  text-shadow: 0 0 15px rgba(6, 182, 212, 1);
+}
+
+.arcade-play-button:hover::before {
+  left: 100%;
+}
+
+.arcade-play-button:active {
+  transform: translateY(0);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3), inset 0 0 10px rgba(6, 182, 212, 0.05);
+}
+
+/* Enhanced console badge animation */
+.game-card span[class*="text-"] {
+  transition: all 0.3s ease;
+}
+
+.game-card-wrapper:hover span[class*="px-2"] {
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
+  transform: scale(1.05);
+}
+
+/* ====== SECTION HEADER ENHANCEMENTS ====== */
+
+/* VIEW ALL button with enhanced hover */
+.glass-button:has(span:contains("→")) {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideArrow {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* ====== LOADING AND TRANSITION EFFECTS ====== */
+
+/* Smooth page transitions */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageExit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Enhanced loading animation */
+.loading-ring {
+  animation: spinRing 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes spinRing {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-dot {
+  animation: pulseDot 1.4s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* ====== HOVER PARALLAX EFFECT ====== */
+
+@keyframes parallaxFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-5px) translateX(2px);
+  }
+}
+
+.game-card-wrapper.parallax:hover {
+  animation: parallaxFloat 2s ease-in-out;
+}
+
+/* ====== OPTIMIZED GRADIENT ORB ANIMATIONS ====== */
+
+@keyframes orb-pulse-cyan {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1) translateZ(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1) translateZ(0);
+  }
+}
+
+@keyframes orb-pulse-purple {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) translateZ(0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.15) translateZ(0);
+  }
+}
+
+.gradient-orb-cyan {
+  animation: orb-pulse-cyan 5s ease-in-out infinite;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.gradient-orb-purple {
+  animation: orb-pulse-purple 7s ease-in-out infinite;
+  animation-delay: 1s;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ====== LOW-END DEVICE OPTIMIZATION ====== */
+/* Disable complex animations on devices with low frame rate or limited GPU */
+@media (max-width: 768px) {
+  .gradient-orb-cyan,
+  .gradient-orb-purple {
+    animation-duration: 8s;
+    will-change: auto;
+  }
+
+  .game-card-float {
+    animation-duration: 10s;
+  }
+
+  .cardFloat {
+    animation-duration: 10s;
+  }
+}
+
+/* For devices that prefer reduced data/battery usage */
+@media (prefers-color-scheme: dark) and (prefers-reduced-data: reduce) {
+  .animate-grid-shift {
+    animation-duration: 40s;
+  }
+
+  .bg-grid {
+    opacity: 0.1;
+  }
+}
+
+/* Low-power mode optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0 !important;
+    transition-duration: 0 !important;
+  }
+}
+
+/* Performance container optimization */
+.retro-effects-layer {
+  will-change: auto;
+  contain: strict;
 }

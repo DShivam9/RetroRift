@@ -1,3 +1,179 @@
+/* ========== SMOOTH SECTION TRANSITIONS ========== */
+
+/* Section entrance animations - triggered by intersection observer */
+@keyframes sectionFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sectionFadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-enter-up {
+  animation: sectionFadeInUp 0.8s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+.section-enter-down {
+  animation: sectionFadeInDown 0.8s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+/* Staggered children animations */
+.section-item {
+  will-change: transform, opacity;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              opacity 0.3s ease-out;
+}
+
+.section-item:nth-child(1) { animation-delay: 0.1s; }
+.section-item:nth-child(2) { animation-delay: 0.2s; }
+.section-item:nth-child(3) { animation-delay: 0.3s; }
+.section-item:nth-child(4) { animation-delay: 0.4s; }
+.section-item:nth-child(5) { animation-delay: 0.5s; }
+.section-item:nth-child(n+6) { animation-delay: calc(0.1s * (var(--item-index, 5) - 4)); }
+
+/* Smooth content transitions */
+@keyframes contentReveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.content-reveal {
+  animation: contentReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: clip-path;
+}
+
+/* ========== PARALLAX EFFECT ========== */
+
+/* Parallax container - parent element that enables parallax for children */
+.parallax-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Parallax element - moves at different speed than scroll */
+.parallax-element {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Parallax layers with different depths */
+.parallax-slow {
+  transform: translateZ(-50px) scale(1.2);
+}
+
+.parallax-medium {
+  transform: translateZ(-25px) scale(1.1);
+}
+
+.parallax-fast {
+  transform: translateZ(0);
+}
+
+/* ========== MARQUEE/TICKER EFFECT ========== */
+
+/* News ticker/scrolling text - blended into hero section */
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  background: transparent;
+  padding: 12px 0;
+  margin: 0;
+  border: none;
+  position: relative;
+  height: auto;
+}
+
+/* Marquee content - seamless infinite loop */
+.marquee-content {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: marqueeScroll 40s linear infinite;
+  padding: 0;
+  margin: 0;
+}
+
+/* Marquee item - clean flowing text */
+.marquee-item {
+  display: inline-block;
+  flex-shrink: 0;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 1.15rem;
+  font-family: 'Orbitron', sans-serif;
+  padding: 0 2.5rem;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.marquee-item:hover {
+  color: rgba(0, 247, 255, 0.85);
+  text-shadow: 0 0 12px rgba(0, 247, 255, 0.7), 0 0 20px rgba(123, 97, 255, 0.3);
+}
+
+/* Marquee separator - remove */
+.marquee-separator {
+  display: none;
+}
+
+/* Marquee animations */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Alternative marquee - right to left */
+@keyframes marqueeScrollReverse {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Marquee reverse direction */
+.marquee-content.reverse {
+  animation: marqueeScrollReverse 50s linear infinite;
+}
+
+/* Marquee fast speed */
+.marquee-content.fast {
+  animation-duration: 40s;
+}
+
+/* Marquee slow speed */
+.marquee-content.slow {
+  animation-duration: 60s;
+}
+
+/* ========== ADVANCED HERO ANIMATIONS ========== */
+
 /* Advanced Hero Animations */
 .hero-background {
   position: relative;
@@ -5,6 +181,8 @@
     linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 100%),
     radial-gradient(circle at 50% 50%, rgba(123, 97, 255, 0.15) 0%, rgba(0, 0, 0, 1) 100%);
   animation: bgPulse 8s ease-in-out infinite, heroFadeIn 1.2s ease-out forwards;
+  will-change: background;
+  contain: layout style;
 }
 
 @keyframes heroFadeIn {
@@ -145,11 +323,12 @@
 .hero-title {
   position: relative;
   z-index: 2;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   line-height: 1.2;
   text-transform: uppercase;
-  font-family: 'Press Start 2P', monospace;
+  font-family: 'Orbitron', sans-serif;
   text-align: center;
+  font-weight: 900;
 }
 
 .hero-title .char {
@@ -158,11 +337,16 @@
   transform-style: preserve-3d;
   perspective: 1000px;
   transform: translateZ(0);
-  color: #7fecff;
+  color: #00f7ff;
   text-shadow: 
-    2px 2px 0 rgba(0, 0, 0, 0.8),
-    0 0 10px rgba(0, 247, 255, 0.5);
-  margin: 0 0.05em;
+    0 0 10px rgba(0, 247, 255, 0.8),
+    0 0 20px rgba(0, 247, 255, 0.6),
+    0 0 30px rgba(124, 58, 237, 0.5),
+    0 0 40px rgba(124, 58, 237, 0.3);
+  margin: 0 0.08em;
+  filter: drop-shadow(0 0 8px rgba(0, 247, 255, 0.7));
+  will-change: transform, filter, text-shadow;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Subtitle specific styles */
@@ -218,32 +402,43 @@
 
 .hero-title .char::before {
   color: #00f7ff;
-  transform: translateX(-2px) translateZ(-1px);
+  transform: translateX(-3px) translateZ(-2px) rotateZ(-5deg);
   opacity: 0.5;
+  text-shadow: 0 0 15px rgba(0, 247, 255, 0.6);
 }
 
 .hero-title .char::after {
-  color: #7b61ff;
-  transform: translateX(2px) translateZ(1px);
+  color: #7c3aed;
+  transform: translateX(3px) translateZ(1px) rotateZ(5deg);
   opacity: 0.5;
+  text-shadow: 0 0 15px rgba(124, 58, 237, 0.6);
 }
 
 .hero-title .char:hover {
-  transform: translateY(-5px) scale(1.1);
+  transform: translateY(-10px) scale(1.25) rotateY(20deg);
+  color: #00f7ff;
   text-shadow: 
-    0 0 10px rgba(255, 255, 255, 0.9),
-    0 0 20px rgba(0, 247, 255, 0.7),
-    0 0 30px rgba(123, 97, 255, 0.5);
+    0 0 15px rgba(0, 247, 255, 1),
+    0 0 30px rgba(0, 247, 255, 0.9),
+    0 0 45px rgba(124, 58, 237, 0.8),
+    0 0 60px rgba(124, 58, 237, 0.5);
+  filter: 
+    drop-shadow(0 0 20px rgba(0, 247, 255, 0.9))
+    drop-shadow(0 0 35px rgba(124, 58, 237, 0.7))
+    drop-shadow(0 8px 15px rgba(0, 0, 0, 0.4))
+    brightness(1.3);
 }
 
 .hero-title .char:hover::before {
-  transform: translateX(-4px) translateZ(-2px);
-  opacity: 0.8;
+  transform: translateX(-8px) translateZ(-4px) rotateZ(-15deg);
+  opacity: 0.9;
+  text-shadow: 0 0 25px rgba(0, 247, 255, 1);
 }
 
 .hero-title .char:hover::after {
-  transform: translateX(4px) translateZ(2px);
-  opacity: 0.8;
+  transform: translateX(8px) translateZ(3px) rotateZ(15deg);
+  opacity: 0.9;
+  text-shadow: 0 0 25px rgba(124, 58, 237, 1);
 }
 
 /* Cyber grid effect */
@@ -422,6 +617,8 @@
 .continue-section {
   position: relative;
   background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12), transparent 70%);
+  animation: continueSectionSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
 }
 
 .continue-section::before {
@@ -431,6 +628,7 @@
   background: radial-gradient(circle at 30% -10%, rgba(6, 182, 212, 0.25), transparent 40%),
               radial-gradient(circle at 100% 120%, rgba(16, 185, 129, 0.20), transparent 50%);
   pointer-events: none;
+  animation: continueBgReveal 1.2s ease-out forwards;
 }
 
 /* Interactive hover spotlight for Continue section - matches Featured style */
@@ -451,10 +649,32 @@
   transform: translate(-50%, -50%);
 }
 
+@keyframes continueSectionSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes continueBgReveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Featured section gets a brighter purple grid tint */
 .featured-section {
   position: relative;
   background: radial-gradient(circle at 50% 0%, rgba(123, 97, 255, 0.15), transparent 70%);
+  animation: featuredSectionSlideIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
 }
 .featured-section::before {
   content: '';
@@ -462,6 +682,7 @@
   background: radial-gradient(circle at 70% -10%, rgba(123, 97, 255, 0.35), transparent 40%),
               radial-gradient(circle at 0% 120%, rgba(6, 182, 212, 0.25), transparent 50%);
   pointer-events: none;
+  animation: featuredBgReveal 1.3s ease-out forwards;
 }
 .featured-section { box-shadow: none; }
 
@@ -482,6 +703,26 @@
   left: var(--mouse-x, 50%);
   top: var(--mouse-y, 50%);
   transform: translate(-50%, -50%);
+}
+
+@keyframes featuredSectionSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes featuredBgReveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Soft grid overlays with color variants */
@@ -745,34 +986,38 @@
   }
 }
 
-/* Continuous floating animation for game cards after entrance */
+/* Continuous floating animation for game cards after entrance - optimized for performance */
 .game-card-float {
-  animation: cardSlideUp 0.8s ease forwards, cardFloat 6s ease-in-out 0.8s infinite;
+  animation: cardSlideUp 0.8s ease forwards, cardFloat 8s ease-in-out 0.8s infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
+
 @keyframes cardFloat {
   0%, 100% {
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1) translateZ(0);
   }
   50% {
-    transform: translateY(-8px) scale(1.01);
+    transform: translateY(-8px) scale(1.01) translateZ(0);
   }
 }
 
 @keyframes floatTitle {
   0%, 100% {
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1) translateZ(0);
   }
   50% {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateY(-5px) scale(1.02) translateZ(0);
   }
 }
 
 @keyframes floatSubtitle {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
   }
   50% {
-    transform: translateY(-3px);
+    transform: translateY(-3px) translateZ(0);
   }
 }
 
@@ -781,6 +1026,7 @@
   opacity: 0;
   animation: slideInFromLeft 0.8s ease forwards;
   animation-delay: 0.2s;
+  will-change: opacity, transform;
 }
 
 .featured-games-grid > * {
@@ -1298,6 +1544,212 @@
   75% { left: 70%; top: 20%; transform: rotate(270deg); }
   76% { transform: rotate(180deg); }
   100% { left: 20%; top: 20%; transform: rotate(180deg); }
+}
+
+/* ====== ENHANCED GAME CARD ANIMATIONS ====== */
+
+/* Staggered entrance for game cards */
+.game-card-float {
+  perspective: 1000px;
+}
+
+.game-card-tilt {
+  will-change: transform, opacity;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardEnterStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95) rotateX(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+@keyframes cardGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(6, 182, 212, 0.6)) drop-shadow(0 0 24px rgba(123, 97, 255, 0.4));
+  }
+}
+
+/* Individual card glow on hover */
+.game-card-wrapper:hover .game-card {
+  animation: cardGlowPulse 1.5s ease-in-out;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.5), 0 20px 40px rgba(6, 182, 212, 0.2);
+}
+
+/* Enhanced RGB border animation */
+@keyframes rgbBorderShift {
+  0% {
+    border-top-color: rgba(0, 247, 255, 0.8);
+    border-right-color: rgba(123, 97, 255, 0.6);
+    border-bottom-color: rgba(255, 33, 212, 0.6);
+    border-left-color: rgba(0, 247, 255, 0.6);
+  }
+  25% {
+    border-top-color: rgba(123, 97, 255, 0.8);
+    border-right-color: rgba(255, 33, 212, 0.6);
+    border-bottom-color: rgba(0, 247, 255, 0.6);
+    border-left-color: rgba(123, 97, 255, 0.6);
+  }
+  50% {
+    border-top-color: rgba(255, 33, 212, 0.8);
+    border-right-color: rgba(0, 247, 255, 0.6);
+    border-bottom-color: rgba(123, 97, 255, 0.6);
+    border-left-color: rgba(255, 33, 212, 0.6);
+  }
+  75% {
+    border-top-color: rgba(0, 247, 255, 0.8);
+    border-right-color: rgba(123, 97, 255, 0.6);
+    border-bottom-color: rgba(255, 33, 212, 0.6);
+    border-left-color: rgba(0, 247, 255, 0.6);
+  }
+}
+
+.game-card-wrapper:hover::before {
+  animation: rgbBorderShift 2s linear infinite;
+}
+
+/* ====== SECTION TITLE ANIMATIONS ====== */
+
+.section-title-reveal {
+  animation: titleSlideInLeft 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes titleSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Gradient text animation for section titles */
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.section-title-reveal h3 {
+  animation: gradientFlow 4s linear infinite;
+  background-size: 200% auto;
+}
+
+/* Subtitle pulse effect */
+.section-sub {
+  animation: subtitleFadeIn 0.9s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+@keyframes subtitleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== CONTINUE GRID ANIMATIONS ====== */
+
+.continue-grid {
+  animation: gridEnter 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes gridEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.continue-grid > div {
+  animation: cardEnterStagger 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ====== FEATURED GAMES GRID ANIMATIONS ====== */
+
+.featured-games-grid {
+  animation: gridEnter 0.9s ease-out forwards;
+  opacity: 0;
+}
+
+.featured-games-grid > div {
+  animation: cardEnterStagger 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Enhanced hover lift effect on cards */
+.game-card-wrapper:hover {
+  transform: translateY(-8px);
+}
+
+.game-card-wrapper {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Professional shine effect on card hover */
+@keyframes cardShine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: cardShine 3s ease-in-out infinite;
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.game-card-wrapper:hover .game-card::before {
+  opacity: 1;
+  animation: cardShine 0.6s ease-in-out;
+}
+
+/* Smooth scale transition on featured cards */
+.featured-games-grid > div:hover {
+  transform: scale(1.05) translateY(-8px);
+}
+
+.continue-grid > div:hover {
+  transform: scale(1.05) translateY(-8px);
 }
 
 @keyframes pacmanChomp {

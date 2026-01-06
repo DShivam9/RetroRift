@@ -54,7 +54,21 @@ export default function App() {
     }
   }, [])
 
-  
+  // Parallax scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const parallaxElements = document.querySelectorAll('[data-parallax]')
+      parallaxElements.forEach(element => {
+        const rect = element.getBoundingClientRect()
+        const scrollSpeed = parseFloat(element.getAttribute('data-parallax')) || 0.5
+        const yOffset = window.scrollY * scrollSpeed
+        element.style.transform = `translateY(${yOffset}px)`
+      })
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // cursor/mouse hover animations removed per user request
   useEffect(() => {
@@ -106,12 +120,13 @@ export default function App() {
     // Update browser history
     window.history.pushState({ page }, '', `#${page}`)
     
-    // Simulate page load and add smooth transition
+    // Smooth page transitions with scroll reset
     setTimeout(() => {
       setCurrentPage(page)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       setPageTransition(false)
-      setTimeout(() => setIsLoading(false), 150)
-    }, 150)
+      setTimeout(() => setIsLoading(false), 600)
+    }, 500)
   }
 
   const toggleFavorite = (gameId) => {
@@ -173,33 +188,29 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 relative overflow-hidden">
       {/* Retro Effects Layer */}
-      <div className="fixed inset-0 pointer-events-none">
-        {/* CRT Scanlines */}
-        <div className="absolute inset-0 crt-scanlines animate-scan opacity-40" />
-        {/* Screen Flicker */}
-        <div className="crt-flicker" />
-        {/* Noise Overlay */}
-        <div className="noise" />
-        {/* Enhanced Smoke Effects */}
-        <div className="smoke-effect" style={{ opacity: 0.7 }} />
-        <div className="smoke-effect" style={{ animationDelay: "-10s", opacity: 0.5 }} />
-        <div className="smoke-effect" style={{ 
-          animationDelay: "-5s", 
-          background: "radial-gradient(circle at 50% 50%, rgba(0, 247, 255, 0) 0%, rgba(0, 247, 255, 0.15) 100%)",
-          mixBlendMode: "screen" 
-        }} />
+      <div className="fixed inset-0 pointer-events-none z-0 retro-effects-layer">
+        {/* Animated grid background - with parallax */}
+        <div className="absolute inset-0 bg-grid opacity-20 animate-grid-shift" data-parallax="0.3" />
+        
+        {/* Pulsing gradient orbs - optimized for performance with parallax */}
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl gradient-orb-cyan" data-parallax="0.2" />
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl gradient-orb-purple" data-parallax="0.25" />
+        
+        {/* Soft scanlines */}
+        <div className="absolute inset-0 crt-scanlines opacity-20" />
+        
         {/* Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_20%,_rgba(0,0,0,0.4)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_20%,_rgba(0,0,0,0.3)_100%)]" />
       </div>
 
       {/* Cursor trail and hover popups removed */}
 
       <Navbar currentPage={currentPage} navigate={navigate} />
 
-      <main className={`relative z-10 transition-all duration-300 ${
-        pageTransition ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+      <main className={`relative z-10 transition-all duration-500 ease-out will-change-transform ${
+        pageTransition ? 'opacity-0 scale-98 blur-sm' : 'opacity-100 scale-100 blur-none'
       }`}>
         <Suspense fallback={
           <div className="flex items-center justify-center min-h-[60vh]">
