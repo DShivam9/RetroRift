@@ -1,0 +1,208 @@
+/* ==========================================================================
+   Footer - Laser Flow Cyber Deck
+   ========================================================================== */
+
+.footer {
+    position: relative;
+    padding: 0;
+    margin-top: auto;
+    background: #050508;
+    border-top: 1px solid rgba(139, 92, 246, 0.3);
+    overflow: hidden;
+    /* Contain the LaserFlow */
+}
+
+/* Background Layer for LaserFlow */
+.footer__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.8;
+}
+
+.footer__container {
+    position: relative;
+    z-index: 1;
+    /* Above the LaserFlow */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px 40px 20px;
+}
+
+/* Main Content: Brand + Links Grid */
+.footer__main {
+    display: flex;
+    justify-content: center;
+    /* Center everything */
+    align-items: flex-start;
+    gap: 90px;
+    /* Controlled gap instead of space-between */
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    /* Allow wrapping on smaller screens */
+}
+
+/* Brand Column */
+.footer__col--brand {
+    max-width: 300px;
+}
+
+.footer__brand {
+    font-family: var(--font-display, sans-serif);
+    font-size: 1.5rem;
+    color: #fff;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+    margin-bottom: 16px;
+}
+
+.footer__desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+/* System Status */
+.footer__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #a78bfa;
+    letter-spacing: 0.05em;
+}
+
+.footer__status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: blink 2s infinite;
+}
+
+/* Links Grid */
+.footer__links-grid {
+    display: flex;
+    gap: 60px;
+}
+
+.footer__heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+    opacity: 0.9;
+}
+
+.footer__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer__link {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.2s ease;
+}
+
+.footer__link:hover {
+    color: #8b5cf6;
+    padding-left: 4px;
+    /* Tiny slide effect */
+}
+
+/* Divider */
+.footer__div {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    margin-bottom: 30px;
+}
+
+/* Bottom Bar */
+.footer__bottom {
+    display: flex;
+    justify-content: center;
+    /* Center the copyright */
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    /* Subtle separator */
+    padding-top: 20px;
+}
+
+.footer__copy {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.footer__socials {
+    display: flex;
+    gap: 20px;
+}
+
+.footer__icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.6);
+    /* Dark background for contrast */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    /* Circular */
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    /* Blur behind */
+}
+
+.footer__icon-link:hover {
+    background: rgba(139, 92, 246, 0.2);
+    /* Purple tint on hover */
+    border-color: #8b5cf6;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .footer__main {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .footer__links-grid {
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+}

@@ -1,80 +1,127 @@
-import React from 'react'
-import { Gamepad2, Monitor, Heart, User } from 'lucide-react'
-import './navigation.css'
-import './navbar-overrides.css'
-import './navbar-title.css'
-import './navbar-buttons.css'
+import React, { useState, useEffect } from 'react'
+import { Home, Grid3X3, Heart, User, X, Menu, Zap, Trophy } from 'lucide-react'
+import './Navbar.css'
 
-// Navbar: top navigation bar with logo and links.
+/**
+ * Navbar - Holographic Command Center (Side Drawer)
+ * Premium visuals, interactive data plates, and player stats.
+ */
 export default function Navbar({ currentPage, navigate }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const navItems = [
-    { id: 'home', label: 'HOME', icon: Gamepad2 },
-    { id: 'library', label: 'CONSOLES', icon: Monitor },
-    { id: 'favorites', label: 'FAVORITES', icon: Heart },
-    { id: 'profile', label: 'PROFILE', icon: User }
+    { id: 'home', label: 'Home Base', icon: Home, desc: 'Dashboard' },
+    { id: 'library', label: 'Game Library', icon: Grid3X3, desc: 'All Titles' },
+    { id: 'favorites', label: 'Favorites', icon: Heart, desc: 'Saved Games' },
+    { id: 'profile', label: 'Profile', icon: User, desc: 'Settings & Stats' }
   ]
 
-  return (
-    <nav className="arcade-nav sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b-2 border-neon-cyan/30 navbar-enter">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <button 
-            onClick={() => navigate('home')} 
-            className="navbar-brand flex items-center gap-3 group navbar-logo-enter"
-          >
-            <div className="logo-container w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border-2 border-cyan-400/30 group-hover:border-cyan-400 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]">
-              <Gamepad2 className="logo-icon w-6 h-6 text-cyan-400 group-hover:text-white transition-all duration-300 group-hover:scale-110" />
-            </div>
-            
-            <h1 className="text-xl md:text-2xl font-bold font-press">
-              <div className="text-neon.cyan navbar-title-hover">
-                {"RETROPLAY HUB".split("").map((char, index) => (
-                  <span
-                    key={index}
-                    className="title-char inline-block transition-all duration-300 ease-out"
-                    style={{
-                      transitionDelay: `${index * 20}ms`
-                    }}
-                  >
-                    {char === " " ? "\u00A0" : char}
-                  </span>
-                ))}
-              </div>
-            </h1>
-          </button>
+  const handleNav = (id) => {
+    setIsOpen(false)
+    navigate(id)
+  }
 
-          <div className="flex gap-3">
-            {navItems.map(({ id, label, icon }, index) => (
+  // Hover interaction
+  const timeoutRef = React.useRef(null)
+
+  const handleMouseEnter = () => {
+    timeoutRef.current = setTimeout(() => setIsOpen(true), 400) // 400ms delay
+  }
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+  }
+
+  return (
+    <>
+      {/* Trigger Area */}
+      <div className={`nav-trigger-wrap ${scrolled ? 'nav-trigger-wrap--scrolled' : ''}`}>
+        <button className="nav-brand" onClick={() => navigate('home')}>
+          <span className="nav-brand__text">RETRO</span>
+          <span className="nav-brand__accent">RIFT</span>
+        </button>
+
+        <button
+          className={`nav-trigger ${isOpen ? 'nav-trigger--hidden' : ''}`}
+          onClick={() => setIsOpen(true)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <span className="nav-trigger__label">MENU</span>
+          <div className="nav-trigger__box">
+            <Menu className="nav-trigger__icon" />
+          </div>
+        </button>
+      </div>
+
+      {/* Holographic Drawer */}
+      <div className={`nav-overlay ${isOpen ? 'nav-overlay--open' : ''}`}>
+        <div className="nav-overlay__backdrop" onClick={() => setIsOpen(false)} />
+
+        <div className="nav-drawer">
+          {/* Header & User Widget */}
+          <div className="nav-drawer__header">
+            <div className="nav-user-widget">
+              <div className="nav-user__avatar">
+                <User className="nav-user__icon" />
+              </div>
+              <div className="nav-user__info">
+                <span className="nav-user__name">Player 1</span>
+                <div className="nav-user__rank">
+                  <Trophy className="nav-user__rank-icon" />
+                  <span className="nav-user__rank-text">Level 5</span>
+                </div>
+              </div>
+            </div>
+
+            <button className="nav-close" onClick={() => setIsOpen(false)}>
+              <X className="nav-close__icon" />
+            </button>
+          </div>
+
+          <div className="nav-drawer__separator" />
+
+          {/* Navigation Links */}
+          <nav className="nav-menu">
+            {navItems.map(({ id, label, icon: Icon, desc }, index) => (
               <button
                 key={id}
-                onClick={() => navigate(id)}
-                aria-label={label}
-                className={`nav-button nav-button-enter relative px-4 py-2 rounded-md font-mono text-sm tracking-wider overflow-hidden
-                  border border-transparent transition-colors duration-300
-                  ${currentPage === id 
-                    ? 'text-white bg-gradient-to-r from-neon.cyan/20 to-neon.purple/20 border-neon.cyan/50' 
-                    : 'text-gray-400 hover:text-white hover:border-neon.cyan/30'
-                  }`}
-                style={{
-                  animationDelay: `${0.8 + index * 0.1}s`
-                }}
+                onClick={() => handleNav(id)}
+                className={`nav-item ${currentPage === id ? 'nav-item--active' : ''}`}
+                style={{ '--i': index }}
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  {React.createElement(icon, { className: 'w-4 h-4' })}
-                  <span className="nav-text">
-                    {label}
-                  </span>
-                </span>
-                {/* Gradient background that appears on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-neon.cyan/10 to-neon.purple/10 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                {/* Animated border */}
-                <div className="absolute inset-0 nav-border"></div>
+                <div className="nav-item__glow" />
+                <div className="nav-item__content">
+                  <div className="nav-item__icon-box">
+                    <Icon className="nav-item__icon" />
+                  </div>
+                  <div className="nav-item__text">
+                    <span className="nav-item__label">{label}</span>
+                    <span className="nav-item__desc">{desc}</span>
+                  </div>
+                </div>
+                {currentPage === id && <Zap className="nav-item__indicator" />}
               </button>
             ))}
+          </nav>
+
+          {/* Footer System Status */}
+          <div className="nav-drawer__footer">
+            <div className="nav-sys-status">
+              <div className="nav-sys__dot" />
+              <span className="nav-sys__text">SYSTEM ONLINE</span>
+            </div>
+            <span className="nav-version">v2.1.0</span>
           </div>
         </div>
       </div>
-    </nav>
+    </>
   )
 }

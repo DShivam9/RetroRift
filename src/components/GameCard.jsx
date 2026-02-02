@@ -1,101 +1,90 @@
-import React, { memo } from 'react'
-import { Heart, Play } from 'lucide-react'
+import React, { memo, useState } from 'react'
+import { Heart, Play, ChevronRight } from 'lucide-react'
+import GameBadge from './GameBadge'
+import './GameCard.css'
 
-// GameCard: reusable card for games used on Home and Library pages.
-// Memoized to prevent unnecessary re-renders
-const GameCard = memo(function GameCard({ game, navigate, isFavorite, toggleFavorite, onPlay }) {
+/**
+ * GameCard - Modern overlay style with image-first design
+ */
+const GameCard = memo(function GameCard({
+  game,
+  navigate,
+  isFavorite,
+  toggleFavorite,
+  onPlay,
+  badge
+}) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation()
+    toggleFavorite?.(game.id)
+  }
+
+  const handlePlay = (e) => {
+    e.stopPropagation()
+    onPlay ? onPlay(game) : navigate('player')
+  }
+
   return (
-    <div className="game-card-wrapper group relative flex flex-col h-full p-[3px]">
-      {/* RGB animated border on hover - using pseudo-element for proper masking */}
-      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 rgb-border-wrapper"></div>
-      </div>
-      
-      <div className="game-card relative rounded-xl overflow-hidden transition-all duration-300 bg-gradient-to-br from-slate-800/80 to-slate-900/80 shadow-lg shadow-neon.purple/20 flex flex-col h-full">
-        {/* Brighter glow effect on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-neon.cyan/20 via-neon.purple/25 to-neon.cyan/20 opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-      {/* Favorite button */}
-      <button
-        onClick={(e) => { e.stopPropagation(); toggleFavorite && toggleFavorite(game.id); }}
-        className={`absolute top-3 right-3 z-20 p-2.5 backdrop-blur-sm rounded-lg transition-all duration-300 transform hover:scale-110 ${
-          isFavorite 
-            ? 'bg-gradient-to-br from-pink-500/30 to-red-500/30 border-2 border-pink-400 shadow-lg shadow-pink-500/50' 
-            : 'bg-black/60 border border-slate-700 hover:border-pink-400/50'
-        }`}
-        aria-label="favorite"
-      >
-        <Heart className={`w-5 h-5 transition-all duration-300 ${
-          isFavorite 
-            ? 'fill-pink-400 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] animate-pulse' 
-            : 'text-slate-400 hover:text-pink-400'
-        }`} />
-      </button>
-
-      {/* Game thumbnail section */}
-      <div className="relative aspect-video bg-gradient-to-br from-slate-600/50 to-slate-700/50 flex items-center justify-center overflow-hidden">
-        {/* Subtle scanlines */}
-        <div className="absolute inset-0 opacity-15 pointer-events-none z-10" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(6,182,212,0.8) 2px, rgba(6,182,212,0.8) 4px)' }} />
-        
-        {/* Game thumbnail - image or emoji fallback */}
+    <article
+      className={`card ${isHovered ? 'card--hovered' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handlePlay}
+    >
+      {/* Image */}
+      <div className="card__image-wrap">
         {game.thumbnailImage ? (
-          <>
-            <img 
-              src={game.thumbnailImage} 
-              alt={game.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-              onError={(e) => {
-                console.error('Failed to load image:', game.thumbnailImage);
-                // Fallback to emoji if image fails to load
-                e.target.style.display = 'none';
-              }}
-            />
-            <span 
-              className="text-6xl select-none relative z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_15px_rgba(6,182,212,0.7)] hidden"
-            >
-              {game.thumbnail}
-            </span>
-          </>
+          <img
+            src={game.thumbnailImage}
+            alt={game.title}
+            className="card__image"
+            loading="lazy"
+          />
         ) : (
-          <span 
-            className="text-6xl select-none relative z-10 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_15px_rgba(6,182,212,0.7)]"
-          >
-            {game.thumbnail}
-          </span>
+          <span className="card__emoji">{game.thumbnail}</span>
         )}
-        
-        {/* Hover glow */}
-        <div className="absolute inset-0 bg-gradient-to-t from-neon.cyan/35 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300 z-[5]" />
+
+        {/* Gradient Overlay */}
+        <div className="card__overlay" />
+
+        {/* Badge */}
+        {badge && (
+          <div className="card__badge-wrap">
+            <GameBadge type={badge} />
+          </div>
+        )}
+
+        {/* Favorite Button */}
+        <button
+          onClick={handleFavoriteClick}
+          className={`card__fav ${isFavorite ? 'card__fav--active' : ''}`}
+          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <Heart
+            className="card__fav-icon"
+            fill={isFavorite ? 'currentColor' : 'none'}
+          />
+        </button>
       </div>
 
-      {/* Info section */}
-      <div className="p-4 relative flex-1 flex flex-col">
-        <div className="relative z-10 flex-1 flex flex-col">
-          <div className="flex items-start justify-between mb-2">
-            <h4 className="font-press font-bold text-neon.cyan text-base leading-tight group-hover:text-white transition-colors drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]">
-              {game.title}
-            </h4>
+      {/* Info - Bottom */}
+      <div className="card__info">
+        <div className="card__info-main">
+          <h3 className="card__title">{game.title}</h3>
+          <div className="card__meta">
+            <span className="card__console">{game.console}</span>
+            <span className="card__dot">•</span>
+            <span className="card__year">{game.year}</span>
           </div>
-
-          <div className="flex items-center justify-between text-xs font-mono text-gray-300 mb-3">
-            <span className="px-2 py-1 bg-neon.cyan/20 text-neon.cyan rounded border-2 border-neon.cyan/50 font-bold">
-              {game.console}
-            </span>
-            <span className="text-neon.purple font-bold drop-shadow-[0_0_6px_rgba(123,97,255,0.6)]">{game.year}</span>
-          </div>
-
-          <button
-            onClick={() => (onPlay ? onPlay(game) : navigate('player'))}
-            className="arcade-play-button w-full py-3 relative overflow-hidden font-mono font-bold text-sm rounded flex items-center justify-center gap-2 group/btn mt-auto"
-          >
-            <div className="arcade-button-shine"></div>
-            <Play className="w-4 h-4 relative z-10" />
-            <span className="relative z-10 caret-text">PRESS START<span className="caret" aria-hidden="true"></span></span>
-          </button>
         </div>
+
+        <button className="card__play" onClick={handlePlay}>
+          <Play className="card__play-icon" />
+        </button>
       </div>
-      </div>
-    </div>
+    </article>
   )
 })
 

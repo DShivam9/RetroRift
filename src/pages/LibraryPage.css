@@ -1,0 +1,70 @@
+/* ==========================================================================
+   LibraryPage Styles
+   ========================================================================== */
+
+.library {
+    min-height: 100vh;
+    background: var(--bg-base);
+    padding: var(--space-2xl) 0;
+}
+
+.library__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+.library__header {
+    margin-bottom: var(--space-xl);
+}
+
+.library__title {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-xs);
+}
+
+.library__count {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.library__filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+@media (min-width: 768px) {
+    .library__filters {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.library__controls {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.library__sort {
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    outline: none;
+}
+
+.library__sort:focus {
+    border-color: var(--accent-cyan);
+}

@@ -1,0 +1,641 @@
+/* ==========================================================================
+   RetroRift Components - BEM Naming Convention
+   ========================================================================== */
+
+/* ==========================================================================
+   1. NAVBAR
+   ========================================================================== */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-overlay);
+    background: rgba(5, 5, 8, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.navbar__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.navbar__logo {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-glow);
+    border: 2px solid var(--border-accent);
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+}
+
+.navbar__brand:hover .navbar__logo {
+    box-shadow: var(--glow-cyan);
+    border-color: var(--accent-cyan);
+}
+
+.navbar__logo-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--accent-cyan);
+    transition: var(--transition-base);
+}
+
+.navbar__brand:hover .navbar__logo-icon {
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.navbar__title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 0.1em;
+    transition: var(--transition-base);
+}
+
+.navbar__brand:hover .navbar__title {
+    text-shadow: var(--glow-text);
+}
+
+.navbar__nav {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.navbar__link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.navbar__link:hover {
+    color: var(--text-primary);
+    background: var(--gradient-glow);
+    border-color: var(--border-accent);
+}
+
+.navbar__link--active {
+    color: var(--text-primary);
+    background: var(--accent-cyan-dim);
+    border-color: var(--border-accent);
+}
+
+.navbar__link-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   2. GAME CARD - Clean dark style
+   ========================================================================== */
+
+.game-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #12121a;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-8px);
+    border-color: #8b5cf6;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(139, 92, 246, 0.1);
+    /* Stronger lift & glow */
+    z-index: 10;
+}
+
+/* Thumbnail */
+.game-card__thumbnail {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: #0a0a0f;
+    overflow: hidden;
+}
+
+.game-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.game-card:hover .game-card__image {
+    transform: scale(1.03);
+}
+
+.game-card__emoji {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.5rem;
+}
+
+/* Badge */
+.game-card__badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    z-index: 5;
+}
+
+.game-card__badge--new {
+    background: #22c55e;
+    color: #000;
+}
+
+.game-card__badge--popular {
+    background: #f59e0b;
+    color: #000;
+}
+
+.game-card__badge--featured {
+    background: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%);
+    color: #fff;
+}
+
+/* Favorite Button */
+.game-card__favorite {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+
+.game-card__favorite:hover {
+    background: rgba(236, 72, 153, 0.2);
+    border-color: #ec4899;
+}
+
+.game-card__favorite--active {
+    background: rgba(236, 72, 153, 0.25);
+    border-color: #ec4899;
+}
+
+.game-card__favorite-icon {
+    width: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.2s ease;
+}
+
+.game-card__favorite:hover .game-card__favorite-icon,
+.game-card__favorite--active .game-card__favorite-icon {
+    color: #ec4899;
+}
+
+.game-card__favorite--active .game-card__favorite-icon {
+    fill: #ec4899;
+}
+
+/* Content */
+.game-card__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    background: #12121a;
+}
+
+.game-card__title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    /* Better readability */
+}
+
+.game-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.game-card__console {
+    padding: 4px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 4px;
+}
+
+.game-card__year {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Play Button */
+.game-card__play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    margin-top: auto;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #fff;
+    background: #8b5cf6;
+    border: none;
+    border-bottom: 4px solid #6d28d9;
+    /* Physical base */
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.game-card__play:hover {
+    background: #9333ea;
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+    /* Squash */
+    box-shadow: 0 2px 10px rgba(147, 51, 234, 0.3);
+}
+
+.game-card__play:active {
+    transform: translateY(4px);
+    border-bottom-width: 0px;
+}
+
+
+
+.game-card__play-icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================================
+   3. BUTTONS
+   ========================================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.btn--primary {
+    color: var(--bg-base);
+    background: var(--gradient-primary);
+    border: none;
+}
+
+.btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-cyan);
+}
+
+.btn--secondary {
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--border-accent);
+}
+
+.btn--secondary:hover {
+    background: var(--accent-cyan-dim);
+}
+
+.btn--ghost {
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.btn--ghost:hover {
+    color: var(--text-primary);
+    border-color: var(--border-subtle);
+}
+
+/* ==========================================================================
+   4. SECTION HEADERS
+   ========================================================================== */
+
+.section {
+    padding: var(--space-3xl) 0;
+}
+
+.section__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+.section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-xl);
+}
+
+.section__title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.section__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+/* ==========================================================================
+   5. SKELETON LOADER
+   ========================================================================== */
+
+.skeleton {
+    background: linear-gradient(90deg,
+            var(--bg-secondary) 0%,
+            var(--bg-elevated) 50%,
+            var(--bg-secondary) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+}
+
+.skeleton--card {
+    height: 280px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton--text {
+    height: 16px;
+    width: 60%;
+}
+
+.skeleton--title {
+    height: 24px;
+    width: 80%;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ==========================================================================
+   6. LOADING SPINNER
+   ========================================================================== */
+
+.loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+    min-height: 300px;
+}
+
+.loader__spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--bg-elevated);
+    border-top-color: var(--accent-cyan);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loader__text {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   7. GRID LAYOUTS
+   ========================================================================== */
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-lg);
+}
+
+@media (min-width: 640px) {
+    .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .game-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .game-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ==========================================================================
+   8. FILTER BUTTONS
+   ========================================================================== */
+
+.filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.filter-btn {
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.filter-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-accent);
+}
+
+.filter-btn--active {
+    color: var(--text-primary);
+    background: var(--accent-cyan-dim);
+    border-color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   9. SEARCH INPUT
+   ========================================================================== */
+
+.search-input {
+    position: relative;
+}
+
+.search-input__field {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: var(--transition-base);
+}
+
+.search-input__field::placeholder {
+    color: var(--text-dim);
+}
+
+.search-input__field:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px var(--accent-cyan-dim);
+}
+
+.search-input__clear {
+    position: absolute;
+    right: var(--space-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.search-input__clear:hover {
+    color: var(--text-primary);
+}
+
+/* ==========================================================================
+   10. EMPTY STATE
+   ========================================================================== */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3xl);
+    text-align: center;
+}
+
+.empty-state__icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    font-size: 2.5rem;
+    background: var(--accent-purple-dim);
+    border: 2px solid var(--accent-purple);
+    border-radius: 50%;
+}
+
+.empty-state__title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-sm);
+}
+
+.empty-state__text {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    max-width: 300px;
+}
