@@ -113,11 +113,11 @@ class GBAEmulator {
       return false;
     }
   }
-  
+
   start() {
     console.log('Emulator start');
   }
-  
+
   pause() {
     console.log('Pausing emulator')
     if (this.emulatorInstance) {
@@ -134,16 +134,85 @@ class GBAEmulator {
       }
     }
   }
-  
+
   reset() {
     if (this.emulatorInstance && this.emulatorInstance.reset) {
       this.emulatorInstance.reset()
     }
   }
-  
+
+  // Save state - returns base64 encoded state data
+  async saveState() {
+    if (!this.emulatorInstance) {
+      console.error('No emulator instance for save state')
+      return null
+    }
+
+    try {
+      // EmulatorJS exposes save state through the gameManager
+      if (this.emulatorInstance.gameManager && this.emulatorInstance.gameManager.saveState) {
+        const stateData = await this.emulatorInstance.gameManager.saveState()
+        // Convert to base64 for storage
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)))
+        console.log('State saved, size:', stateData.byteLength)
+        return base64
+      }
+
+      // Alternative: Try to access through the EJS_player global
+      if (window.EJS_player && window.EJS_player.gameManager) {
+        const stateData = await window.EJS_player.gameManager.saveState()
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)))
+        return base64
+      }
+
+      console.warn('Save state API not available')
+      return null
+    } catch (error) {
+      console.error('Error saving state:', error)
+      return null
+    }
+  }
+
+  // Load state from base64 encoded data
+  async loadState(base64Data) {
+    if (!this.emulatorInstance || !base64Data) {
+      console.error('No emulator instance or state data')
+      return false
+    }
+
+    try {
+      // Convert base64 back to ArrayBuffer
+      const binaryString = atob(base64Data)
+      const bytes = new Uint8Array(binaryString.length)
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+      const stateData = bytes.buffer
+
+      // EmulatorJS load state
+      if (this.emulatorInstance.gameManager && this.emulatorInstance.gameManager.loadState) {
+        await this.emulatorInstance.gameManager.loadState(stateData)
+        console.log('State loaded')
+        return true
+      }
+
+      // Alternative
+      if (window.EJS_player && window.EJS_player.gameManager) {
+        await window.EJS_player.gameManager.loadState(stateData)
+        return true
+      }
+
+      console.warn('Load state API not available')
+      return false
+    } catch (error) {
+      console.error('Error loading state:', error)
+      return false
+    }
+  }
+
   destroy() {
     console.log('Destroying emulator instance')
-    
+
     // Stop the emulator completely
     if (this.emulatorInstance) {
       try {
@@ -157,7 +226,7 @@ class GBAEmulator {
       }
       this.emulatorInstance = null
     }
-    
+
     // Remove the emulator div completely
     if (this.emulatorDiv) {
       // Remove all child elements first
@@ -167,16 +236,16 @@ class GBAEmulator {
       this.emulatorDiv.remove()
       this.emulatorDiv = null
     }
-    
+
     // Also check for any #game divs and remove them
     const gameDivs = document.querySelectorAll('#game')
     gameDivs.forEach(div => div.remove())
-    
+
     // Show canvas again
     if (this.canvas) {
       this.canvas.style.display = 'block'
     }
-    
+
     console.log('Emulator destroyed completely')
   }
 }

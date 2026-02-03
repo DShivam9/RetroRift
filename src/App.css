@@ -11,12 +11,24 @@
 
 .app__main {
   flex: 1;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  position: relative;
 }
 
-.app__main--transitioning {
-  opacity: 0.5;
-  transform: translateY(-4px);
+/* Page Transition - Professional Fade */
+.app__page {
+  animation: fade-up 0.4s ease-out both;
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Page Loader */
@@ -65,4 +77,53 @@ img {
 ::selection {
   background: var(--accent-cyan-dim);
   color: var(--text-primary);
+}
+
+/* --- Global Visual Effects (Toggled via Settings) --- */
+
+/* Scanlines Overlay */
+body.scanlines-active::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom,
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* CRT/Vignette Overlay */
+body.crt-active::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.6) 100%);
+  z-index: 9998;
+  pointer-events: none;
+}
+
+/* CRT Screen Warp (Experimental - subtle curve) */
+body.crt-active .app {
+  /* Only apply if you want the whole screen to curve. 
+     For now, we stick to vignette and chromatic aberration potential. */
+  animation: crt-flicker 0.15s infinite;
+}
+
+@keyframes crt-flicker {
+  0% {
+    opacity: 0.97;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }

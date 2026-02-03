@@ -1,0 +1,113 @@
+/* Achievement Badges */
+
+.achievement-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    opacity: 0.5;
+    filter: grayscale(1);
+    transition: all 0.3s ease;
+}
+
+.achievement-badge--unlocked {
+    opacity: 1;
+    filter: grayscale(0);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.achievement-badge__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    color: var(--badge-color);
+    box-shadow: 0 0 20px var(--badge-glow);
+    flex-shrink: 0;
+}
+
+.achievement-badge--unlocked .achievement-badge__icon {
+    animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.achievement-badge__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.achievement-badge__title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.achievement-badge__desc {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+/* Trophy Cabinet */
+.trophy-cabinet {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.trophy-cabinet__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.trophy-cabinet__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+}
+
+.trophy-cabinet__title svg {
+    color: #fbbf24;
+}
+
+.trophy-cabinet__count {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.15);
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.trophy-cabinet__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+}

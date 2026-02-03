@@ -8,6 +8,9 @@ import './LibraryPage.css'
 /**
  * LibraryPage - Clean game catalog with filters
  */
+import GridScan from '../components/GridScan'
+import PixelSnow from '../components/effects/PixelSnow'
+
 export default function LibraryPage({
   navigate,
   favorites,
@@ -20,6 +23,9 @@ export default function LibraryPage({
   const [sortBy, setSortBy] = useState('title-asc')
 
   const isFavoritesPage = defaultFilter === 'FAVORITES'
+  // If we are on the main library page, we want to start with 'ALL'. 
+  // If we are on the favorites page, we default to 'FAVORITES' but might want to allow filtering favorites by console later?
+  // For now, let's keep the logic consistent with the existing code.
   const consoles = isFavoritesPage ? ['FAVORITES'] : ['ALL', 'FAVORITES', ...getConsoles().filter(c => c !== 'ALL')]
 
   // Filter and sort games
@@ -52,8 +58,28 @@ export default function LibraryPage({
     return result
   }, [selectedConsole, query, sortBy, favorites])
 
+  const handleBrowseLibrary = () => {
+    navigate('library')
+  }
+
+  const showFavoritesBg = isFavoritesPage || selectedConsole === 'FAVORITES'
+
   return (
     <div className="library">
+      {/* Background Texture - Conditional */}
+      <div className="library__bg">
+        {showFavoritesBg ? (
+          <PixelSnow
+            color="#8b5cf6"
+            speed={0.8}
+            flakeSize={0.02}
+            pixelResolution={400}
+          />
+        ) : (
+          <GridScan />
+        )}
+      </div>
+
       <div className="library__container">
         {/* Header */}
         <header className="library__header">
@@ -135,20 +161,31 @@ export default function LibraryPage({
             ))}
           </div>
         ) : (
-          <div className="empty-state">
-            <div className="empty-state__icon">
-              {isFavoritesPage || selectedConsole === 'FAVORITES' ? '💔' : '🎮'}
+          <div className="empty-state fade-in-up">
+            <div className="empty-state__icon-wrap">
+              <div className="empty-state__icon">
+                {isFavoritesPage || selectedConsole === 'FAVORITES' ? '💔' : '🎮'}
+              </div>
+              <div className="empty-state__glow"></div>
             </div>
+
             <h3 className="empty-state__title">
               {isFavoritesPage || selectedConsole === 'FAVORITES'
                 ? 'No Favorites Yet'
                 : 'No Games Found'}
             </h3>
+
             <p className="empty-state__text">
               {isFavoritesPage || selectedConsole === 'FAVORITES'
-                ? 'Click the heart icon on games to add them here'
-                : 'Try adjusting your search or filters'}
+                ? 'Your collection is empty. Go explore and find some gems!'
+                : 'Try adjusting your search or filters to find what you need.'}
             </p>
+
+            {(isFavoritesPage || selectedConsole === 'FAVORITES') && (
+              <button className="btn btn--primary empty-state__btn" onClick={handleBrowseLibrary}>
+                Browse Library
+              </button>
+            )}
           </div>
         )}
       </div>

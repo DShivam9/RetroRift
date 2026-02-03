@@ -11,11 +11,25 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 const LibraryPage = lazy(() => import('./pages/LibraryPage'))
 const PlayerPage = lazy(() => import('./pages/PlayerPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+
+/**
+ * App - Main application with hash-based routing
+ */
+import { SettingsProvider } from './context/SettingsContext'
 
 /**
  * App - Main application with hash-based routing
  */
 export default function App() {
+  return (
+    <SettingsProvider>
+      <AppContent />
+    </SettingsProvider>
+  )
+}
+
+function AppContent() {
   // Get initial page from URL hash
   const getInitialPage = () => {
     const hash = window.location.hash.slice(1)
@@ -23,7 +37,7 @@ export default function App() {
   }
 
   const [currentPage, setCurrentPage] = useState(getInitialPage)
-  const [pageTransition, setPageTransition] = useState(false)
+  const [pageKey, setPageKey] = useState(0)
 
   // Favorites state (persisted)
   const [favorites, setFavorites] = useState(() => {
@@ -84,16 +98,14 @@ export default function App() {
     }
   }, [currentGame])
 
-  // Navigation
+  // Navigation with clean transition
   const navigate = (page) => {
-    setPageTransition(true)
-    window.history.pushState({ page }, '', `#${page}`)
+    if (page === currentPage) return
 
-    setTimeout(() => {
-      setCurrentPage(page)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      setPageTransition(false)
-    }, 200)
+    window.history.pushState({ page }, '', `#${page}`)
+    setCurrentPage(page)
+    setPageKey(prev => prev + 1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   // Play game handler
@@ -160,15 +172,18 @@ export default function App() {
       {/* Animated Background */}
       <AnimatedBackground />
 
-      <Navbar currentPage={currentPage} navigate={navigate} />
+      <Navbar currentPage={currentPage} navigate={navigate} onPlayGame={onPlayGame} />
 
-      <main className={`app__main ${pageTransition ? 'app__main--transitioning' : ''}`}>
+      <main className="app__main">
         <Suspense fallback={<Loader text="Loading..." />}>
-          {currentPage === 'home' && <HomePage {...pageProps} />}
-          {currentPage === 'library' && <LibraryPage {...pageProps} />}
-          {currentPage === 'favorites' && <LibraryPage {...pageProps} defaultFilter="FAVORITES" />}
-          {currentPage === 'player' && <PlayerPage navigate={navigate} game={currentGame} />}
-          {currentPage === 'profile' && <ProfilePage {...pageProps} />}
+          <div key={pageKey} className="app__page">
+            {currentPage === 'home' && <HomePage {...pageProps} />}
+            {currentPage === 'library' && <LibraryPage {...pageProps} />}
+            {currentPage === 'favorites' && <LibraryPage {...pageProps} defaultFilter="FAVORITES" />}
+            {currentPage === 'player' && <PlayerPage navigate={navigate} game={currentGame} favorites={favorites} toggleFavorite={toggleFavorite} onPlayGame={onPlayGame} />}
+            {currentPage === 'profile' && <ProfilePage {...pageProps} />}
+            {!['home', 'library', 'favorites', 'player', 'profile'].includes(currentPage) && <NotFoundPage navigate={navigate} />}
+          </div>
         </Suspense>
       </main>
 

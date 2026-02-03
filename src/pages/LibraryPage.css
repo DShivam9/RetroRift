@@ -6,12 +6,69 @@
     min-height: 100vh;
     background: var(--bg-base);
     padding: var(--space-2xl) 0;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.library__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.15;
+    pointer-events: none;
 }
 
 .library__container {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 var(--space-lg);
+    position: relative;
+    z-index: 1;
+}
+
+/* ... existing header styles ... */
+
+/* Empty State Animations */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-state__icon-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state__icon {
+    font-size: 3rem;
+    position: relative;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+.empty-state__glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+    filter: blur(15px);
+}
+
+.empty-state__btn {
+    margin-top: 30px;
+    min-width: 160px;
 }
 
 .library__header {
