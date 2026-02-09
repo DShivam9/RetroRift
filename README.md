@@ -1,4 +1,4 @@
-# 🎮 RetroPlay Hub  
+# 🎮 RetroRift 
 
 **A modern web-based retro gaming platform** that revives the classics — right in your browser.  
 Built with **React**, **Vite**, and powered by **RetroArch WebAssembly Cores** for seamless emulation.
