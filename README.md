@@ -19,7 +19,7 @@ Built with **React**, **Vite**, and powered by **RetroArch WebAssembly Cores** f
 
 ## 🚀 Live Demo  
 
-🔗 [**Play Now on RetroPlay Hub**](https://retroplayhub.netlify.app/)  
+🔗 [**Play Now on RetroRift**](https://retroplayhub.netlify.app/)  
 
 ---
 
