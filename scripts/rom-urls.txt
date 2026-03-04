@@ -1,0 +1,35 @@
+# ──────────────────────────────────────────────────
+# ROM Download List — RetroRift
+# ──────────────────────────────────────────────────
+# Add one ROM download URL per line
+# Lines starting with # are comments
+# 
+# Usage:  npm run download-roms
+# Or:     node scripts/download-roms.js
+#
+# The downloader will auto-detect the system from the
+# file extension and place ROMs in the correct folder.
+#
+# Supported extensions:
+#   .gba .gb .gbc .nes .smc .sfc .nds .n64 .z64
+#   .gen .md .sms .gg .pce .cue .bin
+# ──────────────────────────────────────────────────
+
+# === GBA Games ===
+# https://example.com/roms/SuperMarioAdvance4.gba
+# https://example.com/roms/TheLegendOfZeldaMinishCap.gba
+# https://example.com/roms/MetroidFusion.gba
+
+# === NES Games ===
+# https://example.com/roms/SuperMarioBros.nes
+# https://example.com/roms/TheLegendOfZelda.nes
+# https://example.com/roms/Contra.nes
+
+# === SNES Games ===
+# https://example.com/roms/SuperMarioWorld.smc
+# https://example.com/roms/ChronoTrigger.smc
+
+# === NDS Games ===
+# https://example.com/roms/MarioKartDS.nds
+
+# Paste your ROM download URLs below:

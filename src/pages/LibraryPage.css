@@ -1,11 +1,12 @@
 /* ==========================================================================
-   LibraryPage Styles
+   LibraryPage — Enhanced with Micro-Animations
    ========================================================================== */
 
 .library {
-    min-height: 100vh;
+    min-height: auto;
+    flex: 1;
     background: var(--bg-base);
-    padding: var(--space-2xl) 0;
+    padding: var(--space-3xl) 0 var(--space-3xl);
     position: relative;
     overflow-x: hidden;
 }
@@ -29,9 +30,7 @@
     z-index: 1;
 }
 
-/* ... existing header styles ... */
-
-/* Empty State Animations */
+/* ─── Empty State — Floating ─── */
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -39,6 +38,19 @@
     justify-content: center;
     padding: 60px 20px;
     text-align: center;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .empty-state__icon-wrap {
@@ -56,6 +68,19 @@
     position: relative;
     z-index: 2;
     opacity: 0.8;
+    animation: emptyFloat 3s ease-in-out infinite;
+}
+
+@keyframes emptyFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-8px) rotate(5deg);
+    }
 }
 
 .empty-state__glow {
@@ -64,15 +89,38 @@
     height: 100%;
     background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
     filter: blur(15px);
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
 }
 
 .empty-state__btn {
     margin-top: 30px;
     min-width: 160px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.empty-state__btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+}
+
+/* ─── Header ─── */
 .library__header {
     margin-bottom: var(--space-xl);
+    animation: fadeInUp 0.5s ease both;
 }
 
 .library__title {
@@ -90,11 +138,13 @@
     margin: 0;
 }
 
+/* ─── Filters — Active Indicator Slide ─── */
 .library__filters {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
     margin-bottom: var(--space-xl);
+    animation: fadeInUp 0.6s ease both 0.1s;
 }
 
 @media (min-width: 768px) {
@@ -120,8 +170,16 @@
     border-radius: var(--radius-md);
     cursor: pointer;
     outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .library__sort:focus {
-    border-color: var(--accent-cyan);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12),
+        0 0 16px rgba(139, 92, 246, 0.06);
+}
+
+.library__sort:hover {
+    background: rgba(139, 92, 246, 0.06);
+    border-color: rgba(139, 92, 246, 0.3);
 }

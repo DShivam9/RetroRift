@@ -1,10 +1,11 @@
-import React, { memo, useState } from 'react'
-import { Heart, Play, ChevronRight } from 'lucide-react'
+import React, { memo, useState, useRef, useCallback } from 'react'
+import { Heart, Play, Gamepad2 } from 'lucide-react'
 import GameBadge from './GameBadge'
 import './GameCard.css'
 
 /**
- * GameCard - Modern overlay style with image-first design
+ * GameCard — Clean hover with scale, glow border, and info slide-up
+ * Removed broken parallax. Kept glass panel reveal.
  */
 const GameCard = memo(function GameCard({
   game,
@@ -14,10 +15,13 @@ const GameCard = memo(function GameCard({
   onPlay,
   badge
 }) {
-  const [isHovered, setIsHovered] = useState(false)
+  const [heartPop, setHeartPop] = useState(false)
+  const cardRef = useRef(null)
 
   const handleFavoriteClick = (e) => {
     e.stopPropagation()
+    setHeartPop(true)
+    setTimeout(() => setHeartPop(false), 600)
     toggleFavorite?.(game.id)
   }
 
@@ -28,61 +32,63 @@ const GameCard = memo(function GameCard({
 
   return (
     <article
-      className={`card ${isHovered ? 'card--hovered' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      ref={cardRef}
+      className="game-card"
       onClick={handlePlay}
     >
-      {/* Image */}
-      <div className="card__image-wrap">
-        {game.thumbnailImage ? (
-          <img
-            src={game.thumbnailImage}
-            alt={game.title}
-            className="card__image"
-            loading="lazy"
-          />
-        ) : (
-          <span className="card__emoji">{game.thumbnail}</span>
-        )}
+      {/* Gradient border glow */}
+      <div className="game-card__border" />
 
-        {/* Gradient Overlay */}
-        <div className="card__overlay" />
+      {/* Main content */}
+      <div className="game-card__content">
+        <img
+          src={game.thumbnail || '/thumbnails/default-cover.svg'}
+          alt={game.title}
+          className="game-card__image"
+          loading="lazy"
+          onError={(e) => { e.target.src = '/thumbnails/default-cover.svg' }}
+        />
+        <div className="game-card__overlay" />
 
         {/* Badge */}
         {badge && (
-          <div className="card__badge-wrap">
+          <div className="game-card__badge-wrap">
             <GameBadge type={badge} />
           </div>
         )}
 
-        {/* Favorite Button */}
+        {/* Console tag */}
+        <div className="game-card__console-tag">
+          <Gamepad2 size={11} />
+          <span>{game.console}</span>
+        </div>
+
+        {/* Favorite */}
         <button
           onClick={handleFavoriteClick}
-          className={`card__fav ${isFavorite ? 'card__fav--active' : ''}`}
+          className={`game-card__fav ${isFavorite ? 'game-card__fav--active' : ''} ${heartPop ? 'game-card__fav--pop' : ''}`}
           aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
           <Heart
-            className="card__fav-icon"
+            className="game-card__fav-icon"
+            size={16}
             fill={isFavorite ? 'currentColor' : 'none'}
+            strokeWidth={2.5}
           />
         </button>
-      </div>
 
-      {/* Info - Bottom */}
-      <div className="card__info">
-        <div className="card__info-main">
-          <h3 className="card__title">{game.title}</h3>
-          <div className="card__meta">
-            <span className="card__console">{game.console}</span>
-            <span className="card__dot">•</span>
-            <span className="card__year">{game.year}</span>
+        {/* Info panel — slides up on hover */}
+        <div className="game-card__panel">
+          <h3 className="game-card__title">{game.title}</h3>
+          <div className="game-card__meta">
+            <span>{game.year}</span>
+            <span className="game-card__dot">·</span>
+            <span>{game.genre || 'Classic'}</span>
           </div>
+          <button className="game-card__play-btn" onClick={handlePlay}>
+            <Play size={14} fill="white" /> Play Now
+          </button>
         </div>
-
-        <button className="card__play" onClick={handlePlay}>
-          <Play className="card__play-icon" />
-        </button>
       </div>
     </article>
   )

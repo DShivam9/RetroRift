@@ -1,0 +1,117 @@
+/* ToggleSwitch — iOS-style animated toggle */
+.toggle-switch {
+    position: relative;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Track */
+.toggle-switch__track {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-switch--on .toggle-switch__track {
+    background: var(--toggle-color);
+    border-color: var(--toggle-color);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--toggle-color) 40%, transparent);
+}
+
+/* Thumb */
+.toggle-switch__thumb {
+    position: relative;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+}
+
+/* Glow pulse on thumb when ON */
+.toggle-switch__glow {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: var(--toggle-color);
+    opacity: 0.3;
+    animation: toggleGlow 2s ease-in-out infinite;
+}
+
+/* ─── Sizes ─── */
+.toggle-switch--md {
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch--md .toggle-switch__thumb {
+    width: 20px;
+    height: 20px;
+    transform: translateX(2px);
+}
+
+.toggle-switch--md.toggle-switch--on .toggle-switch__thumb {
+    transform: translateX(22px);
+}
+
+.toggle-switch--sm {
+    width: 36px;
+    height: 20px;
+}
+
+.toggle-switch--sm .toggle-switch__thumb {
+    width: 16px;
+    height: 16px;
+    transform: translateX(2px);
+}
+
+.toggle-switch--sm.toggle-switch--on .toggle-switch__thumb {
+    transform: translateX(18px);
+}
+
+/* Disabled */
+.toggle-switch--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Hover */
+.toggle-switch:not(.toggle-switch--disabled):hover .toggle-switch__thumb {
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    transform: translateX(2px) scale(1.05);
+}
+
+.toggle-switch--on:not(.toggle-switch--disabled):hover .toggle-switch__thumb {
+    transform: translateX(22px) scale(1.05);
+}
+
+.toggle-switch--sm:not(.toggle-switch--disabled):hover .toggle-switch__thumb {
+    transform: translateX(2px) scale(1.08);
+}
+
+.toggle-switch--sm.toggle-switch--on:not(.toggle-switch--disabled):hover .toggle-switch__thumb {
+    transform: translateX(18px) scale(1.08);
+}
+
+@keyframes toggleGlow {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(1.1);
+    }
+}

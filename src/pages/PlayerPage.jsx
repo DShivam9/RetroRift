@@ -1,112 +1,34 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import GBAEmulator from '../lib/gba-emulator'
 import { Loader } from '../components/Loader'
+import SaveNameModal from '../components/SaveNameModal'
 import { games } from '../data/games'
+import { useAuth } from '../context/AuthContext'
+import { saveGameState, loadGameState } from '../lib/cloudSaves'
+import { onPlayTimeRecorded } from '../lib/xpEngine'
+import { sanitizeSaveName } from '../lib/inputSanitizer'
 import {
   Save, FolderOpen, Trash2, ChevronRight, Star, Clock,
-  Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2
+  Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn
 } from 'lucide-react'
 import '../styles/components.css'
 import './PlayerPage.css'
 
-// Enhanced game details with more info
-const GAME_DETAILS = {
-  'Pokemon FireRed': {
-    description: 'Return to the Kanto region! Choose your starter and embark on an epic journey to become the Pokemon Champion.',
-    region: 'Kanto',
-    genre: 'RPG',
-    developer: 'Game Freak',
-    difficulty: 'Medium',
-    playtime: '25-40 hours',
-    rating: 4.8,
-    features: ['151 Original Pokémon', 'Wireless Trading', 'Post-game Content', 'New Islands']
-  },
-  'Pokemon Ruby': {
-    description: 'Explore the tropical Hoenn region and stop Team Magma from awakening Groudon.',
-    region: 'Hoenn',
-    genre: 'RPG',
-    developer: 'Game Freak',
-    difficulty: 'Medium',
-    playtime: '30-45 hours',
-    rating: 4.7,
-    features: ['135 New Pokémon', 'Double Battles', 'Contests', 'Secret Bases']
-  },
-  'Pokemon Sapphire': {
-    description: 'Dive into Hoenn and counter Team Aqua as they try to awaken Kyogre.',
-    region: 'Hoenn',
-    genre: 'RPG',
-    developer: 'Game Freak',
-    difficulty: 'Medium',
-    playtime: '30-45 hours',
-    rating: 4.7,
-    features: ['135 New Pokémon', 'Diving Mechanic', 'Contests', 'Team Aqua Story']
-  },
-  'Pokemon Emerald': {
-    description: 'The definitive Hoenn experience with both Team Magma and Aqua, plus the Battle Frontier.',
-    region: 'Hoenn',
-    genre: 'RPG',
-    developer: 'Game Freak',
-    difficulty: 'Medium-Hard',
-    playtime: '40-60 hours',
-    rating: 4.9,
-    features: ['Battle Frontier', 'Both Teams', 'Rayquaza Story', 'Animated Sprites']
-  },
-  'Mario Kart: Super Circuit': {
-    description: 'Race as Mario and friends across 40 tracks in this portable racing classic.',
-    region: 'Mushroom Kingdom',
-    genre: 'Racing',
-    developer: 'Intelligent Systems',
-    difficulty: 'Easy-Medium',
-    playtime: '10-20 hours',
-    rating: 4.5,
-    features: ['40 Tracks', '8 Characters', 'Grand Prix Mode', 'Link Cable Multiplayer']
-  },
-  'Pac-Man': {
-    description: 'Navigate the maze, eat pellets, and avoid ghosts in this arcade legend.',
-    region: 'Arcade',
-    genre: 'Arcade',
-    developer: 'Namco',
-    difficulty: 'Easy',
-    playtime: 'Endless',
-    rating: 4.6,
-    features: ['Classic Gameplay', 'Power Pellets', '4 Ghost Types', 'High Score Chase']
-  },
-  'Sonic 3D Blast': {
-    description: 'Guide Sonic through isometric 3D environments to rescue Flickies.',
-    region: 'Green Grove',
-    genre: 'Platformer',
-    developer: "Traveller's Tales",
-    difficulty: 'Medium',
-    playtime: '5-8 hours',
-    rating: 3.8,
-    features: ['Isometric View', '7 Zones', 'Chaos Emeralds', 'Special Stages']
-  },
-  'Pokemon Platinum': {
-    description: 'Explore Sinnoh and enter the Distortion World in this enhanced adventure.',
-    region: 'Sinnoh',
-    genre: 'RPG',
-    developer: 'Game Freak',
-    difficulty: 'Medium',
-    playtime: '35-50 hours',
-    rating: 4.8,
-    features: ['Distortion World', 'Battle Frontier', 'Wi-Fi Plaza', 'Giratina Origin']
-  }
-}
-
 /**
  * PlayerPage - Enhanced Emulator Page
+ * Game details now come directly from the auto-generated catalog (games.js)
  */
-export default function PlayerPage({ navigate, game, favorites = [], toggleFavorite, onPlayGame }) {
+export default function PlayerPage({ navigate, game, favorites = [], toggleFavorite, onPlayGame, xpData, setXpData }) {
   const currentGame = game || { title: 'Select a Game', console: 'N/A', year: '----', romPath: null }
-  const details = GAME_DETAILS[currentGame.title] || {
-    description: 'A classic gaming experience.',
-    region: 'Unknown',
-    genre: 'Game',
-    developer: 'Unknown',
-    difficulty: 'Unknown',
-    playtime: 'Varies',
-    rating: 4.0,
-    features: []
+  const details = {
+    description: currentGame.description || 'A classic gaming experience.',
+    region: currentGame.console || 'Unknown',
+    genre: currentGame.genre || 'Game',
+    developer: currentGame.developer || 'Unknown',
+    difficulty: currentGame.difficulty || 'Unknown',
+    playtime: currentGame.playtime || 'Varies',
+    rating: currentGame.rating || 4.0,
+    features: currentGame.features || []
   }
 
   const [loading, setLoading] = useState(true)
@@ -115,9 +37,20 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const [romData, setRomData] = useState(null)
   const [saveSlots, setSaveSlots] = useState([])
   const [saveMessage, setSaveMessage] = useState('')
+  const [savingToCloud, setSavingToCloud] = useState(false)
+  const [saveModalOpen, setSaveModalOpen] = useState(false)
+  const [saveModalMode, setSaveModalMode] = useState(null) // 'new' | { type: 'rename', saveId }
+  const [saveModalDefault, setSaveModalDefault] = useState('')
   const canvasRef = useRef(null)
   const intervalRef = useRef(null)
   const emulatorRef = useRef(null)
+  const { user, isAuthenticated } = useAuth()
+
+  const MAX_SAVE_SLOTS = 5
+
+  // Arcade/simple games don't support save states
+  const ARCADE_GENRES = ['Arcade', 'Puzzle']
+  const supportsSaves = currentGame.romPath && !ARCADE_GENRES.includes(details.genre)
 
   const isFavorite = favorites?.includes(currentGame.id)
 
@@ -125,16 +58,74 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const similarGames = games.filter(g =>
     g.id !== currentGame.id &&
     (g.console === currentGame.console ||
-      GAME_DETAILS[g.title]?.genre === details.genre)
+      g.genre === details.genre)
   ).slice(0, 4)
 
-  // Load existing save slots for this game
+  // Load existing save slots (local + cloud, only for games that support saves)
   useEffect(() => {
-    if (currentGame.id) {
-      const saved = localStorage.getItem(`saves_${currentGame.id}`)
-      if (saved) setSaveSlots(JSON.parse(saved))
+    if (!supportsSaves) return
+    const loadSaves = async () => {
+      // Always load from localStorage first (has actual stateData)
+      if (currentGame.id) {
+        const saved = localStorage.getItem(`saves_${currentGame.id}`)
+        if (saved) {
+          try {
+            setSaveSlots(JSON.parse(saved))
+          } catch { /* ignore bad JSON */ }
+        }
+      }
+      // Then merge metadata from cloud
+      if (currentGame.id && isAuthenticated && user?.uid) {
+        try {
+          const cloudData = await loadGameState(user.uid, currentGame.id)
+          if (cloudData?.slots) {
+            // Merge cloud metadata (names, etc) with local stateData
+            setSaveSlots(prev => {
+              return cloudData.slots.map(cloudSlot => {
+                const local = prev.find(l => l.id === cloudSlot.id)
+                return {
+                  ...cloudSlot,
+                  stateData: local?.stateData || null // Preserve local stateData
+                }
+              })
+            })
+          }
+        } catch (err) {
+          console.error('Cloud metadata load failed:', err)
+        }
+      }
     }
-  }, [currentGame.id])
+    loadSaves()
+  }, [currentGame.id, isAuthenticated, user?.uid, supportsSaves])
+
+  // Prevent arrow keys / game keys from scrolling the page while emulator is active
+  useEffect(() => {
+    const GAME_KEYS = [
+      'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+      ' ', 'Space', 'Enter', 'Shift', 'Tab',
+      'x', 'X', 'z', 'Z', 'a', 'A', 's', 'S'
+    ]
+    const preventScroll = (e) => {
+      if (emulatorRef.current && GAME_KEYS.includes(e.key)) {
+        e.preventDefault()
+      }
+    }
+    window.addEventListener('keydown', preventScroll, { passive: false })
+    return () => window.removeEventListener('keydown', preventScroll)
+  }, [])
+
+  // Track real play time
+  const playStartRef = useRef(Date.now())
+  useEffect(() => {
+    playStartRef.current = Date.now()
+    return () => {
+      const elapsedMs = Date.now() - playStartRef.current
+      const elapsedMin = elapsedMs / 60000
+      if (elapsedMin >= 0.5 && setXpData) {
+        setXpData(prev => onPlayTimeRecorded(prev, elapsedMin))
+      }
+    }
+  }, [setXpData])
 
   // Load ROM
   const loadROM = useCallback(async () => {
@@ -206,54 +197,128 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
   }
 
-  // Save state handlers
-  const handleSaveState = async () => {
+  // Save state handlers — requires auth
+  const handleSaveState = () => {
+    if (!isAuthenticated) {
+      setSaveMessage('Sign in to save your progress')
+      setTimeout(() => setSaveMessage(''), 3000)
+      return
+    }
     if (!emulatorRef.current) {
       setSaveMessage('Emulator not ready')
       setTimeout(() => setSaveMessage(''), 2000)
       return
     }
+    if (saveSlots.length >= MAX_SAVE_SLOTS) {
+      setSaveMessage(`Max ${MAX_SAVE_SLOTS} saves! Delete one first.`)
+      setTimeout(() => setSaveMessage(''), 3000)
+      return
+    }
+    // Open themed modal instead of prompt()
+    setSaveModalMode('new')
+    setSaveModalDefault(`Save ${saveSlots.length + 1}`)
+    setSaveModalOpen(true)
+  }
 
-    try {
-      const stateData = await emulatorRef.current.saveState()
-      const newSave = {
-        id: Date.now(),
-        date: new Date().toLocaleString(),
-        playtime: formatTime(playtime),
-        slot: saveSlots.length + 1,
-        stateData: stateData
+  // Called when user confirms save name from modal
+  const handleSaveConfirm = async (rawName) => {
+    setSaveModalOpen(false)
+    const saveName = sanitizeSaveName(rawName)
+
+    if (saveModalMode === 'new') {
+      try {
+        setSavingToCloud(true)
+        const stateData = await emulatorRef.current.saveState()
+        const newSave = {
+          id: Date.now(),
+          name: saveName,
+          date: new Date().toLocaleString(),
+          playtime: formatTime(playtime),
+          slot: saveSlots.length + 1,
+          stateData: stateData
+        }
+        const updatedSlots = [...saveSlots, newSave]
+        setSaveSlots(updatedSlots)
+        localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+
+        // Sync metadata to cloud
+        if (isAuthenticated && user?.uid) {
+          try {
+            await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
+            setSaveMessage('Saved to cloud! ☁️')
+          } catch (err) {
+            console.error('Cloud save failed:', err)
+            setSaveMessage('Saved locally (cloud sync failed)')
+          }
+        }
+        setTimeout(() => setSaveMessage(''), 2000)
+      } catch (error) {
+        console.error('Save state error:', error)
+        setSaveMessage('Save failed — emulator may not support saves for this game')
+        setTimeout(() => setSaveMessage(''), 3000)
+      } finally {
+        setSavingToCloud(false)
       }
-      const updatedSlots = [...saveSlots, newSave].slice(-5)
+    } else if (saveModalMode?.type === 'rename') {
+      const updatedSlots = saveSlots.map(s =>
+        s.id === saveModalMode.saveId ? { ...s, name: saveName } : s
+      )
       setSaveSlots(updatedSlots)
       localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
-      setSaveMessage('State saved!')
-      setTimeout(() => setSaveMessage(''), 2000)
-    } catch (error) {
-      setSaveMessage('Failed to save state')
-      setTimeout(() => setSaveMessage(''), 2000)
+      if (isAuthenticated && user?.uid) {
+        saveGameState(user.uid, currentGame.id, { slots: updatedSlots }).catch(() => { })
+      }
     }
   }
 
   const handleLoadState = async (save) => {
-    if (!emulatorRef.current) return
+    if (!emulatorRef.current) {
+      setSaveMessage('Start the game first before loading a save')
+      setTimeout(() => setSaveMessage(''), 2000)
+      return
+    }
+    if (!save.stateData) {
+      setSaveMessage('Save data is only available locally — it can\'t be loaded from cloud alone')
+      setTimeout(() => setSaveMessage(''), 3000)
+      return
+    }
     try {
-      if (save.stateData) {
-        await emulatorRef.current.loadState(save.stateData)
-        setSaveMessage(`Loaded save from ${save.date}`)
+      const loaded = await emulatorRef.current.loadState(save.stateData)
+      if (loaded) {
+        setSaveMessage(`Loaded: ${save.name || save.date}`)
       } else {
-        setSaveMessage('No state data')
+        setSaveMessage('Load failed — emulator may not support this. Try using in-game saves.')
       }
       setTimeout(() => setSaveMessage(''), 2000)
-    } catch {
-      setSaveMessage('Failed to load')
-      setTimeout(() => setSaveMessage(''), 2000)
+    } catch (err) {
+      console.error('Load state error:', err)
+      setSaveMessage('Failed to load — the save may be corrupted or incompatible')
+      setTimeout(() => setSaveMessage(''), 3000)
     }
   }
 
-  const handleDeleteSave = (saveId) => {
+  const handleDeleteSave = async (saveId) => {
     const updatedSlots = saveSlots.filter(s => s.id !== saveId)
     setSaveSlots(updatedSlots)
     localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+
+    // Sync deletion to cloud
+    if (isAuthenticated && user?.uid) {
+      try {
+        await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
+      } catch (err) {
+        console.error('Cloud delete sync failed:', err)
+      }
+    }
+  }
+
+  const handleRenameSave = (saveId) => {
+    const save = saveSlots.find(s => s.id === saveId)
+    if (!save) return
+    // Open themed modal for rename
+    setSaveModalMode({ type: 'rename', saveId })
+    setSaveModalDefault(save.name || `Save ${save.slot}`)
+    setSaveModalOpen(true)
   }
 
   // Render stars
@@ -331,17 +396,29 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
               )}
             </div>
 
-            {/* Save States Bar */}
-            {currentGame.romPath && (
+            {/* Save States Bar — only for games that support saves */}
+            {supportsSaves && (
               <div className="player-saves-bar">
-                <button className="player-quick-save" onClick={handleSaveState}>
+                <button
+                  className={`player-save-btn ${saveSlots.length >= MAX_SAVE_SLOTS ? 'player-save-btn--maxed' : ''}`}
+                  onClick={handleSaveState}
+                  disabled={savingToCloud}
+                >
                   <Save size={16} />
-                  Quick Save
+                  <span>{savingToCloud ? 'Saving...' : 'Save Game'}</span>
+                  <span className="player-save-counter">{saveSlots.length}/{MAX_SAVE_SLOTS}</span>
                 </button>
                 {saveMessage && <span className="player-save-msg">{saveMessage}</span>}
                 <span className="player-session">
                   <Clock size={14} />
                   {formatTime(playtime)}
+                </span>
+                <span className="player-cloud-status">
+                  {isAuthenticated ? (
+                    <><Cloud size={14} /> Cloud</>
+                  ) : (
+                    <><CloudOff size={14} /> Local</>
+                  )}
                 </span>
               </div>
             )}
@@ -392,25 +469,68 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             </div>
           </section>
 
-          {/* Save Slots */}
-          {saveSlots.length > 0 && (
+          {/* Save Slots — only for games that support saves */}
+          {supportsSaves && (
             <section className="player-saves-section">
-              <h2 className="player-section-title">Save States</h2>
-              <div className="player-save-slots">
-                {saveSlots.map(save => (
-                  <div key={save.id} className="player-save-slot">
-                    <div className="player-save-info">
-                      <span className="player-save-num">Slot {save.slot}</span>
-                      <span className="player-save-date">{save.date}</span>
-                      <span className="player-save-time">{save.playtime}</span>
+              <h2 className="player-section-title">
+                Save States
+                <span className="player-saves-count">{saveSlots.length} / {MAX_SAVE_SLOTS}</span>
+              </h2>
+              {!isAuthenticated ? (
+                <div className="player-saves-empty">
+                  <LogIn size={24} />
+                  <p>Sign in to save your game progress and sync across devices.</p>
+                </div>
+              ) : saveSlots.length === 0 ? (
+                <div className="player-saves-empty">
+                  <Save size={24} />
+                  <p>No saves yet. Click <strong>Save Game</strong> above after playing to create a save state.</p>
+                </div>
+              ) : (
+                <div className="player-save-slots">
+                  {saveSlots.map(save => (
+                    <div key={save.id} className="player-save-slot">
+                      <div className="player-save-info">
+                        <span className="player-save-name">{save.name || `Save ${save.slot}`}</span>
+                        <span className="player-save-date">{save.date}</span>
+                        <span className="player-save-time">{save.playtime}</span>
+                        {!save.stateData && <span className="player-save-cloud-only">metadata only</span>}
+                      </div>
+                      <div className="player-save-actions">
+                        <button
+                          className="player-save-rename"
+                          onClick={() => handleRenameSave(save.id)}
+                          title="Rename save"
+                        >
+                          <Edit3 size={12} />
+                        </button>
+                        <button
+                          className="player-save-load"
+                          onClick={() => handleLoadState(save)}
+                          title="Load this save"
+                          disabled={!save.stateData}
+                        >
+                          <FolderOpen size={14} />
+                          <span>Load</span>
+                        </button>
+                        <button
+                          className="player-save-delete"
+                          onClick={() => handleDeleteSave(save.id)}
+                          title="Delete this save"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="player-save-actions">
-                      <button onClick={() => handleLoadState(save)}><FolderOpen size={14} /></button>
-                      <button onClick={() => handleDeleteSave(save.id)}><Trash2 size={14} /></button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
+              {saveSlots.length >= MAX_SAVE_SLOTS && (
+                <div className="player-saves-warning">
+                  <AlertTriangle size={14} />
+                  <span>Maximum saves reached. Delete a save to create a new one.</span>
+                </div>
+              )}
             </section>
           )}
         </div>
@@ -420,7 +540,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           {/* Game Cover */}
           <div className="player-cover">
             <div className="player-cover__image">
-              <span className="player-cover__emoji">{currentGame.thumbnail || '🎮'}</span>
+              <img
+                src={currentGame.thumbnail || '/thumbnails/default-cover.svg'}
+                alt={currentGame.title}
+                className="player-cover__img"
+                onError={(e) => { e.target.src = '/thumbnails/default-cover.svg' }}
+              />
             </div>
             <div className="player-cover__info">
               <div className="player-cover__row">
@@ -449,7 +574,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                     className="player-similar__item"
                     onClick={() => onPlayGame && onPlayGame(g)}
                   >
-                    <span className="player-similar__emoji">{g.thumbnail}</span>
+                    <img
+                      src={g.thumbnail || '/thumbnails/default-cover.svg'}
+                      alt={g.title}
+                      className="player-similar__thumb"
+                      onError={(e) => { e.target.src = '/thumbnails/default-cover.svg' }}
+                    />
                     <div className="player-similar__info">
                       <span className="player-similar__name">{g.title}</span>
                       <span className="player-similar__year">{g.year}</span>
@@ -466,6 +596,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           </button>
         </aside>
       </div>
+
+      {/* Save Name Modal */}
+      <SaveNameModal
+        isOpen={saveModalOpen}
+        defaultName={saveModalDefault}
+        onConfirm={handleSaveConfirm}
+        onCancel={() => setSaveModalOpen(false)}
+      />
     </div>
   )
 }

@@ -1,0 +1,1017 @@
+/* ═══════════════════════════════════════════════════════════════
+   IMMERSIVE BACKGROUND ENGINES
+   All animations: transform/opacity only → zero paint lag
+   ═══════════════════════════════════════════════════════════════ */
+
+.retro-bg-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+  background-color: #050510;
+  pointer-events: none;
+}
+
+.retro-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 25%, rgba(0, 0, 0, 0.75) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Per-theme cursor glows ── */
+.cursor-theme-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.cursor-glow-matrix {
+  background: radial-gradient(circle 280px at var(--mx, 50%) var(--my, 50%), rgba(0, 255, 65, 0.07) 0%, transparent 100%);
+}
+
+.cursor-glow-starfield {
+  background: radial-gradient(circle 320px at var(--mx, 50%) var(--my, 50%), rgba(120, 80, 255, 0.09) 0%, transparent 100%);
+}
+
+.cursor-glow-cyberdust {
+  background: radial-gradient(circle 300px at var(--mx, 50%) var(--my, 50%), rgba(0, 220, 240, 0.08) 0%, transparent 100%);
+}
+
+.cursor-glow-ember {
+  background: radial-gradient(circle 300px at var(--mx, 50%) var(--my, 50%), rgba(255, 120, 20, 0.1) 0%, transparent 100%);
+}
+
+/* ═══════════════════════════════════════════
+   1. HACK THE MATRIX
+   ═══════════════════════════════════════════ */
+.bg-engine-digitalrain {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 70%, rgba(0, 20, 0, 0.8) 0%, transparent 70%),
+    linear-gradient(180deg, #000800 0%, #010f01 60%, #000400 100%);
+}
+
+.matrix-stream {
+  position: absolute;
+  width: 2px;
+  height: var(--h, 80px);
+  background: linear-gradient(180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--c) 30%, transparent) 15%,
+      var(--c) 55%,
+      rgba(200, 255, 200, 0.95) 85%,
+      #fff 100%);
+  left: var(--x);
+  top: -200px;
+  animation: rainDown var(--speed) linear var(--delay) infinite;
+  box-shadow: 0 0 5px var(--c), 0 0 15px var(--c);
+  will-change: transform;
+}
+
+.matrix-stream::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background: inherit;
+  filter: blur(5px);
+  opacity: 0.25;
+}
+
+@keyframes rainDown {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  4% {
+    opacity: 1;
+  }
+
+  88% {
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateY(130vh);
+    opacity: 0;
+  }
+}
+
+.bg-engine-digitalrain::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25vh;
+  background: radial-gradient(ellipse at 50% 100%, rgba(0, 255, 65, 0.07) 0%, transparent 70%);
+  animation: matrixFloor 4s ease-in-out infinite alternate;
+}
+
+@keyframes matrixFloor {
+  0% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   2. WARP DRIVE
+   ═══════════════════════════════════════════ */
+.bg-engine-starfield {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 38%, #0b0320 0%, #010108 80%);
+}
+
+.stars-layer {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 40px 70px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 50px 160px, rgba(200, 180, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 90px 40px, #fff, transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(180, 220, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 160px 120px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 210px 50px, rgba(255, 200, 180, 0.7), transparent),
+    radial-gradient(1px 1px at 250px 145px, rgba(255, 255, 255, 0.8), transparent);
+  background-size: 280px 280px;
+  will-change: transform;
+}
+
+.stars-layer.slow {
+  animation: warpStar 35s linear infinite;
+  opacity: 0.5;
+  background-size: 200px 200px;
+}
+
+.stars-layer.med {
+  background-size: 310px 310px;
+  animation: warpStar 16s linear infinite;
+  opacity: 0.85;
+}
+
+.stars-layer.fast {
+  background-size: 420px 420px;
+  animation: warpStar 7s linear infinite;
+}
+
+.starfield-zoom {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(139, 92, 246, 0.15) 0%, transparent 42%),
+    radial-gradient(ellipse at 60% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+  animation: starZoomPulse 6s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes warpStar {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  100% {
+    transform: translateY(500px) scaleY(1.6);
+  }
+}
+
+@keyframes starZoomPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: scale(1.9);
+    opacity: 0.9;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   3. CYBER DRIFT
+   ═══════════════════════════════════════════ */
+.bg-engine-cyberdust {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 35% 25%, rgba(4, 22, 50, 0.85) 0%, transparent 55%),
+    radial-gradient(ellipse at 72% 72%, rgba(25, 4, 50, 0.7) 0%, transparent 55%),
+    #030310;
+}
+
+.dust-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: hsl(var(--hue, 190), 100%, 70%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px hsl(var(--hue, 190), 100%, 70%),
+    0 0 18px hsl(var(--hue, 190), 90%, 50%),
+    0 0 40px color-mix(in srgb, hsl(var(--hue, 190), 80%, 40%) 50%, transparent);
+  left: var(--x);
+  top: var(--y);
+  transform: scale(var(--scale));
+  animation: floatDust var(--dur) ease-in-out var(--del) infinite alternate;
+  will-change: transform, opacity;
+}
+
+.dust-particle.dust-lg {
+  width: 5px;
+  height: 5px;
+  box-shadow:
+    0 0 10px hsl(var(--hue, 190), 100%, 70%),
+    0 0 28px hsl(var(--hue, 190), 90%, 50%),
+    0 0 60px color-mix(in srgb, hsl(var(--hue, 190), 80%, 40%) 50%, transparent);
+}
+
+@keyframes floatDust {
+  0% {
+    transform: scale(var(--scale)) translate(0, 0);
+    opacity: 0.1;
+  }
+
+  30% {
+    opacity: 0.9;
+  }
+
+  70% {
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(var(--scale)) translate(65px, -95px);
+    opacity: 0.05;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   4. VOID & EMBERS
+   ═══════════════════════════════════════════ */
+.bg-engine-ember {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(35, 6, 0, 0.9) 0%, transparent 55%),
+    linear-gradient(180deg, #040100 0%, #0e0300 55%, #060100 100%);
+}
+
+.ember-glow-floor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40vh;
+  background:
+    radial-gradient(ellipse at 28% 100%, rgba(255, 70, 10, 0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 72% 100%, rgba(255, 110, 15, 0.16) 0%, transparent 50%);
+  animation: floorPulse 3.5s ease-in-out infinite alternate;
+}
+
+.ember-particle {
+  position: absolute;
+  bottom: 0;
+  left: var(--x);
+  width: var(--size, 3px);
+  height: var(--size, 3px);
+  background: hsl(var(--hue, 20), 100%, 72%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px hsl(var(--hue, 20), 100%, 65%),
+    0 0 18px hsl(var(--hue, 20), 90%, 50%),
+    0 0 35px color-mix(in srgb, hsl(var(--hue, 20), 80%, 40%) 40%, transparent);
+  animation: emberRise var(--dur) ease-out var(--del) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes emberRise {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 1;
+  }
+
+  30% {
+    transform: translateY(-30vh) translateX(calc(var(--drift, 20px)*0.3)) scale(0.8);
+    opacity: 0.9;
+  }
+
+  70% {
+    transform: translateY(-70vh) translateX(var(--drift, 20px)) scale(0.5);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translateY(-108vh) translateX(calc(var(--drift, 20px)*1.5)) scale(0.1);
+    opacity: 0;
+  }
+}
+
+@keyframes floorPulse {
+  0% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   5. THE ABYSS — pure dark, monochrome void
+   ═══════════════════════════════════════════ */
+.bg-engine-oceandepth {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #000000 0%, #020206 40%, #010102 100%);
+}
+
+.ocean-abyss {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 90%, rgba(30, 30, 50, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, rgba(20, 20, 35, 0.15) 0%, transparent 35%);
+  animation: abyssSway 25s ease-in-out infinite alternate;
+}
+
+/* Very faint white light rays — no colour */
+.ocean-lightrays {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(-55deg,
+      transparent 0px,
+      transparent 80px,
+      rgba(255, 255, 255, 0.015) 80px,
+      rgba(255, 255, 255, 0.015) 100px);
+  animation: raysShift 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.ocean-caustics {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.03) 0%, transparent 30%),
+    radial-gradient(ellipse at 65% 60%, rgba(255, 255, 255, 0.025) 0%, transparent 25%),
+    radial-gradient(ellipse at 80% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 22%);
+  animation: causticShift 11s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Dim monochrome floating particles */
+.plankton {
+  position: absolute;
+  left: var(--x, 50vw);
+  top: var(--y, 50vh);
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.3), 0 0 8px rgba(255, 255, 255, 0.1);
+  transform: scale(var(--scale, 0.35));
+  animation: planktonFloat var(--dur, 8s) ease-in-out var(--delay, 0s) infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes abyssSway {
+  0% {
+    transform: translateX(-12px);
+  }
+
+  100% {
+    transform: translateX(12px);
+  }
+}
+
+@keyframes raysShift {
+  0% {
+    transform: translateX(-25px) scaleX(1);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateX(25px) scaleX(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes causticShift {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.45;
+  }
+
+  100% {
+    transform: scale(1.25) translate(25px, -15px);
+    opacity: 0.35;
+  }
+}
+
+@keyframes planktonFloat {
+  0% {
+    transform: scale(var(--scale, 0.35)) translate(0, 0);
+    opacity: 0.1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(var(--scale, 0.35)) translate(18px, -25px);
+    opacity: 0.08;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   6. PHOSPHOR GHOST (CRT burn effect)
+   ═══════════════════════════════════════════ */
+.bg-engine-phosphor {
+  position: absolute;
+  inset: 0;
+  background: #000300;
+}
+
+.phosphor-base {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(0, 80, 10, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 30% 70%, rgba(0, 60, 8, 0.2) 0%, transparent 40%);
+  animation: phosphorBreath 8s ease-in-out infinite alternate;
+}
+
+.phosphor-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent 0px,
+      transparent 1px,
+      rgba(0, 255, 60, 0.04) 1px,
+      rgba(0, 255, 60, 0.04) 2px);
+}
+
+.phosphor-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(0, 255, 50, 0.08) 0%, transparent 55%);
+  animation: phosphorGlowPulse 5s ease-in-out infinite alternate;
+}
+
+.phosphor-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+.phosphor-trail {
+  position: absolute;
+  top: var(--py);
+  left: -10%;
+  width: 120%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(0, 255, 55, var(--opacity, 0.04)) 30%, transparent 95%);
+  animation: phosphorDrift var(--dur) ease-in-out var(--del) infinite alternate;
+  will-change: transform;
+  filter: blur(0.5px);
+}
+
+@keyframes phosphorBreath {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes phosphorGlowPulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+@keyframes phosphorDrift {
+  0% {
+    transform: translateX(-3%) scaleY(0.5);
+  }
+
+  100% {
+    transform: translateX(3%) scaleY(2);
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   7. VHS DECAY
+   ═══════════════════════════════════════════ */
+.bg-engine-vhs {
+  position: absolute;
+  inset: 0;
+  background: #06040c;
+}
+
+.vhs-base {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 40% 40%, rgba(80, 20, 120, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 65%, rgba(20, 0, 60, 0.3) 0%, transparent 50%);
+}
+
+.vhs-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.45) 0px,
+      rgba(0, 0, 0, 0.45) 1px,
+      transparent 1px,
+      transparent 3px);
+  animation: scanlineScroll 8s linear infinite;
+  will-change: transform;
+}
+
+.vhs-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  animation: noiseShift 0.15s steps(1) infinite;
+}
+
+.vhs-tracking {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, transparent 0%, rgba(200, 150, 255, 0.25) 30%, transparent 100%);
+  filter: blur(2px);
+  animation: trackingBar 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.vhs-glitch-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(150, 100, 255, 0.35);
+  animation: glitchJump 3s steps(1) infinite;
+  will-change: transform;
+}
+
+.vhs-glitch-bar.gb1 {
+  animation-delay: 0s;
+}
+
+.vhs-glitch-bar.gb2 {
+  animation-delay: 1.4s;
+  height: 1px;
+  background: rgba(200, 100, 255, 0.2);
+}
+
+.vhs-chroma-aberr {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      rgba(255, 0, 100, 0.03) 0%,
+      transparent 40%,
+      rgba(0, 200, 255, 0.03) 100%);
+  animation: chromaShift 12s ease-in-out infinite alternate;
+}
+
+@keyframes scanlineScroll {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes noiseShift {
+
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+
+  25% {
+    background-position: 20px 15px;
+  }
+
+  50% {
+    background-position: -10px 30px;
+  }
+
+  75% {
+    background-position: 30px -10px;
+  }
+}
+
+@keyframes trackingBar {
+
+  0%,
+  100% {
+    top: -10px;
+    opacity: 0;
+  }
+
+  10% {
+    top: 0;
+    opacity: 0.8;
+  }
+
+  30% {
+    top: 100vh;
+    opacity: 0.4;
+  }
+
+  35% {
+    opacity: 0;
+  }
+}
+
+@keyframes glitchJump {
+
+  0%,
+  100% {
+    top: 0;
+    opacity: 0;
+  }
+
+  5% {
+    top: 33%;
+    opacity: 1;
+  }
+
+  6% {
+    top: 66%;
+    opacity: 0.6;
+  }
+
+  7% {
+    top: 15%;
+    opacity: 0.3;
+  }
+
+  8% {
+    opacity: 0;
+  }
+}
+
+@keyframes chromaShift {
+  0% {
+    transform: translateX(-5px);
+  }
+
+  100% {
+    transform: translateX(5px);
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   8. ARCANE CIRCUIT (PCB traces lighting up)
+   ═══════════════════════════════════════════ */
+.bg-engine-circuit {
+  position: absolute;
+  inset: 0;
+  background: #010306;
+}
+
+.circuit-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(0, 180, 120, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 180, 120, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.circuit-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(0, 200, 120, 0.07) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 80%, rgba(0, 150, 100, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 100, 80, 0.05) 0%, transparent 60%);
+  animation: circuitBreath 10s ease-in-out infinite alternate;
+}
+
+.circuit-node {
+  position: absolute;
+  left: var(--cx, 50%);
+  top: var(--cy, 50%);
+  width: 6px;
+  height: 6px;
+  background: rgba(0, 255, 150, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 255, 150, 0.7), 0 0 20px rgba(0, 200, 120, 0.4), 0 0 40px rgba(0, 180, 100, 0.2);
+  animation: nodePulse var(--dur, 2.5s) ease-in-out var(--del, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+.circuit-scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  left: -5px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 140, 0.6) 50%, transparent 100%);
+  filter: blur(3px);
+  animation: circuitScan 10s linear infinite;
+  will-change: transform;
+}
+
+@keyframes circuitBreath {
+  0% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1.0;
+  }
+}
+
+@keyframes nodePulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: scale(1.8);
+    opacity: 1;
+  }
+}
+
+@keyframes circuitScan {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   9. DEAD SIGNAL (no signal TV screen)
+   ═══════════════════════════════════════════ */
+.bg-engine-deadsignal {
+  position: absolute;
+  inset: 0;
+  background: #080808;
+}
+
+.signal-static {
+  position: absolute;
+  inset: 0;
+  /* Pure CSS noise via SVG data-uri */
+  background:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='0.12'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  animation: staticFlick 0.1s steps(1) infinite;
+  mix-blend-mode: screen;
+  will-change: background-position;
+}
+
+.signal-bands {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      rgba(255, 255, 255, 0.02) 0px,
+      rgba(255, 255, 255, 0.02) 2px,
+      rgba(0, 0, 0, 0.3) 2px,
+      rgba(0, 0, 0, 0.3) 4px);
+  animation: bandScroll 2s linear infinite;
+  will-change: transform;
+}
+
+.signal-flicker {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.018);
+  animation: screenFlicker 0.08s steps(1) infinite;
+}
+
+.signal-text1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Courier New', monospace;
+  font-size: clamp(12px, 2vw, 22px);
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.07);
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  animation: signalFade 4s ease-in-out infinite alternate;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@keyframes staticFlick {
+
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+
+  25% {
+    background-position: -40px -20px;
+  }
+
+  50% {
+    background-position: 20px 40px;
+  }
+
+  75% {
+    background-position: -25px 10px;
+  }
+}
+
+@keyframes bandScroll {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes screenFlicker {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes signalFade {
+  0% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 0.06;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   10. COSMIC DEBRIS (deep space wreckage)
+   ═══════════════════════════════════════════ */
+.bg-engine-cosmic {
+  position: absolute;
+  inset: 0;
+}
+
+.cosmic-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(30, 5, 60, 0.8) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 70%, rgba(60, 5, 20, 0.7) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, rgba(10, 5, 25, 0.9) 0%, transparent 70%),
+    #020005;
+}
+
+.cosmic-red-giant {
+  position: absolute;
+  bottom: 15%;
+  right: 10%;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255, 60, 0, 0.5) 0%, rgba(200, 20, 0, 0.2) 40%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(30px);
+  animation: redGiantPulse 8s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.cosmic-dust-layer {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 40% 20%, rgba(80, 40, 120, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 80%, rgba(120, 30, 60, 0.12) 0%, transparent 35%);
+  animation: dustDrift 30s ease-in-out infinite alternate;
+}
+
+.debris-shard {
+  position: absolute;
+  left: var(--dx);
+  top: var(--dy);
+  width: var(--sz, 6px);
+  height: var(--sz, 6px);
+  background: rgba(200, 180, 255, 0.55);
+  clip-path: polygon(50% 0%, 85% 30%, 100% 70%, 60% 100%, 15% 80%, 0% 40%);
+  box-shadow: 0 0 6px rgba(200, 180, 255, 0.4);
+  transform: rotate(var(--rot, 0deg));
+  animation: debrisDrift var(--dur, 30s) linear var(--del, 0s) infinite;
+  will-change: transform;
+}
+
+@keyframes redGiantPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1.25);
+    opacity: 1.0;
+  }
+}
+
+@keyframes dustDrift {
+  0% {
+    transform: translate(-8px, -5px);
+  }
+
+  100% {
+    transform: translate(8px, 5px);
+  }
+}
+
+@keyframes debrisDrift {
+  0% {
+    transform: rotate(var(--rot, 0deg)) translateY(0);
+    opacity: 0.8;
+  }
+
+  40% {
+    opacity: 0.9;
+  }
+
+  80% {
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: rotate(calc(var(--rot, 0deg) + 360deg)) translateY(-20px);
+    opacity: 0.6;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   11. CUSTOM USER BACKGROUND
+   ═══════════════════════════════════════════ */
+.bg-engine-custom {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.custom-bg-media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.65;
+}

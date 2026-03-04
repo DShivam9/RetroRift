@@ -1,0 +1,16 @@
+
+D:\RetroPlay\RetroPlayHUB\src\pages\ProfilePage.jsx
+   16:20  error  'formatPlaytime' is defined but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+  338:5   error  'crtMode' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+  338:14  error  'setCrtMode' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  339:5   error  'scanlines' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u           no-unused-vars
+  339:16  error  'setScanlines' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  344:11  error  'playBlip' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  344:21  error  'playTabSwitch' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+  345:10  error  'activeAccordion' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  345:27  error  'setActiveAccordion' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  401:9   error  'animStreak' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  403:9   error  'favoriteGames' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+
+✖ 11 problems (11 errors, 0 warnings)
+

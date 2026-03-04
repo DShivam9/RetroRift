@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Home, Grid3X3, Heart, User, X, Menu, Zap, Trophy, Search } from 'lucide-react'
+import { Home, Grid3X3, Heart, User, X, Menu, Zap, Trophy, Search, LogIn, LogOut } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 import { games } from '../data/games'
 import './Navbar.css'
 
@@ -14,6 +15,20 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
   const [searchResults, setSearchResults] = useState([])
   const [showResults, setShowResults] = useState(false)
   const searchRef = React.useRef(null)
+  const { user, isAuthenticated, signOut } = useAuth()
+  const [navPhoto, setNavPhoto] = useState(null)
+
+  useEffect(() => {
+    const updatePhoto = () => {
+      const saved = localStorage.getItem('profilePhoto')
+      if (saved) setNavPhoto(saved)
+      else if (user?.photoURL) setNavPhoto(user.photoURL)
+      else setNavPhoto(null)
+    }
+    updatePhoto()
+    window.addEventListener('profilePhotoChanged', updatePhoto)
+    return () => window.removeEventListener('profilePhotoChanged', updatePhoto)
+  }, [user?.photoURL])
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -116,13 +131,27 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
             </div>
           )}
 
-          <button
-            className="nav-icon-btn"
-            onClick={() => navigate('profile')}
-            aria-label="Profile"
-          >
-            <User className="nav-icon-btn__svg" />
-          </button>
+          {isAuthenticated ? (
+            <button
+              className="nav-icon-btn nav-icon-btn--avatar"
+              onClick={() => navigate('profile')}
+              aria-label="Profile"
+            >
+              {navPhoto ? (
+                <img src={navPhoto} alt="" className="nav-avatar-img" />
+              ) : (
+                <User className="nav-icon-btn__svg" />
+              )}
+            </button>
+          ) : (
+            <button
+              className="nav-icon-btn nav-icon-btn--login"
+              onClick={() => navigate('login')}
+              aria-label="Sign In"
+            >
+              <LogIn className="nav-icon-btn__svg" />
+            </button>
+          )}
 
           <button
             className={`nav-trigger ${isOpen ? 'nav-trigger--hidden' : ''}`}
@@ -147,14 +176,25 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
           <div className="nav-drawer__header">
             <div className="nav-user-widget">
               <div className="nav-user__avatar">
-                <User className="nav-user__icon" />
+                {isAuthenticated && user?.photoURL ? (
+                  <img src={user.photoURL} alt="" className="nav-user__photo" />
+                ) : (
+                  <User className="nav-user__icon" />
+                )}
               </div>
               <div className="nav-user__info">
-                <span className="nav-user__name">Player 1</span>
-                <div className="nav-user__rank">
-                  <Trophy className="nav-user__rank-icon" />
-                  <span className="nav-user__rank-text">Level 5</span>
-                </div>
+                <span className="nav-user__name">{isAuthenticated ? (user?.displayName || 'Player') : 'Guest'}</span>
+                {isAuthenticated ? (
+                  <button className="nav-user__signout" onClick={() => { signOut(); setIsOpen(false) }}>
+                    <LogOut size={12} />
+                    <span>Sign Out</span>
+                  </button>
+                ) : (
+                  <button className="nav-user__signin" onClick={() => { setIsOpen(false); navigate('login') }}>
+                    <LogIn size={12} />
+                    <span>Sign In</span>
+                  </button>
+                )}
               </div>
             </div>
 

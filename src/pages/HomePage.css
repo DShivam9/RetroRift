@@ -71,6 +71,21 @@
     border: 1px solid rgba(139, 92, 246, 0.2);
     border-radius: 100px;
     margin-bottom: 24px;
+    animation: tagBorderPulse 3s ease-in-out infinite;
+}
+
+@keyframes tagBorderPulse {
+
+    0%,
+    100% {
+        border-color: rgba(139, 92, 246, 0.2);
+        box-shadow: none;
+    }
+
+    50% {
+        border-color: rgba(139, 92, 246, 0.5);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+    }
 }
 
 .hero__title {
@@ -114,9 +129,32 @@
     border-radius: 8px;
     /* Classic UI radius */
     cursor: pointer;
-    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     top: 0;
+    overflow: hidden;
+}
+
+/* Ripple on click */
+.hero__btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
+}
+
+.hero__btn:active::after {
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+    transition: 0s;
 }
 
 .hero__btn--primary {
@@ -220,6 +258,27 @@
     margin-bottom: 8px;
 }
 
+.section__tag::after {
+    content: '▮';
+    display: inline-block;
+    margin-left: 4px;
+    animation: cursorBlink 1s step-end infinite;
+    font-size: 0.6em;
+    color: rgba(139, 92, 246, 0.5);
+}
+
+@keyframes cursorBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
 .section__tag-icon {
     width: 12px;
     height: 12px;
@@ -298,7 +357,20 @@
     background: rgba(22, 22, 30, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    transition: all 0.2s ease;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: dashboardFloat 4s ease-in-out infinite;
+}
+
+@keyframes dashboardFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
 }
 
 .dashboard-card--highlight {
@@ -695,6 +767,21 @@
     border: 1px solid rgba(139, 92, 246, 0.15);
     border-radius: 20px;
     text-align: center;
+    animation: ctaNeonPulse 3s ease-in-out infinite;
+}
+
+@keyframes ctaNeonPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 transparent;
+        border-color: rgba(139, 92, 246, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(139, 92, 246, 0.08), inset 0 0 20px rgba(139, 92, 246, 0.03);
+        border-color: rgba(139, 92, 246, 0.35);
+    }
 }
 
 .cta__icon {
@@ -702,6 +789,20 @@
     height: 40px;
     color: #f59e0b;
     margin-bottom: 16px;
+    animation: ctaIconFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.3));
+}
+
+@keyframes ctaIconFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+    }
 }
 
 .cta__title {
@@ -725,17 +826,42 @@
     font-size: 0.85rem;
     font-weight: 600;
     color: #fff;
-    background: #8b5cf6;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background-size: 200% 100%;
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.cta__btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
+}
+
+.cta__btn:active::after {
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+    transition: 0s;
 }
 
 .cta__btn:hover {
-    background: #7c3aed;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+    background-position: 100% 50%;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.45),
+        0 0 15px rgba(139, 92, 246, 0.15);
 }
 
 /* ==========================================================================

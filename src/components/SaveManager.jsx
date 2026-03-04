@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import { Download, Upload, HardDrive, Trash2, CheckCircle, AlertCircle } from 'lucide-react'
+import { Download, Upload, HardDrive, Trash2, CheckCircle, AlertCircle, Cloud, CloudOff } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import { syncToCloud, loadFromCloud } from '../lib/cloudSaves'
 import './SaveManager.css'
 
 export default function SaveManager() {
-    const [status, setStatus] = useState(null) // 'success' | 'error' | null
+    const [status, setStatus] = useState(null)
     const [message, setMessage] = useState('')
+    const [syncing, setSyncing] = useState(false)
+    const { user, isAuthenticated } = useAuth()
 
     const showStatus = (type, msg) => {
         setStatus(type)
@@ -70,7 +74,39 @@ export default function SaveManager() {
             }
         }
         reader.readAsText(file)
-        e.target.value = '' // Reset input
+        e.target.value = ''
+    }
+
+    // Cloud sync — push local to cloud
+    const handleCloudSync = async () => {
+        if (!isAuthenticated || !user?.uid) return
+        setSyncing(true)
+        try {
+            await syncToCloud(user.uid)
+            showStatus('success', 'Data synced to cloud! ☁️')
+        } catch (err) {
+            showStatus('error', 'Cloud sync failed: ' + err.message)
+        } finally {
+            setSyncing(false)
+        }
+    }
+
+    // Cloud restore — pull cloud to local
+    const handleCloudRestore = async () => {
+        if (!isAuthenticated || !user?.uid) return
+        setSyncing(true)
+        try {
+            const data = await loadFromCloud(user.uid)
+            if (data) {
+                showStatus('success', 'Data restored from cloud! Refresh to apply.')
+            } else {
+                showStatus('info', 'No cloud data found. Your local data was uploaded instead.')
+            }
+        } catch (err) {
+            showStatus('error', 'Cloud restore failed: ' + err.message)
+        } finally {
+            setSyncing(false)
+        }
     }
 
     // Calculate storage usage
@@ -78,10 +114,10 @@ export default function SaveManager() {
         let total = 0
         for (let key in localStorage) {
             if (localStorage.hasOwnProperty(key)) {
-                total += localStorage[key].length * 2 // UTF-16 characters = 2 bytes each
+                total += localStorage[key].length * 2
             }
         }
-        return (total / 1024).toFixed(1) // KB
+        return (total / 1024).toFixed(1)
     }
 
     return (
@@ -98,6 +134,42 @@ export default function SaveManager() {
                 <div className={`save-manager__status save-manager__status--${status}`}>
                     {status === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
                     {message}
+                </div>
+            )}
+
+            {/* Cloud Sync Section */}
+            {isAuthenticated && (
+                <div className="save-manager__cloud">
+                    <div className="save-manager__cloud-header">
+                        <Cloud size={16} />
+                        <span>Cloud Sync</span>
+                        <span className="save-manager__cloud-badge">Connected</span>
+                    </div>
+                    <div className="save-manager__cloud-actions">
+                        <button
+                            className="save-manager__btn save-manager__btn--cloud"
+                            onClick={handleCloudSync}
+                            disabled={syncing}
+                        >
+                            <Upload size={16} />
+                            <span>{syncing ? 'Syncing...' : 'Push to Cloud'}</span>
+                        </button>
+                        <button
+                            className="save-manager__btn save-manager__btn--cloud"
+                            onClick={handleCloudRestore}
+                            disabled={syncing}
+                        >
+                            <Download size={16} />
+                            <span>{syncing ? 'Restoring...' : 'Pull from Cloud'}</span>
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {!isAuthenticated && (
+                <div className="save-manager__cloud save-manager__cloud--offline">
+                    <CloudOff size={16} />
+                    <span>Sign in to enable cloud saves</span>
                 </div>
             )}
 
@@ -120,7 +192,10 @@ export default function SaveManager() {
             </div>
 
             <p className="save-manager__hint">
-                Export your favorites, play history, and settings. Import on any device to continue where you left off.
+                {isAuthenticated
+                    ? 'Your saves sync to the cloud automatically. Use Push/Pull for manual control.'
+                    : 'Export your saves locally, or sign in for automatic cloud sync.'
+                }
             </p>
         </div>
     )

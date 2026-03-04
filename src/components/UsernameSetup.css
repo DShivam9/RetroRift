@@ -1,0 +1,163 @@
+/* ==========================================================================
+   UsernameSetup Modal
+   ========================================================================== */
+
+.username-setup {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.username-setup__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 10, 0.9);
+    backdrop-filter: blur(20px);
+}
+
+.username-setup__card {
+    position: relative;
+    z-index: 1;
+    background: rgba(20, 20, 32, 0.95);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 20px;
+    padding: 48px 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow:
+        0 0 60px rgba(139, 92, 246, 0.1),
+        0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: setup-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes setup-enter {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.username-setup__icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(217, 70, 239, 0.2));
+    border-radius: 16px;
+    color: #a78bfa;
+}
+
+.username-setup__title {
+    font-family: var(--font-display, 'Orbitron', sans-serif);
+    font-size: 1.5rem;
+    color: #fff;
+    margin: 0 0 8px;
+    letter-spacing: 0.03em;
+}
+
+.username-setup__desc {
+    color: #6b7280;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 28px;
+}
+
+.username-setup__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.username-setup__field {
+    position: relative;
+}
+
+.username-setup__input {
+    width: 100%;
+    padding: 14px 60px 14px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1.05rem;
+    font-family: var(--font-display, 'Orbitron', sans-serif);
+    text-align: center;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.username-setup__input:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+}
+
+.username-setup__input::placeholder {
+    color: #4a4a5a;
+    font-family: inherit;
+    font-size: 0.85rem;
+}
+
+.username-setup__count {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: #4a4a5a;
+}
+
+.username-setup__error {
+    padding: 10px 14px;
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    border-radius: 8px;
+    color: #f87171;
+    font-size: 0.85rem;
+}
+
+.username-setup__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #8b5cf6, #d946ef);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.username-setup__submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+.username-setup__submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 480px) {
+    .username-setup__card {
+        padding: 32px 20px;
+    }
+}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Github, Twitter, Disc, Globe } from 'lucide-react'
-import LaserFlow from './effects/LaserFlow'
+import FooterGrid from './effects/FooterGrid'
 import './Footer.css'
 
 export default function Footer() {
@@ -10,14 +10,7 @@ export default function Footer() {
     <footer className="footer">
       {/* Background Effect */}
       <div className="footer__bg">
-        <LaserFlow
-          color="#8b5cf6"
-          flowSpeed={0.05}
-          wispDensity={1.2}
-          fogIntensity={0.6}
-          horizontalBeamOffset={0.35}
-          verticalBeamOffset={-0.45}
-        />
+        <FooterGrid />
       </div>
 
       <div className="footer__container">

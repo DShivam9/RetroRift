@@ -4,6 +4,10 @@ import Footer from './components/Footer'
 import AnimatedBackground from './components/AnimatedBackground'
 import { Loader } from './components/Loader'
 import { useToast } from './components/Toast'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { syncToCloud, loadFromCloud } from './lib/cloudSaves'
+import { loadXPData, onGamePlayed, onFavoriteAdded } from './lib/xpEngine'
+import UsernameSetup from './components/UsernameSetup'
 import './App.css'
 
 // Lazy-loaded pages
@@ -11,6 +15,7 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 const LibraryPage = lazy(() => import('./pages/LibraryPage'))
 const PlayerPage = lazy(() => import('./pages/PlayerPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 /**
@@ -23,9 +28,11 @@ import { SettingsProvider } from './context/SettingsContext'
  */
 export default function App() {
   return (
-    <SettingsProvider>
-      <AppContent />
-    </SettingsProvider>
+    <AuthProvider>
+      <SettingsProvider>
+        <AppContent />
+      </SettingsProvider>
+    </AuthProvider>
   )
 }
 
@@ -38,6 +45,9 @@ function AppContent() {
 
   const [currentPage, setCurrentPage] = useState(getInitialPage)
   const [pageKey, setPageKey] = useState(0)
+
+  // XP Engine state
+  const [xpData, setXpData] = useState(() => loadXPData())
 
   // Favorites state (persisted)
   const [favorites, setFavorites] = useState(() => {
@@ -98,6 +108,31 @@ function AppContent() {
     }
   }, [currentGame])
 
+  // Cloud sync: auto-sync when user signs in
+  const { user, isAuthenticated, needsUsername, setUsername } = useAuth()
+  useEffect(() => {
+    if (isAuthenticated && user?.uid) {
+      // Load cloud data on sign-in
+      loadFromCloud(user.uid).then(data => {
+        if (data) {
+          // Refresh local state from cloud data
+          if (data.favorites) setFavorites(data.favorites)
+          if (data.lastPlayed) setLastPlayed(data.lastPlayed)
+        }
+      }).catch(err => console.error('Cloud sync failed:', err))
+    }
+  }, [isAuthenticated, user?.uid])
+
+  // Auto-sync to cloud when favorites change (if authenticated)
+  useEffect(() => {
+    if (isAuthenticated && user?.uid) {
+      const timer = setTimeout(() => {
+        syncToCloud(user.uid).catch(err => console.error('Cloud save failed:', err))
+      }, 2000) // Debounce 2s
+      return () => clearTimeout(timer)
+    }
+  }, [favorites, lastPlayed, isAuthenticated, user?.uid])
+
   // Navigation with clean transition
   const navigate = (page) => {
     if (page === currentPage) return
@@ -105,7 +140,7 @@ function AppContent() {
     window.history.pushState({ page }, '', `#${page}`)
     setCurrentPage(page)
     setPageKey(prev => prev + 1)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   // Play game handler
@@ -116,13 +151,15 @@ function AppContent() {
       console: game.console,
       year: game.year,
       thumbnail: game.thumbnail,
-      thumbnailImage: game.thumbnailImage,
       romPath: game.romPath,
       lastPlayedAt: Date.now()
     }
 
     setLastPlayed(payload)
     setCurrentGame(game)
+
+    // Award XP for playing
+    setXpData(prev => onGamePlayed(prev, game))
 
     // Update play history
     try {
@@ -153,6 +190,8 @@ function AppContent() {
     // Show toast notification
     if (isAdding) {
       toast.success('Added to favorites!')
+      // Award XP for favoriting
+      setXpData(prev => onFavoriteAdded(prev, favorites.length + 1))
     } else {
       toast.info('Removed from favorites')
     }
@@ -164,30 +203,42 @@ function AppContent() {
     favorites,
     toggleFavorite,
     onPlayGame,
-    lastPlayed
+    lastPlayed,
+    xpData,
+    setXpData,
   }
+
+  const isLoginPage = currentPage === 'login'
 
   return (
     <div className="app">
       {/* Animated Background */}
       <AnimatedBackground />
 
-      <Navbar currentPage={currentPage} navigate={navigate} onPlayGame={onPlayGame} />
+      {/* Hide navbar on login */}
+      {!isLoginPage && <Navbar currentPage={currentPage} navigate={navigate} onPlayGame={onPlayGame} />}
 
       <main className="app__main">
         <Suspense fallback={<Loader text="Loading..." />}>
-          <div key={pageKey} className="app__page">
+          <div key={pageKey} className={`app__page ${currentPage === 'profile' ? 'app__page--no-transform' : ''}`}>
             {currentPage === 'home' && <HomePage {...pageProps} />}
             {currentPage === 'library' && <LibraryPage {...pageProps} />}
             {currentPage === 'favorites' && <LibraryPage {...pageProps} defaultFilter="FAVORITES" />}
-            {currentPage === 'player' && <PlayerPage navigate={navigate} game={currentGame} favorites={favorites} toggleFavorite={toggleFavorite} onPlayGame={onPlayGame} />}
+            {currentPage === 'player' && <PlayerPage navigate={navigate} game={currentGame} favorites={favorites} toggleFavorite={toggleFavorite} onPlayGame={onPlayGame} xpData={xpData} setXpData={setXpData} />}
             {currentPage === 'profile' && <ProfilePage {...pageProps} />}
-            {!['home', 'library', 'favorites', 'player', 'profile'].includes(currentPage) && <NotFoundPage navigate={navigate} />}
+            {currentPage === 'login' && <LoginPage navigate={navigate} />}
+            {!['home', 'library', 'favorites', 'player', 'profile', 'login'].includes(currentPage) && <NotFoundPage navigate={navigate} />}
           </div>
         </Suspense>
       </main>
 
-      <Footer />
+      {/* Hide footer on login */}
+      {!isLoginPage && currentPage !== 'profile' && <Footer />}
+
+      {/* Username setup modal for new users */}
+      {isAuthenticated && needsUsername && (
+        <UsernameSetup uid={user.uid} onComplete={setUsername} />
+      )}
     </div>
   )
 }

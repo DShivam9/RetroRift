@@ -1,0 +1,114 @@
+/* ==========================================================================
+   Animated Icons & XP Bar Styles
+   ========================================================================== */
+
+.animated-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.3));
+}
+
+.animated-avatar__svg {
+    width: 100%;
+    height: 100%;
+}
+
+.pixel-heart--animated {
+    animation: heartPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.sparkle-effect {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* XP Bar */
+.xp-bar {
+    width: 100%;
+}
+
+.xp-bar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.xp-bar__level {
+    font-family: var(--font-display, 'Orbitron', sans-serif);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fbbf24;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+}
+
+.xp-bar__text {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+.xp-bar__track {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.xp-bar__fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.xp-bar__fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            transparent 100%);
+    animation: xpShine 2s ease-in-out infinite;
+}
+
+@keyframes xpShine {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(200%);
+    }
+}
+
+.xp-bar__glow {
+    position: absolute;
+    top: -2px;
+    width: 4px;
+    height: 12px;
+    border-radius: 2px;
+    filter: blur(4px);
+    opacity: 0.8;
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}

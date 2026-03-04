@@ -402,7 +402,7 @@
 }
 
 /* D-Pad style save button */
-.player-quick-save {
+.player-save-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -421,13 +421,34 @@
     transition: all 0.1s;
 }
 
-.player-quick-save:hover {
+.player-save-btn:hover {
     background: #4ade80;
 }
 
-.player-quick-save:active {
+.player-save-btn:active {
     border-bottom-width: 1px;
     transform: translateY(2px);
+}
+
+.player-save-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.player-save-btn--maxed {
+    background: #6b7280;
+    border-bottom-color: #4b5563;
+}
+
+.player-save-btn--maxed:hover {
+    background: #6b7280;
+}
+
+.player-save-counter {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 }
 
 .player-save-msg {
@@ -451,6 +472,133 @@
     background: #000;
     border: 2px solid #27272a;
     border-radius: 4px;
+}
+
+.player-cloud-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: #6b7280;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Save slots enhancements */
+.player-saves-count {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: #6b7280;
+    margin-left: auto;
+    letter-spacing: 0;
+}
+
+.player-saves-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #4b5563;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.player-saves-empty strong {
+    color: #22c55e;
+}
+
+.player-save-load {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 6px;
+    color: #a78bfa;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.player-save-load:hover {
+    background: rgba(139, 92, 246, 0.2);
+    color: #c4b5fd;
+}
+
+.player-save-delete {
+    padding: 6px 8px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.player-save-delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.player-saves-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #fbbf24;
+    font-family: var(--font-mono);
+}
+
+.player-save-name {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.player-save-rename {
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.player-save-rename:hover {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+.player-save-cloud-only {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    background: rgba(139, 92, 246, 0.1);
+    color: #a78bfa;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+}
+
+.player-save-load:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 /* --- Section Styling --- */
@@ -759,20 +907,13 @@
     justify-content: center;
     border-bottom: 2px solid #3f3f46;
     position: relative;
+    overflow: hidden;
 }
 
-/* Label sticker effect */
-.player-cover__image::before {
-    content: '';
-    position: absolute;
-    inset: 20px;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%);
-    border: 2px dashed #3f3f46;
-    border-radius: 8px;
-}
-
-.player-cover__emoji {
-    font-size: 5rem;
+.player-cover__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     position: relative;
     z-index: 1;
 }
@@ -846,15 +987,13 @@
     background: #1f1f23;
 }
 
-.player-similar__emoji {
-    font-size: 1.5rem;
+.player-similar__thumb {
     width: 36px;
     height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    object-fit: cover;
     background: #0a0a0c;
     border-radius: 6px;
+    flex-shrink: 0;
 }
 
 .player-similar__info {

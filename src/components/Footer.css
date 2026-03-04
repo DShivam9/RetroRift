@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Footer - Laser Flow Cyber Deck
+   Footer — Living Cyber Deck with Micro-Animations
    ========================================================================== */
 
 .footer {
@@ -9,10 +9,9 @@
     background: #050508;
     border-top: 1px solid rgba(139, 92, 246, 0.3);
     overflow: hidden;
-    /* Contain the LaserFlow */
 }
 
-/* Background Layer for LaserFlow */
+/* Background Layer */
 .footer__bg {
     position: absolute;
     top: 0;
@@ -20,29 +19,25 @@
     width: 100%;
     height: 100%;
     z-index: 0;
-    opacity: 0.8;
+    opacity: 1;
 }
 
 .footer__container {
     position: relative;
     z-index: 1;
-    /* Above the LaserFlow */
     max-width: 1200px;
     margin: 0 auto;
     padding: 25px 40px 20px;
 }
 
-/* Main Content: Brand + Links Grid */
+/* ─── Main Content ─── */
 .footer__main {
     display: flex;
     justify-content: center;
-    /* Center everything */
     align-items: flex-start;
     gap: 90px;
-    /* Controlled gap instead of space-between */
     margin-bottom: 40px;
     flex-wrap: wrap;
-    /* Allow wrapping on smaller screens */
 }
 
 /* Brand Column */
@@ -58,6 +53,19 @@
     text-transform: uppercase;
     text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
     margin-bottom: 16px;
+    animation: footerBrandGlow 4s ease-in-out infinite;
+}
+
+@keyframes footerBrandGlow {
+
+    0%,
+    100% {
+        text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+    }
+
+    50% {
+        text-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.2);
+    }
 }
 
 .footer__desc {
@@ -67,7 +75,7 @@
     margin-bottom: 24px;
 }
 
-/* System Status */
+/* ─── System Status — Pulsing ─── */
 .footer__status {
     display: inline-flex;
     align-items: center;
@@ -80,6 +88,12 @@
     font-size: 0.75rem;
     color: #a78bfa;
     letter-spacing: 0.05em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.footer__status:hover {
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
 }
 
 .footer__status-dot {
@@ -88,10 +102,26 @@
     background-color: #10b981;
     border-radius: 50%;
     box-shadow: 0 0 8px #10b981;
-    animation: blink 2s infinite;
+    animation: statusPulse 2s ease-in-out infinite;
 }
 
-/* Links Grid */
+@keyframes statusPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 4px #10b981;
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        box-shadow: 0 0 12px #10b981, 0 0 20px rgba(16, 185, 129, 0.3);
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+/* ─── Links Grid ─── */
 .footer__links-grid {
     display: flex;
     gap: 60px;
@@ -104,6 +134,20 @@
     margin-bottom: 20px;
     letter-spacing: 0.1em;
     opacity: 0.9;
+    position: relative;
+    display: inline-block;
+}
+
+/* Heading underline shimmer */
+.footer__heading::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, #8b5cf6, transparent);
+    opacity: 0.3;
 }
 
 .footer__list {
@@ -112,34 +156,72 @@
     gap: 12px;
 }
 
+/* ─── Links — Underline Slide ─── */
 .footer__link {
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.5);
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.footer__link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #8b5cf6;
+    transition: width 0.3s ease;
 }
 
 .footer__link:hover {
-    color: #8b5cf6;
-    padding-left: 4px;
-    /* Tiny slide effect */
+    color: #c4b5fd;
+    padding-left: 6px;
 }
 
-/* Divider */
+.footer__link:hover::after {
+    width: 100%;
+}
+
+/* ─── Divider — Shimmer Sweep ─── */
 .footer__div {
     width: 100%;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
     margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Bottom Bar */
+.footer__div::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
+    animation: dividerSweep 4s linear infinite;
+}
+
+@keyframes dividerSweep {
+    from {
+        left: -50%;
+    }
+
+    to {
+        left: 150%;
+    }
+}
+
+/* ─── Bottom Bar ─── */
 .footer__bottom {
     display: flex;
     justify-content: center;
-    /* Center the copyright */
     align-items: center;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-    /* Subtle separator */
     padding-top: 20px;
 }
 
@@ -149,52 +231,40 @@
     color: rgba(255, 255, 255, 0.3);
 }
 
+/* ─── Social Icons — Glow & Scale ─── */
 .footer__socials {
     display: flex;
-    gap: 20px;
+    gap: 12px;
 }
 
 .footer__icon-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: rgba(0, 0, 0, 0.6);
-    /* Dark background for contrast */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    /* Circular */
-    color: rgba(255, 255, 255, 0.8);
-    transition: all 0.2s ease;
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     backdrop-filter: blur(4px);
-    /* Blur behind */
 }
 
 .footer__icon-link:hover {
-    background: rgba(139, 92, 246, 0.2);
-    /* Purple tint on hover */
-    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
     color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
 }
 
-@keyframes blink {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.4;
-        transform: scale(0.8);
-    }
+.footer__icon-link:active {
+    transform: scale(0.9);
+    transition: transform 0.1s;
 }
 
-/* Responsive */
+/* ─── Responsive ─── */
 @media (max-width: 900px) {
     .footer__main {
         flex-direction: column;

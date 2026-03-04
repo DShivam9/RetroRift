@@ -1,0 +1,228 @@
+/* FooterGrid — Enhanced Laser Glow Effect
+   Brighter beams, animated orbs, sweeping streaks, fog layers */
+
+.footer-grid {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* ─── Central Beam — bright pulsing line ─── */
+.footer-grid__beam {
+    position: absolute;
+    bottom: 45%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(139, 92, 246, 0.25) 10%,
+            rgba(139, 92, 246, 0.65) 30%,
+            rgba(168, 85, 247, 1) 50%,
+            rgba(139, 92, 246, 0.65) 70%,
+            rgba(139, 92, 246, 0.25) 90%,
+            transparent 100%);
+    box-shadow:
+        0 0 6px rgba(139, 92, 246, 0.7),
+        0 0 16px rgba(139, 92, 246, 0.4),
+        0 0 40px rgba(139, 92, 246, 0.2),
+        0 0 80px rgba(139, 92, 246, 0.08);
+    animation: fgBeamPulse 3.5s ease-in-out infinite;
+}
+
+/* Secondary beam */
+.footer-grid__beam::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(34, 211, 238, 0.2) 30%,
+            rgba(34, 211, 238, 0.4) 50%,
+            rgba(34, 211, 238, 0.2) 70%,
+            transparent);
+    animation: fgBeamPulse 3.5s ease-in-out infinite 0.5s;
+}
+
+@keyframes fgBeamPulse {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        filter: brightness(0.7);
+    }
+
+    50% {
+        opacity: 1;
+        filter: brightness(1.4);
+    }
+}
+
+/* ─── Pulsing Glow Orbs ─── */
+.footer-grid__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(45px);
+    mix-blend-mode: screen;
+}
+
+.footer-grid__orb--1 {
+    width: 200px;
+    height: 200px;
+    bottom: 15%;
+    left: 30%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+    animation: fgOrbFloat 7s ease-in-out infinite;
+}
+
+.footer-grid__orb--2 {
+    width: 180px;
+    height: 180px;
+    bottom: 25%;
+    left: 55%;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
+    animation: fgOrbFloat 9s ease-in-out infinite -2.5s;
+}
+
+.footer-grid__orb--3 {
+    width: 160px;
+    height: 160px;
+    bottom: 10%;
+    left: 45%;
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, transparent 70%);
+    animation: fgOrbFloat 11s ease-in-out infinite -5s;
+}
+
+@keyframes fgOrbFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.5;
+    }
+
+    25% {
+        transform: translate(30px, -12px) scale(1.15);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-20px, 8px) scale(0.9);
+        opacity: 1;
+    }
+
+    75% {
+        transform: translate(15px, -6px) scale(1.08);
+        opacity: 0.6;
+    }
+}
+
+/* ─── Light Streaks — sweeping across ─── */
+.footer-grid__streak {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(139, 92, 246, 0.5),
+            rgba(192, 132, 252, 0.9),
+            rgba(139, 92, 246, 0.5),
+            transparent);
+    opacity: 0;
+}
+
+.footer-grid__streak--1 {
+    width: 45%;
+    bottom: 48%;
+    animation: fgStreakSweep 5s linear infinite;
+}
+
+.footer-grid__streak--2 {
+    width: 35%;
+    bottom: 42%;
+    animation: fgStreakSweep 7s linear infinite -2s;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(34, 211, 238, 0.3),
+            rgba(34, 211, 238, 0.7),
+            rgba(34, 211, 238, 0.3),
+            transparent);
+}
+
+.footer-grid__streak--3 {
+    width: 40%;
+    bottom: 52%;
+    animation: fgStreakSweep 6s linear infinite -4s;
+}
+
+@keyframes fgStreakSweep {
+    0% {
+        left: -45%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 0.6;
+    }
+
+    95% {
+        opacity: 0.6;
+    }
+
+    100% {
+        left: 105%;
+        opacity: 0;
+    }
+}
+
+/* ─── Fog Layers ─── */
+.footer-grid__fog {
+    position: absolute;
+    inset: 0;
+}
+
+.footer-grid__fog--1 {
+    background:
+        radial-gradient(ellipse at 35% 55%, rgba(139, 92, 246, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 40%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+    animation: fgFogDrift1 10s ease-in-out infinite;
+}
+
+.footer-grid__fog--2 {
+    background:
+        radial-gradient(ellipse at 50% 65%, rgba(34, 211, 238, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 25% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 55%);
+    animation: fgFogDrift2 14s ease-in-out infinite -5s;
+}
+
+@keyframes fgFogDrift1 {
+
+    0%,
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translateX(20px) scale(1.06);
+        opacity: 1;
+    }
+}
+
+@keyframes fgFogDrift2 {
+
+    0%,
+    100% {
+        transform: translateX(0) scale(1.04);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translateX(-15px) scale(1);
+        opacity: 1;
+    }
+}

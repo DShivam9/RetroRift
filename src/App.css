@@ -27,8 +27,14 @@
 
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
+}
+
+/* Kill animation on profile page — transform breaks position:fixed backgrounds */
+.app__page--no-transform {
+  animation: none !important;
+  transform: none !important;
 }
 
 /* Page Loader */

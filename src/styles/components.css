@@ -461,28 +461,45 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-lg);
-    min-height: 300px;
+    gap: 24px;
+    min-height: 70vh;
+    padding: 40px 20px;
 }
 
 .loader__spinner {
     width: 48px;
     height: 48px;
-    border: 3px solid var(--bg-elevated);
-    border-top-color: var(--accent-cyan);
+    border: 3px solid rgba(139, 92, 246, 0.15);
+    border-top-color: #8b5cf6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
 }
 
 .loader__text {
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    color: var(--text-muted);
+    font-size: 0.85rem;
+    color: #52525b;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: loaderPulse 1.5s ease-in-out infinite;
 }
 
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes loaderPulse {
+
+    0%,
+    100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
     }
 }
 
@@ -502,13 +519,13 @@
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
     .game-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
     .game-grid {
         grid-template-columns: repeat(4, 1fr);
     }
