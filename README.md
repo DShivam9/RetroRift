@@ -12,6 +12,8 @@ RetroPlay Hub is an elegant, responsive web application engineered to deliver se
 
 Every design decision—from the refined glassmorphism UI to the dynamic CRT backgrounds—has been meticulously crafted to provide a premium, immersive environment for unparalleled retro emulation.
 
+**🔗 [Access the Live Web Application](https://retroplayhub.netlify.app/)**
+
 ---
 
 ## ✦ Key Features
