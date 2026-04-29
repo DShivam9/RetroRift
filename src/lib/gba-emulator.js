@@ -141,6 +141,18 @@ class GBAEmulator {
     }
   }
 
+  // Convert ArrayBuffer to base64 safely (chunked to avoid stack overflow on large saves)
+  _arrayBufferToBase64(buffer) {
+    const bytes = new Uint8Array(buffer);
+    const chunkSize = 8192;
+    let binary = '';
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, i + chunkSize);
+      binary += String.fromCharCode.apply(null, chunk);
+    }
+    return btoa(binary);
+  }
+
   // Save state - returns base64 encoded state data
   async saveState() {
     if (!this.emulatorInstance) {
@@ -152,14 +164,13 @@ class GBAEmulator {
       // EmulatorJS uses EJS_emulator as the global reference
       const emu = window.EJS_emulator || this.emulatorInstance;
       console.log('[Emulator] Attempting save state...')
-      console.log('[Emulator] Available keys on emulator:', Object.keys(emu).filter(k => typeof emu[k] === 'function' || k.includes('game') || k.includes('state') || k.includes('save')).join(', '))
 
       // Method 1: gameManager.getState() — the documented EmulatorJS API
       if (emu.gameManager && typeof emu.gameManager.getState === 'function') {
         console.log('[Emulator] Using gameManager.getState()')
         const stateData = await emu.gameManager.getState();
         if (stateData && stateData.byteLength > 0) {
-          const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
+          const base64 = this._arrayBufferToBase64(stateData);
           console.log('[Emulator] ✅ State saved via getState(), size:', stateData.byteLength);
           return base64;
         }
@@ -170,7 +181,7 @@ class GBAEmulator {
         console.log('[Emulator] Using gameManager.saveState()')
         const stateData = await emu.gameManager.saveState();
         if (stateData && stateData.byteLength > 0) {
-          const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
+          const base64 = this._arrayBufferToBase64(stateData);
           console.log('[Emulator] ✅ State saved via saveState(), size:', stateData.byteLength);
           return base64;
         }
@@ -184,7 +195,7 @@ class GBAEmulator {
           const raw = stateData instanceof ArrayBuffer ? stateData : 
                       stateData.buffer ? stateData.buffer : stateData;
           if (raw.byteLength > 0) {
-            const base64 = btoa(String.fromCharCode(...new Uint8Array(raw)));
+            const base64 = this._arrayBufferToBase64(raw);
             console.log('[Emulator] ✅ State saved via direct saveState(), size:', raw.byteLength);
             return base64;
           }
@@ -198,17 +209,13 @@ class GBAEmulator {
           console.log('[Emulator] Using EJS_player.gameManager.getState()')
           const stateData = await gm.getState();
           if (stateData && stateData.byteLength > 0) {
-            const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
+            const base64 = this._arrayBufferToBase64(stateData);
             console.log('[Emulator] ✅ State saved via EJS_player, size:', stateData.byteLength);
             return base64;
           }
         }
       }
 
-      // Debug: list all available methods if nothing worked
-      if (emu.gameManager) {
-        console.warn('[Emulator] gameManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(emu.gameManager)).join(', '))
-      }
       console.warn('[Emulator] ❌ Save state API not available on this core yet');
       return null;
     } catch (error) {
