@@ -273,9 +273,19 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     if (saveModalMode === 'new') {
       try {
         setSavingToCloud(true)
+        setSaveMessage('Capturing game state...')
         console.log('[SaveFlow] Step 1: Capturing emulator state...')
         const stateData = await emulatorRef.current.saveState()
         console.log('[SaveFlow] Step 2: Got stateData, type:', typeof stateData, 'length:', stateData?.length || stateData?.byteLength || 'unknown')
+
+        // CRITICAL: If emulator returned null, don't create a broken save
+        if (!stateData) {
+          setSaveMessage('Could not capture game state — try playing for a few more seconds first')
+          setTimeout(() => setSaveMessage(''), 4000)
+          setSavingToCloud(false)
+          return
+        }
+
         const newSave = {
           id: Date.now(),
           name: saveName,
@@ -286,25 +296,40 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         }
         const updatedSlots = [...saveSlots, newSave]
         setSaveSlots(updatedSlots)
-        localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
-        console.log('[SaveFlow] Step 3: Saved locally. isAuthenticated:', isAuthenticated, 'uid:', user?.uid)
+
+        // Try localStorage, but don't fail if quota exceeded (base64 saves can be large)
+        try {
+          localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+          console.log('[SaveFlow] Step 3: Saved locally. isAuthenticated:', isAuthenticated, 'uid:', user?.uid)
+        } catch (storageErr) {
+          console.warn('[SaveFlow] localStorage full, saving metadata only:', storageErr.name)
+          // Save just metadata without binary data
+          const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
+          try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly)) } catch { /* ignore */ }
+        }
 
         // Sync metadata and binary to cloud
         if (isAuthenticated && user?.uid) {
           try {
+            setSaveMessage('Uploading to cloud...')
             console.log('[SaveFlow] Step 4: Calling saveGameState for cloud sync...')
             const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
             console.log('[SaveFlow] Step 5: Cloud response:', cloudSlots ? `${cloudSlots.length} slots` : 'null')
             if (cloudSlots) {
-              setSaveSlots(cloudSlots.map(cs => {
+              // After cloud upload, update local cache with cloudUrl and drop heavy binary
+              const mergedSlots = cloudSlots.map(cs => {
                 const local = updatedSlots.find(l => l.id === cs.id)
                 return { ...cs, stateData: local?.stateData || null }
-              }))
+              })
+              setSaveSlots(mergedSlots)
+              // Also update localStorage with cloudUrl metadata (without binary to save space)
+              const metaForStorage = mergedSlots.map(s => ({ ...s, stateData: null }))
+              try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaForStorage)) } catch { /* ignore */ }
             }
             setSaveMessage('Saved to cloud! ☁️')
           } catch (err) {
             console.error('[SaveFlow] ❌ Cloud save failed:', err.code, err.message, err)
-            setSaveMessage('Saved locally (cloud sync failed: ' + err.message + ')')
+            setSaveMessage('Saved locally (cloud sync failed: ' + (err.message || 'unknown error') + ')')
           }
         } else {
           setSaveMessage('Saved locally')
@@ -315,9 +340,9 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         if (error.code === 'resource-exhausted' || error.message?.includes('size')) {
            setSaveMessage('Saved locally (Save file too large for cloud sync)')
         } else {
-           setSaveMessage('Save failed — emulator may not support saves for this game')
+           setSaveMessage('Save failed — try again after the game loads fully')
         }
-        setTimeout(() => setSaveMessage(''), 3000)
+        setTimeout(() => setSaveMessage(''), 4000)
       } finally {
         setSavingToCloud(false)
       }

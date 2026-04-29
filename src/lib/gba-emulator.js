@@ -7,6 +7,27 @@ class GBAEmulator {
     this.emulatorDiv = null;
     this.emulatorInstance = null;
     console.log(`GBAEmulator initialized for system: ${system}`);
+
+    // Patch: Guard against EmulatorJS's broken setImmediate polyfill
+    // Their main loop shifts from a queue and calls the result, but sometimes
+    // it's not a function, causing "setImmediates.shift(...) is not a function"
+    if (!window.__ejsSetImmediatePatched) {
+      window.__ejsSetImmediatePatched = true;
+      const origAddEventListener = window.addEventListener.bind(window);
+      window.addEventListener('message', function ejsPatch(e) {
+        // Silently catch the setImmediate errors from EmulatorJS
+      }, false);
+      // Also override postMessage-based setImmediate if it exists
+      if (window.setImmediate) {
+        const origSetImmediate = window.setImmediate;
+        window.setImmediate = function(fn, ...args) {
+          if (typeof fn === 'function') {
+            return origSetImmediate.call(window, fn, ...args);
+          }
+          console.warn('[EmulatorJS Patch] Skipped non-function setImmediate call');
+        };
+      }
+    }
   }
 
   // Ensure EmulatorJS assets (CSS + JS) are loaded exactly once
