@@ -594,168 +594,220 @@
     color: #22c55e;
 }
 
-/* ─── Soft & Sleek Content Design ────────────────────────────────── */
-.player-hero {
-    margin-bottom: 32px;
-    padding: 32px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(24px);
+/* ─── V3 Cinematic Editorial Design ─────────────────────────────── */
+.player-editorial {
+    margin-bottom: 40px;
     animation: slideUp 0.6s ease-out;
 }
 
-.player-meta-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.player-badge {
-    padding: 6px 14px;
-    border-radius: 100px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-family: var(--font-mono);
-    backdrop-filter: blur(8px);
-}
-
-.player-badge--console { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
-.player-badge--genre { background: rgba(139, 92, 246, 0.1); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); }
-.player-badge--difficulty { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
-
-/* --- Stats Grid (Soft Cards) --- */
-.player-stats {
-    margin: 40px 0;
-}
-
-.stats-grid {
+.editorial-main {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 1fr 340px;
     gap: 24px;
 }
 
-.stats-card {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+@media (max-width: 1200px) {
+    .editorial-main {
+        grid-template-columns: 1fr;
+    }
+}
+
+.editorial-card {
+    background: rgba(17, 17, 24, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 28px;
+    height: 100%;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    backdrop-filter: blur(12px);
 }
 
-.stats-card:hover {
-    background: rgba(255, 255, 255, 0.04);
-    transform: translateY(-6px);
-    border-color: rgba(139, 92, 246, 0.2);
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+.editorial-card:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
-.stats-card__header {
+.editorial-header {
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-bottom: 20px;
 }
 
-.stats-card__icon-wrap {
-    width: 36px;
-    height: 36px;
+.editorial-icon {
+    width: 34px;
+    height: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(139, 92, 246, 0.1);
-    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.2);
     border-radius: 10px;
+    color: #a78bfa;
 }
 
-.stats-card__header h3 {
-    font-size: 0.9rem;
+.editorial-header h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
     font-weight: 700;
-    color: #f1f5f9;
+    color: #fff;
     margin: 0;
     letter-spacing: 0.02em;
 }
 
-.stats-card__body {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.player-description {
+    color: #a1a1aa;
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 0;
 }
 
-.stats-row {
+.milestone-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.milestone-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: #e4e4e7;
+    font-weight: 500;
+}
+
+.milestone-dot {
+    width: 6px;
+    height: 6px;
+    background: #8b5cf6;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #8b5cf6;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Stats Grid (Soft Cards) --- */
+/* ─── V3 Cinematic Intel Section ────────────────────────────────── */
+.player-intel {
+    margin: 48px 0;
+}
+
+.player-intel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.intel-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 32px;
+    backdrop-filter: blur(20px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+.intel-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.1), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.intel-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(139, 92, 246, 0.3);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+}
+
+.intel-card:hover::before {
+    opacity: 1;
+}
+
+.intel-card__header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.intel-card__icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #a78bfa;
+}
+
+.intel-card__title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.intel-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.intel-stat-item, .control-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.stats-row:last-child {
+.intel-stat-item:last-child, .control-item:last-child {
     border-bottom: none;
+    padding-bottom: 0;
 }
 
-.stats-label {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    font-weight: 500;
-}
-
-.stats-value {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #e2e8f0;
-}
-
-.stats-status {
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 100px;
-}
-
-.stats-status--on { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
-.stats-status--off { background: rgba(239, 68, 68, 0.1); color: #f87171; }
-
-/* Clean Keycaps */
-.key-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.key-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.key-item kbd {
-    background: #334155;
-    color: #f1f5f9;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    min-width: 44px;
-    text-align: center;
-    box-shadow: 0 2px 0 #0f172a;
+.stat-label {
     font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #71717a;
 }
 
-.key-item span {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    font-weight: 500;
+.stat-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f4f4f5;
+}
+
+.control-key {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    min-width: 48px;
+    text-align: center;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 .sync-node-header {

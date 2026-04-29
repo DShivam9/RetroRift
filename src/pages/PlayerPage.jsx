@@ -7,11 +7,11 @@ import { useAuth } from '../context/AuthContext'
 import { saveGameState, loadGameState, downloadSaveState, deleteSaveState } from '../lib/cloudSaves'
 import { onPlayTimeRecorded } from '../lib/xpEngine'
 import { sanitizeSaveName } from '../lib/inputSanitizer'
-import {
   Save, FolderOpen, Trash2, ChevronRight, Star, Clock,
   Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn,
-  Cpu, ShieldCheck, Info, HardDrive
+  Cpu, ShieldCheck, Info, HardDrive, BookOpen, Trophy
 } from 'lucide-react'
+import ShinyText from '../components/ShinyText'
 import '../styles/components.css'
 import './PlayerPage.css'
 
@@ -416,7 +416,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           {/* Game Title & Actions */}
           <div className="player-header">
             <div className="player-header__left">
-              <h1 className="player-title">{currentGame.title}</h1>
+              <h1 className="player-title">
+                <ShinyText
+                  text={currentGame.title}
+                  speed={3}
+                  color="#ffffff"
+                  shineColor="#8b5cf6"
+                />
+              </h1>
               <div className="player-rating">
                 {renderStars(details.rating)}
                 <span className="player-rating__value">{details.rating}</span>
@@ -434,13 +441,33 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             </div>
           </div>
 
-          <div className="player-hero">
-            <div className="player-meta-badges">
-              <span className="player-badge player-badge--console">{currentGame.console}</span>
-              <span className="player-badge player-badge--genre">{details.genre}</span>
-              <span className="player-badge player-badge--difficulty">{details.difficulty}</span>
+          <div className="player-editorial">
+            <div className="editorial-main">
+              <div className="editorial-card editorial-card--overview">
+                <div className="editorial-header">
+                  <div className="editorial-icon"><BookOpen size={16} /></div>
+                  <h3>Game Chronicle</h3>
+                </div>
+                <p className="player-description">{details.description}</p>
+              </div>
+
+              {details.features && details.features.length > 0 && (
+                <div className="editorial-card editorial-card--milestones">
+                  <div className="editorial-header">
+                    <div className="editorial-icon"><Trophy size={16} /></div>
+                    <h3>Key Milestones</h3>
+                  </div>
+                  <div className="milestone-grid">
+                    {details.features.map((f, idx) => (
+                      <div key={idx} className="milestone-item">
+                        <span className="milestone-dot" />
+                        <span>{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <p className="player-description">{details.description}</p>
           </div>
 
           {/* Emulator Frame */}
