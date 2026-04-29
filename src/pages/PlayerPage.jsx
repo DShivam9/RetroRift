@@ -8,7 +8,7 @@ import { saveGameState, getGameSaveMetadata, downloadSaveState, deleteSaveState 
 import { onPlayTimeRecorded } from '../lib/xpEngine'
 import { sanitizeSaveName } from '../lib/inputSanitizer'
 import {
-  Save, FolderOpen, Trash2, ChevronRight, Star, Clock,
+  Save, FolderOpen, Trash2, ChevronRight, Star, Clock, RefreshCw,
   Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn,
   Cpu, ShieldCheck, Info, HardDrive, BookOpen, Trophy
 } from 'lucide-react'
@@ -419,6 +419,70 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
   }
 
+  const handleOverwriteSave = async (saveId) => {
+    if (!emulatorRef.current) {
+      setSaveMessage('Start the game first before overwriting')
+      setTimeout(() => setSaveMessage(''), 3000)
+      return
+    }
+
+    try {
+      setSavingToCloud(true)
+      setSaveMessage('Overwriting save...')
+      const stateData = await emulatorRef.current.saveState()
+
+      if (!stateData) {
+        setSaveMessage('Could not capture game state — try again')
+        setTimeout(() => setSaveMessage(''), 3000)
+        setSavingToCloud(false)
+        return
+      }
+
+      const updatedSlots = saveSlots.map(s =>
+        s.id === saveId
+          ? { ...s, stateData, date: new Date().toLocaleString(), playtime: formatTime(playtime), cloudUrl: null }
+          : s
+      )
+      setSaveSlots(updatedSlots)
+
+      try {
+        localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+      } catch {
+        const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
+        try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly)) } catch { /* ignore */ }
+      }
+
+      // Re-upload to cloud
+      if (isAuthenticated && user?.uid) {
+        try {
+          const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
+          if (cloudSlots) {
+            const mergedSlots = cloudSlots.map(cs => {
+              const local = updatedSlots.find(l => l.id === cs.id)
+              return { ...cs, stateData: local?.stateData || null }
+            })
+            setSaveSlots(mergedSlots)
+            const metaForStorage = mergedSlots.map(s => ({ ...s, stateData: null }))
+            try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaForStorage)) } catch { /* ignore */ }
+          }
+          setSaveMessage('Save overwritten! ☁️')
+        } catch (err) {
+          console.error('Cloud overwrite failed:', err)
+          setSaveMessage('Overwritten locally (cloud sync failed)')
+        }
+      } else {
+        setSaveMessage('Save overwritten locally')
+      }
+      setTimeout(() => setSaveMessage(''), 3000)
+    } catch (error) {
+      console.error('Overwrite error:', error)
+      setSaveMessage('Overwrite failed')
+      setTimeout(() => setSaveMessage(''), 3000)
+    } finally {
+      setSavingToCloud(false)
+    }
+  }
+
   const handleDeleteSave = async (saveId) => {
     const updatedSlots = saveSlots.filter(s => s.id !== saveId)
     setSaveSlots(updatedSlots)
@@ -674,6 +738,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                           title="Rename"
                         >
                           <Edit3 size={14} />
+                        </button>
+                        <button
+                          className="save-action-icon save-action-overwrite"
+                          onClick={() => handleOverwriteSave(save.id)}
+                          title="Overwrite with current progress"
+                          disabled={savingToCloud}
+                        >
+                          <RefreshCw size={14} />
                         </button>
                         <button
                           className="save-action-primary"

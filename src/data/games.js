@@ -12,46 +12,61 @@ export const games = [
     "id": 1,
     "title": "Pokémon Blue",
     "console": "GB",
-    "year": null,
+    "year": 1996,
     "thumbnail": "/thumbnails/pokemon blue.jpg",
     "romPath": "/roms/gb/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).zip",
-    "genre": "Game",
-    "developer": "Unknown",
-    "description": "Play Pokémon Blue on the Game Boy. Experience this classic retro game right in your browser.",
-    "difficulty": "Unknown",
-    "playtime": "Varies",
-    "rating": 3.5,
-    "features": []
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "description": "Choose Squirtle, Charmander, or Bulbasaur and journey across Kanto to catch all 151 Pokémon. Battle eight Gym Leaders, topple Team Rocket, and prove you're the ultimate Pokémon Champion.",
+    "difficulty": "Medium",
+    "playtime": "25-35 hours",
+    "rating": 4.7,
+    "features": [
+      "151 Pokémon",
+      "8 Gym Leaders",
+      "Link Trading",
+      "Legendary Birds"
+    ]
   },
   {
     "id": 2,
     "title": "Pokémon Yellow",
     "console": "GB",
-    "year": null,
+    "year": 1998,
     "thumbnail": "/thumbnails/Pokemon Yellow.jpg",
     "romPath": "/roms/gb/Pokemon - Yellow Version - Special Pikachu Edition (USA, Europe) (GBC,SGB Enhanced).zip",
-    "genre": "Game",
-    "developer": "Unknown",
-    "description": "Play Pokémon Yellow on the Game Boy. Experience this classic retro game right in your browser.",
-    "difficulty": "Unknown",
-    "playtime": "Varies",
-    "rating": 3.5,
-    "features": []
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "description": "The anime comes to life — start with Pikachu by your side and relive Ash's journey through Kanto. Your starter follows you, refuses the Poké Ball, and reacts to every decision you make.",
+    "difficulty": "Medium",
+    "playtime": "25-35 hours",
+    "rating": 4.8,
+    "features": [
+      "Pikachu Follows You",
+      "Anime Story",
+      "All 3 Starters",
+      "Surfing Pikachu"
+    ]
   },
   {
     "id": 3,
     "title": "Crash Bandicoot: Purple",
     "console": "GBA",
-    "year": null,
+    "year": 2004,
     "thumbnail": "/thumbnails/Crash Bandicoot Purple.jpg",
     "romPath": "/roms/gba/Crash Bandicoot - Purple Riptos Rampage # GBA.zip",
-    "genre": "Game",
-    "developer": "Unknown",
-    "description": "Play Crash Bandicoot: Purple on the Game Boy Advance. Experience this classic retro game right in your browser.",
-    "difficulty": "Unknown",
-    "playtime": "Varies",
-    "rating": 3.5,
-    "features": []
+    "genre": "Platformer",
+    "developer": "Vicarious Visions",
+    "description": "Crash and Spyro collide in this crossover adventure. Spin through platforming stages, collect trading cards, and take down Ripto's evil army across worlds inspired by both iconic franchises.",
+    "difficulty": "Easy-Medium",
+    "playtime": "6-10 hours",
+    "rating": 4.2,
+    "features": [
+      "Crash × Spyro Crossover",
+      "Trading Card System",
+      "Boss Battles",
+      "Mini-Games"
+    ]
   },
   {
     "id": 4,
@@ -62,7 +77,7 @@ export const games = [
     "romPath": "/roms/gba/Mario Kart - Super Circuit.zip",
     "genre": "Racing",
     "developer": "Intelligent Systems",
-    "description": "Race as Mario and friends across 40 tracks in this portable racing classic.",
+    "description": "Drift through 40 tracks as Mario, Luigi, Peach, or Bowser in the only Mario Kart built for GBA. Master the Super Circuit, unlock retro SNES tracks, and dominate every Grand Prix cup.",
     "difficulty": "Easy-Medium",
     "playtime": "10-20 hours",
     "rating": 4.5,
@@ -70,7 +85,7 @@ export const games = [
       "40 Tracks",
       "8 Characters",
       "Grand Prix Mode",
-      "Link Cable Multiplayer"
+      "SNES Retro Tracks"
     ],
     "badge": "popular"
   },
@@ -83,14 +98,14 @@ export const games = [
     "romPath": "/roms/gba/Pokemon Emerald.zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "The definitive Hoenn experience with both Team Magma and Aqua, plus the legendary Battle Frontier.",
+    "description": "The definitive Hoenn experience — face both Team Magma and Aqua, tame Rayquaza atop Sky Pillar, and conquer the legendary Battle Frontier. Widely considered the greatest GBA Pokémon game ever made.",
     "difficulty": "Medium-Hard",
     "playtime": "40-60 hours",
     "rating": 4.9,
     "features": [
       "Battle Frontier",
-      "Both Teams",
-      "Rayquaza Story",
+      "Both Evil Teams",
+      "Rayquaza Storyline",
       "Animated Sprites"
     ],
     "badge": "featured"
@@ -104,15 +119,15 @@ export const games = [
     "romPath": "/roms/gba/Pokemon FireRed.zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "Return to the Kanto region! Choose your starter and embark on an epic journey to become the Pokemon Champion.",
+    "description": "Kanto reborn in full color. Pick your Gen I starter, dismantle Team Rocket, challenge the Elite Four, then unlock the Sevii Islands for an entirely new post-game chapter. The nostalgia hits different.",
     "difficulty": "Medium",
     "playtime": "25-40 hours",
     "rating": 4.8,
     "features": [
       "151 Original Pokémon",
-      "Wireless Trading",
-      "Post-game Content",
-      "New Islands"
+      "Sevii Islands",
+      "Post-Game Content",
+      "Wireless Trading"
     ],
     "badge": "popular"
   },
@@ -125,7 +140,7 @@ export const games = [
     "romPath": "/roms/gba/Pokemon - Leaf Green Version.zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "The companion to FireRed, re-experience Kanto with updated graphics, new Sevii Islands, and wireless trading.",
+    "description": "FireRed's twin takes you back to Kanto with a fresh palette and the same legendary adventure. Explore Sevii Islands, trade wirelessly, and complete the National Dex across two regions.",
     "difficulty": "Medium",
     "playtime": "25-40 hours",
     "rating": 4.7,
@@ -133,7 +148,7 @@ export const games = [
       "Sevii Islands",
       "Wireless Adapter",
       "151+ Pokémon",
-      "Kanto Nostalgia"
+      "National Dex"
     ]
   },
   {
@@ -145,7 +160,7 @@ export const games = [
     "romPath": "/roms/gba/Pokemon Ruby.zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "Explore the tropical Hoenn region and stop Team Magma from awakening the legendary Groudon.",
+    "description": "Explore the tropical Hoenn region, build secret bases, enter Pokémon Contests, and stop Team Magma from awakening the land titan Groudon. The generation that introduced abilities and natures.",
     "difficulty": "Medium",
     "playtime": "30-45 hours",
     "rating": 4.7,
@@ -165,7 +180,7 @@ export const games = [
     "romPath": "/roms/gba/Pokemon Sapphire.zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "Dive into Hoenn and counter Team Aqua as they try to awaken Kyogre and flood the world.",
+    "description": "Dive beneath the ocean, counter Team Aqua's plan to flood the world, and face the sea god Kyogre. Features the unique Diving mechanic and some of the most atmospheric routes in Pokémon history.",
     "difficulty": "Medium",
     "playtime": "30-45 hours",
     "rating": 4.7,
@@ -173,7 +188,7 @@ export const games = [
       "135 New Pokémon",
       "Diving Mechanic",
       "Contests",
-      "Team Aqua Story"
+      "Team Aqua Storyline"
     ]
   },
   {
@@ -184,15 +199,15 @@ export const games = [
     "thumbnail": "/thumbnails/Pokemon Ultra Violet.webp",
     "romPath": "/roms/gba/Pokemon Ultra Violet.zip",
     "genre": "RPG",
-    "developer": "Hack (Lockstin)",
-    "description": "A comprehensive FireRed hack that allows you to catch every single Pokemon from the first three generations.",
+    "developer": "Hack (LocksmithArmy)",
+    "description": "The ultimate FireRed romhack — catch all 386 Pokémon from Gens I–III without trading. New areas, updated movesets, and quality-of-life improvements make this the definitive way to 'catch 'em all'.",
     "difficulty": "Medium",
     "playtime": "40-60 hours",
     "rating": 4.9,
     "features": [
       "All 386 Pokémon",
       "New Areas",
-      "Shiny Hunting",
+      "No Trade Evolutions",
       "National Dex"
     ],
     "badge": "new"
@@ -206,13 +221,13 @@ export const games = [
     "romPath": "/roms/gba/Sonic Advance 3.zip",
     "genre": "Platformer",
     "developer": "Dimps",
-    "description": "The fastest Sonic yet! Team up two characters to combine their unique abilities and zip through nine zones.",
+    "description": "Pick any two-character team from Sonic, Tails, Knuckles, Amy, and Cream — each combo unlocks unique abilities. Blast through nine vibrant zones at blistering speed with the best tag-team system in 2D Sonic.",
     "difficulty": "Medium",
     "playtime": "5-8 hours",
     "rating": 4.4,
     "features": [
       "Tag System",
-      "Zone Hubs",
+      "Zone Hub Worlds",
       "Chao Mini-games",
       "Special Stages"
     ]
@@ -226,7 +241,7 @@ export const games = [
     "romPath": "/roms/gba/Classic NES Series - Super Mario Bros.zip",
     "genre": "Platformer",
     "developer": "Nintendo",
-    "description": "The game that saved the video game industry. Run, jump, and stomp your way through the Mushroom Kingdom to save Princess Peach.",
+    "description": "The game that single-handedly saved the video game industry. Run, jump, and stomp through 32 levels across 8 worlds of the Mushroom Kingdom. Simple to learn, nearly impossible to master. Still perfect after 40 years.",
     "difficulty": "Medium",
     "playtime": "2-5 hours",
     "rating": 4.9,
@@ -247,14 +262,14 @@ export const games = [
     "romPath": "/roms/gba/1190 - Super Mario Advance 4 - Super Mario Bros 3.zip",
     "genre": "Platformer",
     "developer": "Nintendo",
-    "description": "The greatest NES game ever made. Fly with the Raccoon Suit, swim as Frog Mario, and conquer 8 themed worlds.",
+    "description": "Frequently called the greatest NES game ever made — and it holds up. Fly with the Tanooki Suit, swim as Frog Mario, become a Hammer Bro, and conquer 8 wildly creative themed worlds. A masterclass in game design.",
     "difficulty": "Medium-Hard",
     "playtime": "5-10 hours",
     "rating": 4.9,
     "features": [
-      "8 Worlds",
+      "8 Themed Worlds",
       "World Map",
-      "Power Suits",
+      "7 Power Suits",
       "Mini-games"
     ],
     "badge": "featured"
@@ -263,31 +278,43 @@ export const games = [
     "id": 14,
     "title": "Pokémon Crystal",
     "console": "GBC",
-    "year": null,
+    "year": 2000,
     "thumbnail": "/thumbnails/Pokemon Crystal.png",
     "romPath": "/roms/gbc/Pokemon - Crystal Version (USA, Europe) (Rev 1).zip",
-    "genre": "Game",
-    "developer": "Unknown",
-    "description": "Play Pokémon Crystal on the Game Boy Color. Experience this classic retro game right in your browser.",
-    "difficulty": "Unknown",
-    "playtime": "Varies",
-    "rating": 3.5,
-    "features": []
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "description": "The first Pokémon game with animated sprites, a real-time clock, and the option to play as a girl. Journey through Johto and Kanto — that's 16 Gyms, two Elite Four runs, and a legendary showdown atop Mt. Silver.",
+    "difficulty": "Medium",
+    "playtime": "35-50 hours",
+    "rating": 4.8,
+    "features": [
+      "Animated Sprites",
+      "Day/Night Cycle",
+      "16 Gyms (Two Regions)",
+      "Suicune Storyline"
+    ],
+    "badge": "popular"
   },
   {
     "id": 15,
     "title": "GTA: Chinatown Wars",
     "console": "NDS",
-    "year": null,
+    "year": 2009,
     "thumbnail": "/thumbnails/GTA Chinatown Wars.jpg",
     "romPath": "/roms/nds/3538 - Grand Theft Auto - Chinatown Wars (EU)(M5)(XenoPhobia).zip",
-    "genre": "Game",
-    "developer": "Unknown",
-    "description": "Play GTA: Chinatown Wars on the Nintendo DS. Experience this classic retro game right in your browser.",
-    "difficulty": "Unknown",
-    "playtime": "Varies",
-    "rating": 3.5,
-    "features": []
+    "genre": "Action-Adventure",
+    "developer": "Rockstar Leeds",
+    "description": "Liberty City goes portable with a top-down twist. Run a drug trade empire, hijack cars with the touchscreen, and unravel a Triad power struggle in the grittiest, most mature DS game ever released. Rated M for a reason.",
+    "difficulty": "Medium-Hard",
+    "playtime": "12-20 hours",
+    "rating": 4.6,
+    "features": [
+      "Open World",
+      "Drug Trade System",
+      "Touch Minigames",
+      "Triad Storyline"
+    ],
+    "badge": "popular"
   },
   {
     "id": 16,
@@ -298,7 +325,7 @@ export const games = [
     "romPath": "/roms/nds/Pokemon - Diamond Version (USA) (Rev 5).zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "Begin your Sinnoh adventure, face Team Galactic, and encounter the legendary Dialga — master of time.",
+    "description": "Enter Sinnoh, thwart Team Galactic's cosmic ambitions, and stand face-to-face with Dialga — the Pokémon that controls time itself. Features the Underground, GTS online trading, and 107 brand-new species.",
     "difficulty": "Medium",
     "playtime": "30-45 hours",
     "rating": 4.5,
@@ -318,14 +345,14 @@ export const games = [
     "romPath": "/roms/nds/Pokemon - HeartGold Version (USA).zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "The beloved Johto journey reborn with the Pokéwalker, following Pokémon, and two full regions to explore.",
+    "description": "The crown jewel of Pokémon remakes. Your lead Pokémon walks behind you, two full regions await, and the final boss battle atop Mt. Silver remains the most iconic moment in the entire franchise. A near-perfect RPG.",
     "difficulty": "Medium",
     "playtime": "40-60 hours",
     "rating": 4.9,
     "features": [
-      "Pokéwalker",
       "Following Pokémon",
-      "Two Regions",
+      "Two Full Regions",
+      "16 Gym Leaders",
       "Battle Frontier"
     ],
     "badge": "featured"
@@ -339,7 +366,7 @@ export const games = [
     "romPath": "/roms/nds/Pokemon - Pearl Version (USA) (Rev 5).zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "Explore Sinnoh, battle Team Galactic, and capture the spatial Pokémon Palkia in this DS classic.",
+    "description": "Diamond's counterpart puts Palkia — the ruler of space — at the center of Team Galactic's sinister plan. Explore Sinnoh's snowy routes, volcanic peaks, and hidden lakes in this dual-screen DS adventure.",
     "difficulty": "Medium",
     "playtime": "30-45 hours",
     "rating": 4.5,
@@ -347,7 +374,7 @@ export const games = [
       "Palkia",
       "Wi-Fi Battles",
       "Pokétch",
-      "Contests"
+      "Super Contests"
     ]
   },
   {
@@ -359,15 +386,15 @@ export const games = [
     "romPath": "/roms/nds/Pokemon Platinum.zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "Explore Sinnoh and enter the mysterious Distortion World in this enhanced Pokemon adventure.",
-    "difficulty": "Medium",
+    "description": "The definitive Sinnoh experience. Enter the mind-bending Distortion World, confront Giratina in its Origin Forme, challenge the Battle Frontier, and experience a completely reworked story that puts Diamond and Pearl to shame.",
+    "difficulty": "Medium-Hard",
     "playtime": "35-50 hours",
     "rating": 4.8,
     "features": [
       "Distortion World",
       "Battle Frontier",
       "Wi-Fi Plaza",
-      "Giratina Origin"
+      "Giratina Origin Forme"
     ],
     "badge": "new"
   },
@@ -380,12 +407,12 @@ export const games = [
     "romPath": "/roms/nds/Pokemon - SoulSilver Version (USA).zip",
     "genre": "RPG",
     "developer": "Game Freak",
-    "description": "Relive the Johto saga with Lugia and Ho-Oh, featuring the Pokéwalker and the complete Kanto region.",
+    "description": "HeartGold's twin and equally legendary. Summon Lugia from the depths of the Whirl Islands, traverse Johto and Kanto's 16 Gyms, and experience the most content-rich Pokémon game ever released.",
     "difficulty": "Medium",
     "playtime": "40-60 hours",
     "rating": 4.9,
     "features": [
-      "Pokéwalker",
+      "Following Pokémon",
       "Lugia & Ho-Oh",
       "16 Gyms",
       "Safari Zone"
@@ -395,16 +422,21 @@ export const games = [
     "id": 21,
     "title": "The Legend of Zelda: Phantom Hourglass",
     "console": "NDS",
-    "year": null,
+    "year": 2007,
     "thumbnail": "/thumbnails/The Legend of Zelda Phantom Hourglass.jpg",
     "romPath": "/roms/nds/Legend of Zelda, The - Phantom Hourglass (USA) (En,Fr,Es).zip",
-    "genre": "Game",
-    "developer": "Unknown",
-    "description": "Play The Legend of Zelda: Phantom Hourglass on the Nintendo DS. Experience this classic retro game right in your browser.",
-    "difficulty": "Unknown",
-    "playtime": "Varies",
-    "rating": 3.5,
-    "features": []
+    "genre": "Action-Adventure",
+    "developer": "Nintendo EAD",
+    "description": "Set sail across the Great Sea in the direct sequel to Wind Waker. Draw your path on the touchscreen, solve puzzles by closing your DS, and explore dungeons filled with clever touch-based combat. A hidden gem on the DS.",
+    "difficulty": "Medium",
+    "playtime": "15-20 hours",
+    "rating": 4.5,
+    "features": [
+      "Touch Controls",
+      "Cel-Shaded Art",
+      "Ocean Exploration",
+      "Multiplayer Mode"
+    ]
   },
   {
     "id": 22,
@@ -415,14 +447,14 @@ export const games = [
     "romPath": "/roms/nes/Pac-Man.nes",
     "genre": "Arcade",
     "developer": "Namco",
-    "description": "Navigate the maze, eat pellets, and avoid ghosts in this timeless arcade legend that started it all.",
-    "difficulty": "Easy",
+    "description": "The most iconic arcade game ever created. Navigate the maze, devour pellets, dodge Blinky, Pinky, Inky, and Clyde — then grab a Power Pellet and eat them all. Pure, distilled gaming perfection since 1980.",
+    "difficulty": "Easy-Hard",
     "playtime": "Endless",
     "rating": 4.6,
     "features": [
       "Classic Gameplay",
       "Power Pellets",
-      "4 Ghost Types",
+      "4 Ghost AIs",
       "High Score Chase"
     ]
   }
