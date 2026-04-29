@@ -63,6 +63,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
   // Load existing save slots (local + cloud, only for games that support saves)
   useEffect(() => {
+    window.scrollTo(0, 0) // Ensure page loads at the top
     if (!supportsSaves) return
     const loadSaves = async () => {
       // Always load from localStorage first (has actual stateData)
@@ -177,9 +178,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     if (romData && canvasRef.current && !emulatorRef.current) {
       try {
         let system = 'gba'
-        if (currentGame.console === 'NES') system = 'nes'
-        if (currentGame.console === 'SegaCD') system = 'segaCD'
-        if (currentGame.console === 'NDS') system = 'nds'
+        const rawConsole = currentGame.console ? currentGame.console.toUpperCase() : ''
+        
+        if (rawConsole === 'NES') system = 'nes'
+        if (rawConsole === 'SNES') system = 'snes'
+        if (rawConsole === 'SEGACD') system = 'segaCD'
+        if (rawConsole === 'NDS') system = 'nds'
+        if (rawConsole === 'GB') system = 'gb'
+        if (rawConsole === 'GBC') system = 'gbc'
 
         emulatorRef.current = new GBAEmulator(canvasRef.current, system)
         emulatorRef.current.loadROM(romData)

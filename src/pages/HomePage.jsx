@@ -20,6 +20,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
 
   const [featuredVisible, setFeaturedVisible] = useState(false)
   const [continueVisible, setContinueVisible] = useState(false)
+  const [questAccepted, setQuestAccepted] = useState(false)
   const featuredGames = getFeaturedGames(8)
   const allGames = getAllGames()
   const toast = useToast()
@@ -48,7 +49,9 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
 
   // Handlers for Dashboard
   const handleDailyQuest = () => {
+    if (questAccepted) return
     toast.success('QUEST STARTED: Beat Green Hill Zone Act 1 < 45s')
+    setQuestAccepted(true)
   }
 
   const handleRandomGame = () => {
@@ -187,7 +190,14 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
                     <h3 className="dashboard-card__title">Speedrun Act 1</h3>
                     <p className="dashboard-card__text">Beat Green Hill Zone under 45s</p>
                   </div>
-                  <button className="dashboard-card__action" onClick={handleDailyQuest}>Accept</button>
+                  <button 
+                    className={`dashboard-card__action ${questAccepted ? 'dashboard-card__action--disabled' : ''}`} 
+                    onClick={handleDailyQuest}
+                    disabled={questAccepted}
+                    style={questAccepted ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                  >
+                    {questAccepted ? 'Accepted' : 'Accept'}
+                  </button>
                 </div>
 
                 {/* Quick Actions Grid */}
