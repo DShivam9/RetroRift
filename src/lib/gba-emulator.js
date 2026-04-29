@@ -144,27 +144,75 @@ class GBAEmulator {
   // Save state - returns base64 encoded state data
   async saveState() {
     if (!this.emulatorInstance) {
-      console.error('No emulator instance for save state')
+      console.error('[Emulator] No emulator instance for save state')
       return null
     }
 
     try {
-      // EmulatorJS exposes save state through the gameManager
-      // Priority 1: Check EJS_player (global) which is more reliable for direct core access
-      const player = window.EJS_player || this.emulatorInstance?.gameManager;
-      
-      if (player && player.saveState) {
-        const stateData = await player.saveState();
-        // Convert to base64 for storage
-        const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
-        console.log('State saved successfully, size:', stateData.byteLength);
-        return base64;
+      // EmulatorJS uses EJS_emulator as the global reference
+      const emu = window.EJS_emulator || this.emulatorInstance;
+      console.log('[Emulator] Attempting save state...')
+      console.log('[Emulator] Available keys on emulator:', Object.keys(emu).filter(k => typeof emu[k] === 'function' || k.includes('game') || k.includes('state') || k.includes('save')).join(', '))
+
+      // Method 1: gameManager.getState() — the documented EmulatorJS API
+      if (emu.gameManager && typeof emu.gameManager.getState === 'function') {
+        console.log('[Emulator] Using gameManager.getState()')
+        const stateData = await emu.gameManager.getState();
+        if (stateData && stateData.byteLength > 0) {
+          const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
+          console.log('[Emulator] ✅ State saved via getState(), size:', stateData.byteLength);
+          return base64;
+        }
       }
 
-      console.warn('Save state API not available on this core yet');
+      // Method 2: gameManager.saveState() — alternative API
+      if (emu.gameManager && typeof emu.gameManager.saveState === 'function') {
+        console.log('[Emulator] Using gameManager.saveState()')
+        const stateData = await emu.gameManager.saveState();
+        if (stateData && stateData.byteLength > 0) {
+          const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
+          console.log('[Emulator] ✅ State saved via saveState(), size:', stateData.byteLength);
+          return base64;
+        }
+      }
+
+      // Method 3: Direct save method on emulator instance
+      if (typeof emu.saveState === 'function') {
+        console.log('[Emulator] Using emu.saveState()')
+        const stateData = await emu.saveState();
+        if (stateData) {
+          const raw = stateData instanceof ArrayBuffer ? stateData : 
+                      stateData.buffer ? stateData.buffer : stateData;
+          if (raw.byteLength > 0) {
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(raw)));
+            console.log('[Emulator] ✅ State saved via direct saveState(), size:', raw.byteLength);
+            return base64;
+          }
+        }
+      }
+
+      // Method 4: Check EJS_player global
+      if (window.EJS_player && window.EJS_player.gameManager) {
+        const gm = window.EJS_player.gameManager;
+        if (typeof gm.getState === 'function') {
+          console.log('[Emulator] Using EJS_player.gameManager.getState()')
+          const stateData = await gm.getState();
+          if (stateData && stateData.byteLength > 0) {
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
+            console.log('[Emulator] ✅ State saved via EJS_player, size:', stateData.byteLength);
+            return base64;
+          }
+        }
+      }
+
+      // Debug: list all available methods if nothing worked
+      if (emu.gameManager) {
+        console.warn('[Emulator] gameManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(emu.gameManager)).join(', '))
+      }
+      console.warn('[Emulator] ❌ Save state API not available on this core yet');
       return null;
     } catch (error) {
-      console.error('Error saving state:', error);
+      console.error('[Emulator] Error saving state:', error);
       return null;
     }
   }
@@ -172,7 +220,7 @@ class GBAEmulator {
   // Load state from data (base64 string or ArrayBuffer)
   async loadState(inputData) {
     if (!this.emulatorInstance || !inputData) {
-      console.error('No emulator instance or state data')
+      console.error('[Emulator] No emulator instance or state data')
       return false
     }
 
@@ -191,23 +239,33 @@ class GBAEmulator {
         stateData = inputData.buffer
       }
 
-      // EmulatorJS load state
-      if (this.emulatorInstance.gameManager && this.emulatorInstance.gameManager.loadState) {
-        await this.emulatorInstance.gameManager.loadState(stateData)
-        console.log('State loaded')
+      const emu = window.EJS_emulator || this.emulatorInstance;
+
+      // Method 1: gameManager.loadState() — the standard API
+      if (emu.gameManager && typeof emu.gameManager.loadState === 'function') {
+        await emu.gameManager.loadState(stateData)
+        console.log('[Emulator] ✅ State loaded via gameManager.loadState()')
         return true
       }
 
-      // Alternative
+      // Method 2: Direct loadState on emulator
+      if (typeof emu.loadState === 'function') {
+        await emu.loadState(stateData)
+        console.log('[Emulator] ✅ State loaded via emu.loadState()')
+        return true
+      }
+
+      // Method 3: EJS_player fallback
       if (window.EJS_player && window.EJS_player.gameManager) {
         await window.EJS_player.gameManager.loadState(stateData)
+        console.log('[Emulator] ✅ State loaded via EJS_player')
         return true
       }
 
-      console.warn('Load state API not available')
+      console.warn('[Emulator] Load state API not available')
       return false
     } catch (error) {
-      console.error('Error loading state:', error)
+      console.error('[Emulator] Error loading state:', error)
       return false
     }
   }
