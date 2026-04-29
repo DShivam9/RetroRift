@@ -35,8 +35,9 @@ function containsDangerousContent(str) {
  * @returns {string} — sanitized string
  */
 export function sanitizeString(input, maxLen = 200) {
-    if (typeof input !== 'string') return ''
-    let clean = stripTags(input).trim()
+    if (input === null || input === undefined) return ''
+    const str = input.toString()
+    let clean = stripTags(str).trim()
     if (containsDangerousContent(clean)) {
         // Remove all dangerous content instead of rejecting entirely
         clean = clean

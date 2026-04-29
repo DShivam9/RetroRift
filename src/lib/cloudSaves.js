@@ -99,7 +99,8 @@ export async function saveGameState(uid, gameId, saveData) {
     // Removing the strict size limit check for game states. 
     // GBA save states can approach 1MB. We'll let Firestore's built-in 1MB limit handle rejection if it's too large.
 
-    const gameStateRef = doc(db, 'users', uid, 'gameStates', gameId)
+    const docId = String(gameId)
+    const gameStateRef = doc(db, 'users', uid, 'gameStates', docId)
     await setDoc(gameStateRef, cloudSafe)
 }
 
@@ -109,7 +110,8 @@ export async function saveGameState(uid, gameId, saveData) {
 export async function loadGameState(uid, gameId) {
     requireAuth(uid)
 
-    const gameStateRef = doc(db, 'users', uid, 'gameStates', gameId)
+    const docId = String(gameId)
+    const gameStateRef = doc(db, 'users', uid, 'gameStates', docId)
     const snap = await getDoc(gameStateRef)
 
     if (!snap.exists()) return null
