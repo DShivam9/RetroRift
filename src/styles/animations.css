@@ -673,45 +673,10 @@
    5. CARD ANIMATIONS (GameCard)
    ========================================================================== */
 
-.game-card {
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-        box-shadow 0.3s ease, border-color 0.3s ease;
-    will-change: transform;
-}
 
-.game-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 92, 246, 0.15);
-    border-color: rgba(139, 92, 246, 0.5);
-}
+/* Game card hover animations moved to GameCard.css — do not duplicate here */
 
-.game-card__thumbnail {
-    overflow: hidden;
-}
 
-.game-card__image {
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.game-card:hover .game-card__image {
-    transform: scale(1.1);
-}
-
-/* Glow border ring on hover */
-.game-card::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: calc(var(--radius-lg, 16px) + 2px);
-    background: linear-gradient(135deg, #8b5cf6, #ec4899, #22d3ee);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.game-card:hover::before {
-    opacity: 1;
-}
 
 .game-card__favorite {
     transition: transform 0.2s ease, background 0.3s ease, border-color 0.3s ease;
