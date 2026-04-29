@@ -273,7 +273,9 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     if (saveModalMode === 'new') {
       try {
         setSavingToCloud(true)
+        console.log('[SaveFlow] Step 1: Capturing emulator state...')
         const stateData = await emulatorRef.current.saveState()
+        console.log('[SaveFlow] Step 2: Got stateData, type:', typeof stateData, 'length:', stateData?.length || stateData?.byteLength || 'unknown')
         const newSave = {
           id: Date.now(),
           name: saveName,
@@ -285,11 +287,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         const updatedSlots = [...saveSlots, newSave]
         setSaveSlots(updatedSlots)
         localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+        console.log('[SaveFlow] Step 3: Saved locally. isAuthenticated:', isAuthenticated, 'uid:', user?.uid)
 
         // Sync metadata and binary to cloud
         if (isAuthenticated && user?.uid) {
           try {
+            console.log('[SaveFlow] Step 4: Calling saveGameState for cloud sync...')
             const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
+            console.log('[SaveFlow] Step 5: Cloud response:', cloudSlots ? `${cloudSlots.length} slots` : 'null')
             if (cloudSlots) {
               setSaveSlots(cloudSlots.map(cs => {
                 const local = updatedSlots.find(l => l.id === cs.id)
@@ -298,14 +303,16 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             }
             setSaveMessage('Saved to cloud! ☁️')
           } catch (err) {
-            console.error('Cloud save failed:', err)
-            setSaveMessage('Saved locally (cloud sync failed)')
+            console.error('[SaveFlow] ❌ Cloud save failed:', err.code, err.message, err)
+            setSaveMessage('Saved locally (cloud sync failed: ' + err.message + ')')
           }
+        } else {
+          setSaveMessage('Saved locally')
         }
-        setTimeout(() => setSaveMessage(''), 2000)
+        setTimeout(() => setSaveMessage(''), 4000)
       } catch (error) {
-        console.error('Save state error:', error)
-        if (error.code === 'resource-exhausted' || error.message.includes('size')) {
+        console.error('[SaveFlow] ❌ Save state error:', error)
+        if (error.code === 'resource-exhausted' || error.message?.includes('size')) {
            setSaveMessage('Saved locally (Save file too large for cloud sync)')
         } else {
            setSaveMessage('Save failed — emulator may not support saves for this game')
