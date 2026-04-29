@@ -172,18 +172,19 @@ export function getPlayerTitle(level) {
 function getDefaultData() {
     return {
         totalXP: 0,
-        gamesPlayed: 0,             // Unique game IDs played
+        gamesPlayed: 0,
         totalFavorites: 0,
-        totalPlaytimeMin: 0,        // Real tracked minutes
-        sessionGames: 0,            // Games played this session
+        totalPlaytimeMin: 0,
+        sessionGames: 0,
         consolesPlayed: 0,
         bestStreak: 0,
         currentStreak: 0,
-        lastPlayDate: null,         // ISO date string
-        playedGameIds: [],          // Track unique games
-        playedConsoles: [],         // Track unique consoles
-        unlockedAchievements: {},   // { id: { unlockedAt: timestamp, xpAwarded: number } }
-        xpLog: [],                  // Recent XP events: { reason, amount, timestamp }
+        lastPlayDate: null,
+        playedGameIds: [],
+        playedConsoles: [],
+        unlockedAchievements: {},
+        xpLog: [],
+        currentLevel: 1
     }
 }
 
@@ -213,39 +214,37 @@ export function saveXPData(data) {
 
 /** Award XP and log the event */
 function awardXP(data, amount, reason) {
-    data.totalXP += amount
+    if (!data) data = getDefaultData()
+    data.totalXP = (data.totalXP || 0) + amount
     data.xpLog = [
         { reason, amount, timestamp: Date.now() },
-        ...data.xpLog.slice(0, 49) // Keep last 50 events
+        ...(data.xpLog || []).slice(0, 49)
     ]
     return data
 }
 
 /** Called when a game is started */
 export function onGamePlayed(data, game) {
-    let d = { ...data }
+    if (!game) return data || getDefaultData()
+    let d = data ? { ...getDefaultData(), ...data } : getDefaultData()
 
     // Track unique games
-    if (!d.playedGameIds.includes(game.id)) {
-        d.playedGameIds = [...d.playedGameIds, game.id]
+    if (!(d.playedGameIds || []).includes(game.id)) {
+        d.playedGameIds = [...(d.playedGameIds || []), game.id]
         d.gamesPlayed = d.playedGameIds.length
 
-        // First game ever bonus
         if (d.gamesPlayed === 1) {
             d = awardXP(d, XP_VALUES.FIRST_GAME_BONUS, '🎉 First game ever!')
         }
     }
 
-    // Track unique consoles
-    if (game.console && !d.playedConsoles.includes(game.console)) {
-        d.playedConsoles = [...d.playedConsoles, game.console]
+    if (game.console && !(d.playedConsoles || []).includes(game.console)) {
+        d.playedConsoles = [...(d.playedConsoles || []), game.console]
         d.consolesPlayed = d.playedConsoles.length
     }
 
-    // Session games counter
     d.sessionGames = (d.sessionGames || 0) + 1
 
-    // Streak tracking
     const today = new Date().toISOString().split('T')[0]
     if (d.lastPlayDate !== today) {
         const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
@@ -259,13 +258,8 @@ export function onGamePlayed(data, game) {
         d.lastPlayDate = today
     }
 
-    // Base XP for playing
     d = awardXP(d, XP_VALUES.PLAY_GAME, `🎮 Played ${game.title}`)
-
-    // Update level for achievement checks
     d.currentLevel = calcLevelFromXP(d.totalXP).level
-
-    // Check achievements
     d = checkAchievements(d)
 
     saveXPData(d)
@@ -274,13 +268,13 @@ export function onGamePlayed(data, game) {
 
 /** Called when play time is recorded (minutes) */
 export function onPlayTimeRecorded(data, minutes) {
-    let d = { ...data }
+    if (!minutes || minutes <= 0) return data || getDefaultData()
+    let d = data ? { ...getDefaultData(), ...data } : getDefaultData()
     d.totalPlaytimeMin = (d.totalPlaytimeMin || 0) + minutes
 
-    // Award XP per 5 minutes
     const fiveMinBlocks = Math.floor(minutes / 5)
     if (fiveMinBlocks > 0) {
-        d = awardXP(d, fiveMinBlocks * XP_VALUES.PLAY_5_MIN, `⏱️ Played for ${minutes} min`)
+        d = awardXP(d, fiveMinBlocks * XP_VALUES.PLAY_5_MIN, `⏱️ Played for ${Math.round(minutes)} min`)
     }
 
     d.currentLevel = calcLevelFromXP(d.totalXP).level
@@ -292,7 +286,7 @@ export function onPlayTimeRecorded(data, minutes) {
 
 /** Called when a game is favorited */
 export function onFavoriteAdded(data, totalFavorites) {
-    let d = { ...data }
+    let d = data ? { ...getDefaultData(), ...data } : getDefaultData()
     d.totalFavorites = totalFavorites
     d = awardXP(d, XP_VALUES.ADD_FAVORITE, '💜 Added to favorites')
 
@@ -305,19 +299,23 @@ export function onFavoriteAdded(data, totalFavorites) {
 
 /** Check and unlock achievements */
 function checkAchievements(data) {
+    if (!data) return getDefaultData()
     let d = { ...data }
+    if (!d.unlockedAchievements) d.unlockedAchievements = {}
 
     for (const achievement of ACHIEVEMENTS) {
-        // Skip already unlocked
         if (d.unlockedAchievements[achievement.id]) continue
 
-        // Check if now meets requirement
-        if (achievement.check(d)) {
-            d.unlockedAchievements[achievement.id] = {
-                unlockedAt: Date.now(),
-                xpAwarded: achievement.xpReward,
+        try {
+            if (achievement.check(d)) {
+                d.unlockedAchievements[achievement.id] = {
+                    unlockedAt: Date.now(),
+                    xpAwarded: achievement.xpReward,
+                }
+                d = awardXP(d, achievement.xpReward, `🏆 Achievement: ${achievement.title}`)
             }
-            d = awardXP(d, achievement.xpReward, `🏆 Achievement: ${achievement.title}`)
+        } catch (err) {
+            console.error(`Error checking achievement ${achievement.id}:`, err)
         }
     }
 

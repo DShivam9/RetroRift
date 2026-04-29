@@ -351,15 +351,16 @@ export default function ProfilePage({ navigate, favorites, toggleFavorite, onPla
 
   // Stats from XP Engine
   const stats = xpData ? getStats(xpData) : {
-    level: 1, title: 'Newcomer', emoji: 'ðŸ•¹ï¸',
+    level: 1, title: 'Newcomer', emoji: '🕹️',
     xpInLevel: 0, xpNeeded: 100, progress: 0,
     gamesPlayed: 0, totalFavorites: 0, totalPlaytimeMin: 0,
     currentStreak: 0, bestStreak: 0, unlockedCount: 0,
-    totalAchievements: 12, xpLog: []
+    totalAchievements: 12, xpLog: [],
+    unlockedAchievements: {}
   }
 
-  const animGames = useCountUp(stats.gamesPlayed)
-  const animPlaytime = useCountUp(stats.totalPlaytimeMin)
+  const animGames = useCountUp(stats.gamesPlayed || 0)
+  const animPlaytime = useCountUp(stats.totalPlaytimeMin || 0)
 
   // Handlers
   const handlePhotoUpload = (e) => {
@@ -407,9 +408,9 @@ export default function ProfilePage({ navigate, favorites, toggleFavorite, onPla
   const accent = custom.avatarColor
 
   // Next Closest Achievement Logic
-  const nextAch = ACHIEVEMENTS.filter(a => !stats.unlockedAchievements?.[a.id])
-    .map(a => ({ ...a, currProg: a.progress(xpData) }))
-    .sort((a, b) => b.currProg - a.currProg)[0]
+  const nextAch = ACHIEVEMENTS.filter(a => !(stats.unlockedAchievements || {})[a.id])
+    .map(a => ({ ...a, currProg: xpData ? a.progress(xpData) : 0 }))
+    .sort((a, b) => (b.currProg || 0) - (a.currProg || 0))[0]
 
   const BANNER_MAP = {
     'cyber-mesh': <HeroCyberMesh accent={accent} />,
