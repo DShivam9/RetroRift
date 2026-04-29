@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://retroplayhub.vercel.app/sitemap.xml
+Sitemap: https://retro-rift.vercel.app/sitemap.xml
