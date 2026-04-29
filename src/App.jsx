@@ -5,7 +5,13 @@ import AnimatedBackground from './components/AnimatedBackground'
 import { Loader } from './components/Loader'
 import { useToast } from './components/Toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
-import { syncToCloud, loadFromCloud } from './lib/cloudSaves'
+import { useSettings } from './context/SettingsContext'
+import { 
+  syncToCloud, 
+  loadFromCloud, 
+  syncXPData as cloudSyncXPData, 
+  loadXPData as cloudLoadXPData 
+} from './lib/cloudSaves'
 import { loadXPData, onGamePlayed, onFavoriteAdded } from './lib/xpEngine'
 import UsernameSetup from './components/UsernameSetup'
 import './App.css'
@@ -110,16 +116,30 @@ function AppContent() {
 
   // Cloud sync: auto-sync when user signs in
   const { user, isAuthenticated, needsUsername, setUsername } = useAuth()
+  const { refreshSettings } = useSettings()
+
   useEffect(() => {
     if (isAuthenticated && user?.uid) {
-      // Load cloud data on sign-in
+      // Load global cloud data (favorites, settings, profile)
       loadFromCloud(user.uid).then(data => {
         if (data) {
-          // Refresh local state from cloud data
           if (data.favorites) setFavorites(data.favorites)
           if (data.lastPlayed) setLastPlayed(data.lastPlayed)
+          
+          // Apply settings immediately
+          refreshSettings()
+          
+          // Trigger re-render
+          setPageKey(prev => prev + 1)
         }
-      }).catch(err => console.error('Cloud sync failed:', err))
+      }).catch(err => console.error('Cloud metadata load failed:', err))
+
+      // Load XP data from cloud
+      cloudLoadXPData(user.uid).then(data => {
+        if (data) {
+          setXpData(data)
+        }
+      }).catch(err => console.error('XP cloud load failed:', err))
     }
   }, [isAuthenticated, user?.uid])
 
@@ -127,11 +147,14 @@ function AppContent() {
   useEffect(() => {
     if (isAuthenticated && user?.uid) {
       const timer = setTimeout(() => {
+        // Sync global data
         syncToCloud(user.uid).catch(err => console.error('Cloud save failed:', err))
+        // Sync XP data
+        cloudSyncXPData(user.uid).catch(err => console.error('XP cloud sync failed:', err))
       }, 2000) // Debounce 2s
       return () => clearTimeout(timer)
     }
-  }, [favorites, lastPlayed, isAuthenticated, user?.uid])
+  }, [favorites, lastPlayed, xpData, isAuthenticated, user?.uid])
 
   // Navigation with clean transition
   const navigate = (page) => {

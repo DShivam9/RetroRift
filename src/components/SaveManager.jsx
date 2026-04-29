@@ -1,14 +1,35 @@
 import React, { useState } from 'react'
-import { Download, Upload, HardDrive, Trash2, CheckCircle, AlertCircle, Cloud, CloudOff } from 'lucide-react'
+import { Download, Upload, HardDrive, Trash2, CheckCircle, AlertCircle, Cloud, CloudOff, Zap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { syncToCloud, loadFromCloud } from '../lib/cloudSaves'
+import { syncToCloud, loadFromCloud, getAllGameSaves, deleteSaveState, saveGameState } from '../lib/cloudSaves'
+import { games } from '../data/games'
 import './SaveManager.css'
 
 export default function SaveManager() {
     const [status, setStatus] = useState(null)
     const [message, setMessage] = useState('')
     const [syncing, setSyncing] = useState(false)
+    const [cloudSaves, setCloudSaves] = useState([])
+    const [loadingSaves, setLoadingSaves] = useState(false)
     const { user, isAuthenticated } = useAuth()
+
+    React.useEffect(() => {
+        if (isAuthenticated && user?.uid) {
+            fetchCloudSaves()
+        }
+    }, [isAuthenticated, user?.uid])
+
+    const fetchCloudSaves = async () => {
+        setLoadingSaves(true)
+        try {
+            const data = await getAllGameSaves(user.uid)
+            setCloudSaves(data || [])
+        } catch (err) {
+            console.error('Failed to fetch cloud saves:', err)
+        } finally {
+            setLoadingSaves(false)
+        }
+    }
 
     const showStatus = (type, msg) => {
         setStatus(type)
@@ -190,6 +211,64 @@ export default function SaveManager() {
                     />
                 </label>
             </div>
+
+            {/* Cloud Game Saves Gallery */}
+            {isAuthenticated && (
+                <div className="save-manager__gallery">
+                    <div className="save-manager__gallery-header">
+                        <Cloud size={16} />
+                        <h4>Global Cloud Chronology</h4>
+                        <button className="gallery-refresh" onClick={fetchCloudSaves} disabled={loadingSaves}>
+                           <Zap size={12} className={loadingSaves ? 'animate-spin' : ''} />
+                        </button>
+                    </div>
+
+                    {loadingSaves ? (
+                        <div className="gallery-loader">Scanning neural clusters...</div>
+                    ) : cloudSaves.length === 0 ? (
+                        <div className="gallery-empty">No synchronized game states found in the cloud cluster.</div>
+                    ) : (
+                        <div className="gallery-list">
+                            {cloudSaves.map(gs => {
+                                const game = games.find(g => String(g.id) === String(gs.gameId))
+                                return (
+                                    <div key={gs.gameId} className="gallery-item">
+                                        <div className="gallery-item__game">
+                                            <span className="gallery-game-title">{game?.title || 'Unknown Game'}</span>
+                                            <span className="gallery-game-console">{game?.console || gs.gameId}</span>
+                                        </div>
+                                        <div className="gallery-item__slots">
+                                            {gs.slots?.map(slot => (
+                                                <div key={slot.id} className="gallery-slot">
+                                                    <div className="gallery-slot-info">
+                                                        <span className="gallery-slot-name">{slot.name}</span>
+                                                        <span className="gallery-slot-date">{slot.date}</span>
+                                                    </div>
+                                                    <div className="gallery-slot-actions">
+                                                        <button 
+                                                            className="gallery-btn-delete"
+                                                            onClick={async () => {
+                                                                if (window.confirm('Erase this chronology from the cloud?')) {
+                                                                    await deleteSaveState(user.uid, gs.gameId, slot.id)
+                                                                    const remainingSlots = gs.slots.filter(s => s.id !== slot.id)
+                                                                    await saveGameState(user.uid, gs.gameId, { slots: remainingSlots })
+                                                                    fetchCloudSaves()
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
+                </div>
+            )}
 
             <p className="save-manager__hint">
                 {isAuthenticated

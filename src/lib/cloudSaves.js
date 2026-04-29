@@ -1,6 +1,6 @@
 // Cloud Saves API — Sync user data between localStorage and Firestore
 // All writes are sanitized. All operations require authentication.
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
 import { db, storage } from './firebase'
 import { sanitizeObject, sanitizeString, isValidUID, isWithinSizeLimit } from './inputSanitizer'
@@ -25,12 +25,15 @@ export async function syncToCloud(uid) {
         playHistory: JSON.parse(localStorage.getItem('playHistory') || '[]'),
         lastPlayed: JSON.parse(localStorage.getItem('lastPlayed') || 'null'),
         settings: {
-            crt: localStorage.getItem('crt') === 'true',
+            crt: localStorage.getItem('crt_mode') === 'true',
             scanlines: localStorage.getItem('scanlines') === 'true',
-            audio: localStorage.getItem('audio') !== 'false'
+            audio: localStorage.getItem('audio_enabled') !== 'false',
+            musicVolume: Number(localStorage.getItem('music_volume') || 0.5),
+            reducedMotion: localStorage.getItem('reduced_motion') === 'true'
         },
+        profile: JSON.parse(localStorage.getItem('profileCustomization') || '{}'),
         lastSynced: serverTimestamp(),
-        version: '1.0'
+        version: '1.1'
     }
 
     // Sanitize before writing
@@ -63,30 +66,71 @@ export async function loadFromCloud(uid) {
 
     const data = snap.data()
 
-    // Write to localStorage
-    if (data.favorites) localStorage.setItem('favorites', JSON.stringify(data.favorites))
-    if (data.playHistory) localStorage.setItem('playHistory', JSON.stringify(data.playHistory))
-    if (data.lastPlayed) localStorage.setItem('lastPlayed', JSON.stringify(data.lastPlayed))
-    if (data.settings) {
-        localStorage.setItem('crt', data.settings.crt)
-        localStorage.setItem('scanlines', data.settings.scanlines)
-        localStorage.setItem('audio', data.settings.audio)
+    // --- RECONCILIATION LOGIC ---
+    
+    // 1. Merge Favorites (Union of both)
+    const localFavs = JSON.parse(localStorage.getItem('favorites') || '[]')
+    const cloudFavs = data.favorites || []
+    const mergedFavs = Array.from(new Set([...localFavs, ...cloudFavs]))
+    localStorage.setItem('favorites', JSON.stringify(mergedFavs))
+
+    // 2. Merge Play History (Union + Sort by date if possible, but for simplicity just union)
+    const localHistory = JSON.parse(localStorage.getItem('playHistory') || '[]')
+    const cloudHistory = data.playHistory || []
+    // Filter out duplicates by ID
+    const mergedHistory = [...localHistory]
+    cloudHistory.forEach(ch => {
+        if (!mergedHistory.find(lh => lh.id === ch.id)) {
+            mergedHistory.push(ch)
+        }
+    })
+    localStorage.setItem('playHistory', JSON.stringify(mergedHistory))
+
+    // 3. Last Played (Keep most recent)
+    const localLast = JSON.parse(localStorage.getItem('lastPlayed') || 'null')
+    const cloudLast = data.lastPlayed || null
+    if (cloudLast && (!localLast || new Date(cloudLast.date) > new Date(localLast.date))) {
+        localStorage.setItem('lastPlayed', JSON.stringify(cloudLast))
     }
 
-    return data
+    // 4. Settings (User preference - usually cloud wins as it's 'latest' state)
+    if (data.settings) {
+        localStorage.setItem('crt_mode', data.settings.crt)
+        localStorage.setItem('scanlines', data.settings.scanlines)
+        localStorage.setItem('audio_enabled', data.settings.audio)
+        localStorage.setItem('music_volume', data.settings.musicVolume)
+        localStorage.setItem('reduced_motion', data.settings.reducedMotion)
+    }
+
+    // 5. Profile Customization
+    if (data.profile) {
+        localStorage.setItem('profileCustomization', JSON.stringify(data.profile))
+    }
+
+    return { ...data, favorites: mergedFavs, playHistory: mergedHistory }
 }
 
 /**
  * Upload binary save state to Firebase Storage
  */
-export async function uploadSaveState(uid, gameId, saveId, stateData) {
+export async function uploadSaveState(uid, gameId, slotId, stateData) {
     requireAuth(uid)
-    if (!stateData) return null
-
-    const storageRef = ref(storage, `saves/${uid}/${gameId}/${saveId}.bin`)
+    const storageRef = ref(storage, `users/${uid}/saves/${gameId}/${slotId}.bin`)
     
-    // Ensure stateData is a Uint8Array or Blob
-    const blob = stateData instanceof Blob ? stateData : new Blob([stateData])
+    let dataToUpload = stateData
+    
+    // If stateData is base64 string, convert to binary
+    if (typeof stateData === 'string') {
+        const binaryString = atob(stateData)
+        const bytes = new Uint8Array(binaryString.length)
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i)
+        }
+        dataToUpload = bytes
+    }
+    
+    // Ensure dataToUpload is a Uint8Array or Blob
+    const blob = dataToUpload instanceof Blob ? dataToUpload : new Blob([dataToUpload])
     
     await uploadBytes(storageRef, blob)
     const downloadURL = await getDownloadURL(storageRef)
@@ -96,35 +140,34 @@ export async function uploadSaveState(uid, gameId, saveId, stateData) {
 /**
  * Download binary save state from Firebase Storage
  */
-export async function downloadSaveState(uid, gameId, saveId) {
+export async function downloadSaveState(uid, gameId, slotId) {
     requireAuth(uid)
-    const storageRef = ref(storage, `saves/${uid}/${gameId}/${saveId}.bin`)
+    const storageRef = ref(storage, `users/${uid}/saves/${gameId}/${slotId}.bin`)
     
     try {
         const url = await getDownloadURL(storageRef)
         const response = await fetch(url)
-        const blob = await response.blob()
-        
-        // Convert blob to ArrayBuffer (which emulators usually expect)
-        return await blob.arrayBuffer()
+        if (!response.ok) throw new Error('Cloud save download failed')
+        return await response.arrayBuffer()
     } catch (err) {
         console.error('Download failed:', err)
-        return null
+        throw err
     }
 }
 
 /**
  * Delete binary save state from Firebase Storage
  */
-export async function deleteSaveState(uid, gameId, saveId) {
+export async function deleteSaveState(uid, gameId, slotId) {
     requireAuth(uid)
-    const storageRef = ref(storage, `saves/${uid}/${gameId}/${saveId}.bin`)
+    const storageRef = ref(storage, `users/${uid}/saves/${gameId}/${slotId}.bin`)
     try {
         await deleteObject(storageRef)
     } catch (err) {
         // If file doesn't exist, ignore
         if (err.code !== 'storage/object-not-found') {
             console.error('Storage delete failed:', err)
+            throw err
         }
     }
 }
@@ -175,7 +218,7 @@ export async function saveGameState(uid, gameId, saveData) {
 /**
  * Load game save-slot metadata from Firestore.
  */
-export async function loadGameState(uid, gameId) {
+export async function getGameSaveMetadata(uid, gameId) {
     requireAuth(uid)
 
     const docId = String(gameId)
@@ -184,6 +227,20 @@ export async function loadGameState(uid, gameId) {
 
     if (!snap.exists()) return null
     return snap.data()
+}
+
+/**
+ * Fetch ALL game save manifests for a user (Global Save Manager)
+ */
+export async function getAllGameSaves(uid) {
+    requireAuth(uid)
+    const statesRef = collection(db, 'users', uid, 'gameStates')
+    const snap = await getDocs(statesRef)
+    
+    return snap.docs.map(doc => ({
+        gameId: doc.id,
+        ...doc.data()
+    }))
 }
 
 /**

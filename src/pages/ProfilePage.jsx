@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ShinyText from '../components/ShinyText'
 import GameCard from '../components/GameCard'
 import RetroGridBackground from '../components/RetroGridBackground'
@@ -15,7 +15,15 @@ import RangeSlider from '../components/RangeSlider'
 import '../components/AnimatedIcons.css'
 import { useSettings } from '../context/SettingsContext'
 import { useAuth } from '../context/AuthContext'
-import { updateUserProfile, syncXPData, loadXPData } from '../lib/cloudSaves'
+import { 
+  updateUserProfile, 
+  loadXPData, 
+  syncXPData, 
+  syncToCloud, 
+  loadFromCloud,
+  getAllGameSaves 
+} from '../lib/cloudSaves'
+import SaveManager from '../components/SaveManager'
 import { checkUsername } from '../lib/profanityFilter'
 import { getStats, timeAgo, ACHIEVEMENTS } from '../lib/xpEngine'
 import {
@@ -321,18 +329,6 @@ export default function ProfilePage({ navigate, favorites, toggleFavorite, onPla
   const [nameError, setNameError] = useState('')
   const nameInputRef = useRef(null)
 
-  // Sync XP/achievements to cloud on mount (when authenticated)
-  React.useEffect(() => {
-    if (isAuthenticated && user?.uid) {
-      loadXPData(user.uid).catch(err => console.error('XP cloud load failed:', err))
-    }
-    return () => {
-      if (isAuthenticated && user?.uid) {
-        syncXPData(user.uid).catch(() => { })
-      }
-    }
-  }, [isAuthenticated, user?.uid])
-
   const profileName = isAuthenticated ? (user?.displayName || 'Player') : 'Guest Player'
 
   useEffect(() => {
@@ -540,6 +536,7 @@ export default function ProfilePage({ navigate, favorites, toggleFavorite, onPla
               {[
                 { id: 'overview', icon: Gamepad2, label: 'Overview' },
                 { id: 'activity', icon: Activity, label: 'Activity' },
+                { id: 'saves', icon: HardDrive, label: 'Cloud Saves' },
                 { id: 'achievements', icon: Award, label: 'Trophies' },
                 { id: 'customize', icon: Palette, label: 'Customize' },
                 { id: 'settings', icon: Settings, label: 'Settings' }
@@ -608,9 +605,9 @@ export default function ProfilePage({ navigate, favorites, toggleFavorite, onPla
                 </div>
               )}
 
-              {/* â”€â”€ ACTIVITY â”€â”€ */}
+              {/* --- ACTIVITY --- */}
               {activeTab === 'activity' && (
-                <div className="gp-pane">
+                <div className="gp-pane gp-pane--activity">
                   {stats.xpLog.length > 0 ? (
                     <div className="profile__timeline">
                       {stats.xpLog.map((log, i) => (
@@ -627,8 +624,15 @@ export default function ProfilePage({ navigate, favorites, toggleFavorite, onPla
                       ))}
                     </div>
                   ) : (
-                    <div className="profile__empty"><History size={40} /><p>No activity yet â€” play some games!</p></div>
+                    <div className="profile__empty"><History size={40} /><p>No activity yet — play some games!</p></div>
                   )}
+                </div>
+              )}
+
+              {/* --- CLOUD SAVES --- */}
+              {activeTab === 'saves' && (
+                <div className="gp-pane gp-pane--saves">
+                   <SaveManager />
                 </div>
               )}
 

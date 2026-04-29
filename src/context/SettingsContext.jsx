@@ -45,6 +45,14 @@ export const SettingsProvider = ({ children }) => {
     }, [audioEnabled, musicVolume, crtMode, scanlines, reducedMotion])
 
     // --- Actions ---
+    const refreshSettings = () => {
+        setAudioEnabled(localStorage.getItem('audio_enabled') !== 'false')
+        setMusicVolume(Number(localStorage.getItem('music_volume') || 0.5))
+        setCrtMode(localStorage.getItem('crt_mode') === 'true')
+        setScanlines(localStorage.getItem('scanlines') === 'true')
+        setReducedMotion(localStorage.getItem('reduced_motion') === 'true')
+    }
+
     const clearAllData = () => {
         localStorage.clear()
         window.location.reload()
@@ -61,6 +69,7 @@ export const SettingsProvider = ({ children }) => {
         setScanlines,
         reducedMotion,
         setReducedMotion,
+        refreshSettings,
         clearAllData
     }
 

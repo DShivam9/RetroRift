@@ -4,7 +4,7 @@ import { Loader } from '../components/Loader'
 import SaveNameModal from '../components/SaveNameModal'
 import { games } from '../data/games'
 import { useAuth } from '../context/AuthContext'
-import { saveGameState, loadGameState, downloadSaveState, deleteSaveState } from '../lib/cloudSaves'
+import { saveGameState, getGameSaveMetadata, downloadSaveState, deleteSaveState } from '../lib/cloudSaves'
 import { onPlayTimeRecorded } from '../lib/xpEngine'
 import { sanitizeSaveName } from '../lib/inputSanitizer'
 import {
@@ -36,6 +36,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [playtime, setPlaytime] = useState(0)
+  const playtimeRef = useRef(0)
   const [romData, setRomData] = useState(null)
   const [saveSlots, setSaveSlots] = useState([])
   const [saveMessage, setSaveMessage] = useState('')
@@ -86,17 +87,29 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       // Then merge metadata from cloud
       if (currentGame.id && isAuthenticated && user?.uid) {
         try {
-          const cloudData = await loadGameState(user.uid, currentGame.id)
+          const cloudData = await getGameSaveMetadata(user.uid, currentGame.id)
           if (cloudData?.slots) {
-            // Merge cloud metadata (names, etc) with local stateData
+            // Merge cloud metadata with local stateData
             setSaveSlots(prev => {
-              return cloudData.slots.map(cloudSlot => {
-                const local = prev.find(l => l.id === cloudSlot.id)
-                return {
-                  ...cloudSlot,
-                  stateData: local?.stateData || cloudSlot.stateData || null // Prefer local, fallback to cloud
+              const localSlots = [...prev]
+              const cloudSlots = cloudData.slots
+
+              // Create a map for quick lookup
+              const merged = [...cloudSlots]
+              
+              // Add local slots that aren't in the cloud yet
+              localSlots.forEach(ls => {
+                const cloudIndex = merged.findIndex(cs => cs.id === ls.id)
+                if (cloudIndex !== -1) {
+                   // Update cloud metadata with local stateData if available
+                   merged[cloudIndex] = { ...merged[cloudIndex], stateData: ls.stateData || merged[cloudIndex].stateData || null }
+                } else {
+                   // Keep local only slot
+                   merged.push(ls)
                 }
               })
+              
+              return merged.sort((a, b) => (b.id || 0) - (a.id || 0)) // Sort by newest
             })
           }
         } catch (err) {
@@ -171,7 +184,13 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       timeoutId = setTimeout(() => {
         loadROM()
       }, 150)
-      intervalRef.current = setInterval(() => setPlaytime(t => t + 1), 1000)
+      intervalRef.current = setInterval(() => {
+        setPlaytime(t => {
+          const next = t + 1
+          playtimeRef.current = next
+          return next
+        })
+      }, 1000)
     } else {
       setLoading(false)
     }
@@ -185,6 +204,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       }
       const gameDiv = document.getElementById('game')
       if (gameDiv) gameDiv.remove()
+      
+      // Record XP session
+      if (playtimeRef.current > 0) {
+        onPlayTimeRecorded(playtimeRef.current, currentGame.console)
+      }
     }
   }, [currentGame.id, loadROM])
 

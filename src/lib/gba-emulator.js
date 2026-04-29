@@ -169,21 +169,27 @@ class GBAEmulator {
     }
   }
 
-  // Load state from base64 encoded data
-  async loadState(base64Data) {
-    if (!this.emulatorInstance || !base64Data) {
+  // Load state from data (base64 string or ArrayBuffer)
+  async loadState(inputData) {
+    if (!this.emulatorInstance || !inputData) {
       console.error('No emulator instance or state data')
       return false
     }
 
     try {
-      // Convert base64 back to ArrayBuffer
-      const binaryString = atob(base64Data)
-      const bytes = new Uint8Array(binaryString.length)
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i)
+      let stateData = inputData
+
+      // Convert base64 to ArrayBuffer if necessary
+      if (typeof inputData === 'string') {
+        const binaryString = atob(inputData)
+        const bytes = new Uint8Array(binaryString.length)
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i)
+        }
+        stateData = bytes.buffer
+      } else if (inputData instanceof Uint8Array) {
+        stateData = inputData.buffer
       }
-      const stateData = bytes.buffer
 
       // EmulatorJS load state
       if (this.emulatorInstance.gameManager && this.emulatorInstance.gameManager.loadState) {

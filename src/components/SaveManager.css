@@ -151,3 +151,142 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Gallery Styles */
+.save-manager__gallery {
+    margin-top: 24px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.save-manager__gallery-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.save-manager__gallery-header h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+}
+
+.gallery-refresh {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #22d3ee;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.gallery-refresh:hover {
+    opacity: 1;
+}
+
+.gallery-list {
+    display: grid;
+    gap: 16px;
+}
+
+.gallery-item {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: transform 0.2s;
+}
+
+.gallery-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.gallery-item__game {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.gallery-game-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.gallery-game-console {
+    font-size: 0.75rem;
+    color: #22d3ee;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.gallery-item__slots {
+    display: grid;
+    gap: 8px;
+}
+
+.gallery-slot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.gallery-slot-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-slot-name {
+    font-size: 0.85rem;
+    color: #e5e7eb;
+}
+
+.gallery-slot-date {
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+.gallery-btn-delete {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    opacity: 0.6;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.gallery-btn-delete:hover {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.gallery-loader, .gallery-empty {
+    padding: 40px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
