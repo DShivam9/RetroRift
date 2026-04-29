@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import {
     onAuthStateChanged,
     signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signOut as firebaseSignOut,
@@ -24,6 +26,14 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [needsUsername, setNeedsUsername] = useState(false)
+
+    // Handle redirect result on mount
+    useEffect(() => {
+        getRedirectResult(auth).catch(err => {
+            console.error('Redirect sign-in error:', err)
+            setError(err.message)
+        })
+    }, [])
 
     // Listen for auth state changes
     useEffect(() => {
@@ -76,8 +86,8 @@ export function AuthProvider({ children }) {
     const signInWithGoogle = async () => {
         try {
             setError(null)
-            const result = await signInWithPopup(auth, googleProvider)
-            return result.user
+            // Use redirect instead of popup to bypass strict COOP headers
+            await signInWithRedirect(auth, googleProvider)
         } catch (err) {
             setError(err.message)
             throw err

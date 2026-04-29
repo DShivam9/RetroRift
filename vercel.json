@@ -5,13 +5,19 @@
       "headers": [
         {
           "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin-allow-popups"
+          "value": "same-origin"
         },
         {
           "key": "Cross-Origin-Embedder-Policy",
           "value": "credentialless"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/__/auth/:path*",
+      "destination": "https://retrorift-57c7e.firebaseapp.com/__/auth/:path*"
     }
   ]
 }
