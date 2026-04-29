@@ -246,19 +246,52 @@
     transform: translateY(0);
 }
 
-/* ─── Typography ─── */
+/* ─── Marquee Title ─── */
+.game-card__title-wrap {
+    overflow: hidden;
+    position: relative;
+    margin: 0 0 4px;
+    mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+}
+
 .game-card__title {
     font-family: var(--font-display, 'Orbitron', sans-serif);
     font-size: 0.88rem;
     font-weight: 700;
     color: #fff;
-    margin: 0 0 4px;
+    margin: 0;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     text-rendering: optimizeLegibility;
+    display: inline-block;
+    padding-right: 2rem;
 }
 
+.game-card__title--clone {
+    display: none;
+    padding-right: 2rem;
+}
+
+/* On card hover, start the marquee scroll */
+.game-card:hover .game-card__title-wrap {
+    display: flex;
+}
+
+.game-card:hover .game-card__title {
+    animation: gcMarquee 5s linear 0.4s infinite;
+}
+
+.game-card:hover .game-card__title--clone {
+    display: inline-block;
+    animation: gcMarquee 5s linear 0.4s infinite;
+}
+
+@keyframes gcMarquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+/* ─── Meta + Genre Pill ─── */
 .game-card__meta {
     display: flex;
     align-items: center;
@@ -271,6 +304,25 @@
 
 .game-card__dot {
     color: #475569;
+}
+
+.game-card__genre-pill {
+    padding: 1px 8px;
+    border-radius: 20px;
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    color: #a78bfa;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition: all 0.3s;
+}
+
+.game-card:hover .game-card__genre-pill {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+    color: #c4b5fd;
 }
 
 /* ─── Play button ─── */

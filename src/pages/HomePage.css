@@ -759,6 +759,12 @@
     padding: 60px 24px;
 }
 
+.section--stats {
+    opacity: 1;
+    transform: none;
+    padding: 40px 24px;
+}
+
 .cta {
     max-width: 500px;
     margin: 0 auto;
@@ -768,6 +774,8 @@
     border-radius: 20px;
     text-align: center;
     animation: ctaNeonPulse 3s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
 }
 
 @keyframes ctaNeonPulse {

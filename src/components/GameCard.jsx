@@ -79,11 +79,14 @@ const GameCard = memo(function GameCard({
 
         {/* Info panel — slides up on hover */}
         <div className="game-card__panel">
-          <h3 className="game-card__title">{game.title}</h3>
+          <div className="game-card__title-wrap">
+            <h3 className="game-card__title">{game.title}</h3>
+            <h3 className="game-card__title game-card__title--clone" aria-hidden="true">{game.title}</h3>
+          </div>
           <div className="game-card__meta">
             <span>{game.year}</span>
             <span className="game-card__dot">·</span>
-            <span>{game.genre || 'Classic'}</span>
+            <span className="game-card__genre-pill">{game.genre || 'Classic'}</span>
           </div>
           <button className="game-card__play-btn" onClick={handlePlay}>
             <Play size={14} fill="white" /> Play Now
