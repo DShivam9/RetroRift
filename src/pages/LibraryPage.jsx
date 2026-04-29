@@ -66,19 +66,7 @@ export default function LibraryPage({
 
   return (
     <div className="library">
-      {/* Background Texture - Conditional */}
-      <div className="library__bg">
-        {showFavoritesBg ? (
-          <PixelSnow
-            color="#8b5cf6"
-            speed={0.8}
-            flakeSize={0.02}
-            pixelResolution={400}
-          />
-        ) : (
-          <GridScan />
-        )}
-      </div>
+      {/* Removed library__bg as it looks stretched in the catalog */}
 
       <div className="library__container">
         {/* Header */}

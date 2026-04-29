@@ -64,6 +64,7 @@ const EXT_TO_CONSOLE = {
     '.wsc': 'WonderSwan',
     '.psx': 'PS1',
     '.iso': 'PS1',
+    '.zip': 'Unknown',
 }
 
 // ─── Folder name → Console mapping ─────────────────────────────────────

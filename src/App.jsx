@@ -212,8 +212,8 @@ function AppContent() {
 
   return (
     <div className="app">
-      {/* Animated Background */}
-      <AnimatedBackground />
+      {/* Animated Background - Hide on long pages to avoid stretching */}
+      {currentPage !== 'library' && currentPage !== 'favorites' && <AnimatedBackground />}
 
       {/* Hide navbar on login */}
       {!isLoginPage && <Navbar currentPage={currentPage} navigate={navigate} onPlayGame={onPlayGame} />}
@@ -232,8 +232,8 @@ function AppContent() {
         </Suspense>
       </main>
 
-      {/* Hide footer on login */}
-      {!isLoginPage && currentPage !== 'profile' && <Footer />}
+      {/* Only show footer on main home page */}
+      {currentPage === 'home' && <Footer />}
 
       {/* Username setup modal for new users */}
       {isAuthenticated && needsUsername && (
