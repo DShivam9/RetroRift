@@ -1,7 +1,8 @@
 // Cloud Saves API — Sync user data between localStorage and Firestore
 // All writes are sanitized. All operations require authentication.
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
-import { db } from './firebase'
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
+import { db, storage } from './firebase'
 import { sanitizeObject, sanitizeString, isValidUID, isWithinSizeLimit } from './inputSanitizer'
 
 /**
@@ -76,32 +77,99 @@ export async function loadFromCloud(uid) {
 }
 
 /**
+ * Upload binary save state to Firebase Storage
+ */
+export async function uploadSaveState(uid, gameId, saveId, stateData) {
+    requireAuth(uid)
+    if (!stateData) return null
+
+    const storageRef = ref(storage, `saves/${uid}/${gameId}/${saveId}.bin`)
+    
+    // Ensure stateData is a Uint8Array or Blob
+    const blob = stateData instanceof Blob ? stateData : new Blob([stateData])
+    
+    await uploadBytes(storageRef, blob)
+    const downloadURL = await getDownloadURL(storageRef)
+    return downloadURL
+}
+
+/**
+ * Download binary save state from Firebase Storage
+ */
+export async function downloadSaveState(uid, gameId, saveId) {
+    requireAuth(uid)
+    const storageRef = ref(storage, `saves/${uid}/${gameId}/${saveId}.bin`)
+    
+    try {
+        const url = await getDownloadURL(storageRef)
+        const response = await fetch(url)
+        const blob = await response.blob()
+        
+        // Convert blob to ArrayBuffer (which emulators usually expect)
+        return await blob.arrayBuffer()
+    } catch (err) {
+        console.error('Download failed:', err)
+        return null
+    }
+}
+
+/**
+ * Delete binary save state from Firebase Storage
+ */
+export async function deleteSaveState(uid, gameId, saveId) {
+    requireAuth(uid)
+    const storageRef = ref(storage, `saves/${uid}/${gameId}/${saveId}.bin`)
+    try {
+        await deleteObject(storageRef)
+    } catch (err) {
+        // If file doesn't exist, ignore
+        if (err.code !== 'storage/object-not-found') {
+            console.error('Storage delete failed:', err)
+        }
+    }
+}
+
+/**
  * Save game save-slot metadata to Firestore (sanitized).
- * Actual emulator state stays in localStorage (too large for Firestore).
+ * Actual emulator state is uploaded to Storage.
  */
 export async function saveGameState(uid, gameId, saveData) {
     requireAuth(uid)
 
-    // Strip stateData and sanitize before sending
-    const cloudSafe = {
-        slots: (saveData.slots || []).map(slot => ({
+    // Process slots and handle binary uploads for NEW slots
+    const processedSlots = await Promise.all((saveData.slots || []).map(async (slot) => {
+        let cloudUrl = slot.cloudUrl || null
+
+        // If this slot has NEW stateData that isn't in the cloud yet, upload it
+        if (slot.stateData && !cloudUrl) {
+            try {
+                cloudUrl = await uploadSaveState(uid, gameId, slot.id, slot.stateData)
+            } catch (err) {
+                console.error(`Failed to upload slot ${slot.id}:`, err)
+            }
+        }
+
+        return {
             id: slot.id,
             name: sanitizeString(slot.name || `Save ${slot.slot}`, 50),
             date: sanitizeString(slot.date || '', 30),
             playtime: sanitizeString(slot.playtime || '', 20),
             slot: typeof slot.slot === 'number' ? slot.slot : 0,
-            stateData: null // CRITICAL: Firestore has a 1MB limit. Save states (often 1MB+) MUST stay in localStorage.
-        })),
+            cloudUrl: cloudUrl,
+            stateData: null // CRITICAL: Never store binary in Firestore
+        }
+    }))
+
+    const cloudSafe = {
+        slots: processedSlots,
         timestamp: serverTimestamp(),
         gameId: sanitizeString(gameId, 50)
     }
 
-    // Removing the strict size limit check for game states. 
-    // GBA save states can approach 1MB. We'll let Firestore's built-in 1MB limit handle rejection if it's too large.
-
     const docId = String(gameId)
     const gameStateRef = doc(db, 'users', uid, 'gameStates', docId)
     await setDoc(gameStateRef, cloudSafe)
+    return processedSlots
 }
 
 /**

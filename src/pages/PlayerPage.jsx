@@ -4,12 +4,13 @@ import { Loader } from '../components/Loader'
 import SaveNameModal from '../components/SaveNameModal'
 import { games } from '../data/games'
 import { useAuth } from '../context/AuthContext'
-import { saveGameState, loadGameState } from '../lib/cloudSaves'
+import { saveGameState, loadGameState, downloadSaveState, deleteSaveState } from '../lib/cloudSaves'
 import { onPlayTimeRecorded } from '../lib/xpEngine'
 import { sanitizeSaveName } from '../lib/inputSanitizer'
 import {
   Save, FolderOpen, Trash2, ChevronRight, Star, Clock,
-  Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn
+  Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn,
+  Cpu, ShieldCheck, Info, HardDrive
 } from 'lucide-react'
 import '../styles/components.css'
 import './PlayerPage.css'
@@ -41,6 +42,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const [saveModalOpen, setSaveModalOpen] = useState(false)
   const [saveModalMode, setSaveModalMode] = useState(null) // 'new' | { type: 'rename', saveId }
   const [saveModalDefault, setSaveModalDefault] = useState('')
+  const [downloadingSave, setDownloadingSave] = useState(null) // saveId of slot being downloaded
   const canvasRef = useRef(null)
   const intervalRef = useRef(null)
   const emulatorRef = useRef(null)
@@ -48,9 +50,10 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
   const MAX_SAVE_SLOTS = 5
 
-  // Arcade/simple games don't support save states
-  const ARCADE_GENRES = ['Arcade', 'Puzzle']
-  const supportsSaves = currentGame.romPath && !ARCADE_GENRES.includes(details.genre)
+  // Simple games don't support save states (e.g. Pac-Man, Tetris)
+  const NON_SAVE_GENRES = ['Arcade', 'Puzzle', 'Sports']
+  const isEndless = details.playtime?.toLowerCase().includes('endless')
+  const supportsSaves = currentGame.romPath && !NON_SAVE_GENRES.includes(details.genre) && !isEndless
 
   const isFavorite = favorites?.includes(currentGame.id)
 
@@ -61,9 +64,13 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       g.genre === details.genre)
   ).slice(0, 4)
 
+  // Ensure page starts at top on every mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [currentGame.id])
+
   // Load existing save slots (local + cloud, only for games that support saves)
   useEffect(() => {
-    window.scrollTo(0, 0) // Ensure page loads at the top
     if (!supportsSaves) return
     const loadSaves = async () => {
       // Always load from localStorage first (has actual stateData)
@@ -149,6 +156,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
   // Cleanup and load on game change
   useEffect(() => {
+    let timeoutId = null
+
     if (emulatorRef.current) {
       emulatorRef.current.destroy()
       emulatorRef.current = null
@@ -156,13 +165,17 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
 
     if (currentGame.romPath) {
-      loadROM()
+      // Small delay to let page transition finish smoothly
+      timeoutId = setTimeout(() => {
+        loadROM()
+      }, 150)
       intervalRef.current = setInterval(() => setPlaytime(t => t + 1), 1000)
     } else {
       setLoading(false)
     }
 
     return () => {
+      if (timeoutId) clearTimeout(timeoutId)
       if (intervalRef.current) clearInterval(intervalRef.current)
       if (emulatorRef.current) {
         emulatorRef.current.destroy()
@@ -171,7 +184,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       const gameDiv = document.getElementById('game')
       if (gameDiv) gameDiv.remove()
     }
-  }, [currentGame.romPath, loadROM])
+  }, [currentGame.id, loadROM])
 
   // Initialize emulator after ROM loads
   useEffect(() => {
@@ -247,10 +260,16 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         setSaveSlots(updatedSlots)
         localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
 
-        // Sync metadata to cloud
+        // Sync metadata and binary to cloud
         if (isAuthenticated && user?.uid) {
           try {
-            await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
+            const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
+            if (cloudSlots) {
+              setSaveSlots(cloudSlots.map(cs => {
+                const local = updatedSlots.find(l => l.id === cs.id)
+                return { ...cs, stateData: local?.stateData || null }
+              }))
+            }
             setSaveMessage('Saved to cloud! ☁️')
           } catch (err) {
             console.error('Cloud save failed:', err)
@@ -287,13 +306,46 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       setTimeout(() => setSaveMessage(''), 2000)
       return
     }
-    if (!save.stateData) {
-      setSaveMessage('Save data is only available locally — it can\'t be loaded from cloud alone')
+
+    let stateToLoad = save.stateData
+
+    // If data isn't local, download it from cloud
+    if (!stateToLoad && save.cloudUrl && isAuthenticated) {
+      try {
+        setDownloadingSave(save.id)
+        setSaveMessage(`Downloading cloud save: ${save.name}...`)
+        const downloadedData = await downloadSaveState(user.uid, currentGame.id, save.id)
+        if (downloadedData) {
+          stateToLoad = downloadedData
+          // Cache locally
+          const updatedSlots = saveSlots.map(s => 
+            s.id === save.id ? { ...s, stateData: downloadedData } : s
+          )
+          setSaveSlots(updatedSlots)
+          localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+          setSaveMessage('Cloud save downloaded!')
+        } else {
+          throw new Error('Download returned empty data')
+        }
+      } catch (err) {
+        console.error('Cloud download failed:', err)
+        setSaveMessage('Failed to download cloud save')
+        setTimeout(() => setSaveMessage(''), 3000)
+        setDownloadingSave(null)
+        return
+      } finally {
+        setDownloadingSave(null)
+      }
+    }
+
+    if (!stateToLoad) {
+      setSaveMessage('Save data not found (locally or in cloud)')
       setTimeout(() => setSaveMessage(''), 3000)
       return
     }
+
     try {
-      const loaded = await emulatorRef.current.loadState(save.stateData)
+      const loaded = await emulatorRef.current.loadState(stateToLoad)
       if (loaded) {
         setSaveMessage(`Loaded: ${save.name || save.date}`)
       } else {
@@ -312,10 +364,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     setSaveSlots(updatedSlots)
     localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
 
-    // Sync deletion to cloud
+    // Sync deletion to cloud (metadata + binary)
     if (isAuthenticated && user?.uid) {
       try {
         await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
+        await deleteSaveState(user.uid, currentGame.id, saveId)
       } catch (err) {
         console.error('Cloud delete sync failed:', err)
       }
@@ -381,7 +434,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             </div>
           </div>
 
-          <p className="player-description">{details.description}</p>
+          <div className="player-hero">
+            <div className="player-meta-badges">
+              <span className="player-badge player-badge--console">{currentGame.console}</span>
+              <span className="player-badge player-badge--genre">{details.genre}</span>
+              <span className="player-badge player-badge--difficulty">{details.difficulty}</span>
+            </div>
+            <p className="player-description">{details.description}</p>
+          </div>
 
           {/* Emulator Frame */}
           <div className="player-emulator">
@@ -406,12 +466,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
               )}
             </div>
 
-            {/* Save States Bar — only for games that support saves */}
+            {/* Save Bar - Only for games that support saves */}
             {supportsSaves && (
               <div className="player-saves-bar">
                 <button
                   className={`player-save-btn ${saveSlots.length >= MAX_SAVE_SLOTS ? 'player-save-btn--maxed' : ''}`}
-                  onClick={handleSaveState}
+                  onClick={() => { setSaveModalMode('new'); setSaveModalDefault(''); setSaveModalOpen(true); }}
                   disabled={savingToCloud}
                 >
                   <Save size={16} />
@@ -419,65 +479,102 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                   <span className="player-save-counter">{saveSlots.length}/{MAX_SAVE_SLOTS}</span>
                 </button>
                 {saveMessage && <span className="player-save-msg">{saveMessage}</span>}
-                <span className="player-session">
+                <div className="player-session">
                   <Clock size={14} />
-                  {formatTime(playtime)}
-                </span>
-                <span className="player-cloud-status">
+                  <span>{formatTime(playtime)}</span>
+                </div>
+                <div className="player-cloud-status">
                   {isAuthenticated ? (
-                    <><Cloud size={14} /> Cloud</>
+                    <><Cloud size={14} /> Cloud Active</>
                   ) : (
-                    <><CloudOff size={14} /> Local</>
+                    <><CloudOff size={14} /> Local Only</>
                   )}
-                </span>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Game Details Section */}
-          <section className="player-details">
-            <h2 className="player-section-title">Game Details</h2>
-
-            <div className="player-details-grid">
-              <div className="player-info-card">
-                <h3>Basic Information</h3>
-                <dl className="player-info-list">
-                  <div><dt>Developer</dt><dd>{details.developer}</dd></div>
-                  <div><dt>Release Year</dt><dd>{currentGame.year}</dd></div>
-                  <div><dt>Platform</dt><dd>{currentGame.console}</dd></div>
-                  <div><dt>Region</dt><dd>{details.region}</dd></div>
-                  <div><dt>Genre</dt><dd>{details.genre}</dd></div>
-                  <div><dt>Difficulty</dt><dd>{details.difficulty}</dd></div>
-                  <div><dt>Play Time</dt><dd>{details.playtime}</dd></div>
-                </dl>
+          {/* Soft & Sleek Game Overview Grid */}
+          <section className="player-intel">
+            <div className="player-intel-grid">
+              {/* Specs Card */}
+              <div className="intel-card">
+                <div className="intel-card__header">
+                  <div className="intel-card__icon">
+                    <Cpu size={20} />
+                  </div>
+                  <h3 className="intel-card__title">System Specs</h3>
+                </div>
+                <div className="intel-stats">
+                  <div className="intel-stat-item">
+                    <span className="stat-label">Platform</span>
+                    <span className="stat-value">{currentGame.console}</span>
+                  </div>
+                  <div className="intel-stat-item">
+                    <span className="stat-label">Engine</span>
+                    <span className="stat-value">
+                      {currentGame.console === 'GBA' ? 'mGBA' : currentGame.console === 'NDS' ? 'DeSmuME' : 'RetroArch'}
+                    </span>
+                  </div>
+                  <div className="intel-stat-item">
+                    <span className="stat-label">Region</span>
+                    <span className="stat-value">{details.region}</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="player-info-card">
-                <h3>Game Features</h3>
-                <ul className="player-features-list">
-                  {details.features?.map((feature, i) => (
-                    <li key={i}>
-                      <Zap size={14} />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+              {/* Controls Card */}
+              <div className="intel-card">
+                <div className="intel-card__header">
+                  <div className="intel-card__icon">
+                    <Gamepad2 size={20} />
+                  </div>
+                  <h3 className="intel-card__title">Controls</h3>
+                </div>
+                <div className="intel-stats">
+                  <div className="control-item">
+                    <span className="stat-label">Movement</span>
+                    <kbd className="control-key">←↑↓→</kbd>
+                  </div>
+                  <div className="control-item">
+                    <span className="stat-label">Primary</span>
+                    <kbd className="control-key">Z / X</kbd>
+                  </div>
+                  <div className="control-item">
+                    <span className="stat-label">Select/Start</span>
+                    <kbd className="control-key">Tab/Enter</kbd>
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance/Sync Card */}
+              <div className="intel-card">
+                <div className="intel-card__header">
+                  <div className="intel-card__icon">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <h3 className="intel-card__title">Experience</h3>
+                </div>
+                <div className="intel-stats">
+                  <div className="intel-stat-item">
+                    <span className="stat-label">Playtime</span>
+                    <span className="stat-value">{details.playtime}</span>
+                  </div>
+                  <div className="intel-stat-item">
+                    <span className="stat-label">Cloud Sync</span>
+                    <span className={`stat-value ${isAuthenticated ? 'text-green-400' : 'text-gray-500'}`}>
+                      {isAuthenticated ? 'Active' : 'Offline'}
+                    </span>
+                  </div>
+                  <div className="intel-stat-item">
+                    <span className="stat-label">Difficulty</span>
+                    <span className="stat-value">{details.difficulty}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
 
-          {/* Controls */}
-          <section className="player-controls-section">
-            <h2 className="player-section-title">Controls</h2>
-            <div className="player-controls-grid">
-              <div className="player-control"><kbd>Arrow Keys</kbd><span>D-Pad</span></div>
-              <div className="player-control"><kbd>X</kbd><span>A Button</span></div>
-              <div className="player-control"><kbd>Z</kbd><span>B Button</span></div>
-              <div className="player-control"><kbd>Enter</kbd><span>Start</span></div>
-              <div className="player-control"><kbd>Shift</kbd><span>Select</span></div>
-              <div className="player-control"><kbd>A / S</kbd><span>L / R</span></div>
-            </div>
-          </section>
 
           {/* Save Slots — only for games that support saves */}
           {supportsSaves && (
@@ -493,40 +590,55 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 </div>
               ) : saveSlots.length === 0 ? (
                 <div className="player-saves-empty">
-                  <Save size={24} />
-                  <p>No saves yet. Click <strong>Save Game</strong> above after playing to create a save state.</p>
+                  <div className="empty-icon-circle">
+                    <Save size={24} />
+                  </div>
+                  <p>Your journey is just beginning. Save your progress anytime to resume later.</p>
                 </div>
               ) : (
                 <div className="player-save-slots">
                   {saveSlots.map(save => (
-                    <div key={save.id} className="player-save-slot">
+                    <div key={save.id} className={`player-save-slot ${downloadingSave === save.id ? 'player-save-slot--syncing' : ''}`}>
                       <div className="player-save-info">
-                        <span className="player-save-name">{save.name || `Save ${save.slot}`}</span>
-                        <span className="player-save-date">{save.date}</span>
-                        <span className="player-save-time">{save.playtime}</span>
-                        {!save.stateData && <span className="player-save-cloud-only">metadata only</span>}
+                        <div className="save-name-wrap">
+                          <span className="player-save-name">{save.name || `Save Slot ${save.slot}`}</span>
+                          <div className="save-badges">
+                            {save.cloudUrl && !save.stateData && <Cloud size={10} title="Cloud only" />}
+                            {save.stateData && <HardDrive size={10} title="Local storage" />}
+                          </div>
+                        </div>
+                        <div className="save-meta">
+                          <span className="save-date">{save.date}</span>
+                          <span className="save-dot">•</span>
+                          <span className="save-time">{save.playtime}</span>
+                        </div>
                       </div>
                       <div className="player-save-actions">
                         <button
-                          className="player-save-rename"
+                          className="save-action-icon"
                           onClick={() => handleRenameSave(save.id)}
-                          title="Rename save"
+                          title="Rename"
                         >
-                          <Edit3 size={12} />
+                          <Edit3 size={14} />
                         </button>
                         <button
-                          className="player-save-load"
+                          className="save-action-primary"
                           onClick={() => handleLoadState(save)}
-                          title="Load this save"
-                          disabled={!save.stateData}
+                          disabled={downloadingSave === save.id}
                         >
-                          <FolderOpen size={14} />
-                          <span>Load</span>
+                          {downloadingSave === save.id ? (
+                            <Loader size={14} />
+                          ) : (
+                            <>
+                              <FolderOpen size={14} />
+                              <span>{save.stateData ? 'Resume' : 'Sync'}</span>
+                            </>
+                          )}
                         </button>
                         <button
-                          className="player-save-delete"
+                          className="save-action-danger"
                           onClick={() => handleDeleteSave(save.id)}
-                          title="Delete this save"
+                          title="Delete"
                         >
                           <Trash2 size={14} />
                         </button>

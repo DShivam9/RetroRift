@@ -119,18 +119,51 @@ const ROM_EXTENSIONS = new Set(Object.keys(EXT_TO_CONSOLE))
 function cleanTitle(filename) {
     let title = path.basename(filename, path.extname(filename))
 
-    // Remove common ROM dump tags: (USA), [!], (U), (Europe), etc.
+    // 1. Specific overrides for the current ROM set to ensure "Proper Names"
+    const overrides = {
+        '1190 - Super Mario Advance 4 - Super Mario Bros 3': 'Super Mario Bros 3',
+        '3538 - Grand Theft Auto - Chinatown Wars (EU)(M5)(XenoPhobia)': 'GTA: Chinatown Wars',
+        'Classic NES Series - Super Mario Bros': 'Super Mario Bros',
+        'Crash Bandicoot - Purple Riptos Rampage # GBA': 'Crash Bandicoot: Purple',
+        'Legend of Zelda, The - Phantom Hourglass (USA) (En,Fr,Es)': 'The Legend of Zelda: Phantom Hourglass',
+        'Pokemon - Blue Version (USA, Europe) (SGB Enhanced)': 'Pokémon Blue',
+        'Pokemon - Yellow Version - Special Pikachu Edition (USA, Europe) (GBC,SGB Enhanced)': 'Pokémon Yellow',
+        'Pokemon - Crystal Version (USA, Europe) (Rev 1)': 'Pokémon Crystal',
+        'Pokemon - Leaf Green Version': 'Pokémon Leaf Green',
+        'Pokemon - Diamond Version (USA) (Rev 5)': 'Pokémon Diamond',
+        'Pokemon - HeartGold Version (USA)': 'Pokémon HeartGold',
+        'Pokemon - Pearl Version (USA) (Rev 5)': 'Pokémon Pearl',
+        'Pokemon - SoulSilver Version (USA)': 'Pokémon SoulSilver',
+    }
+
+    if (overrides[title]) return overrides[title]
+
+    // 2. Remove leading release numbers (e.g. "1190 - ", "3538 - ")
+    title = title.replace(/^\d+\s*-\s*/, '')
+
+    // 3. Remove common ROM dump tags and region info
     title = title
-        .replace(/\s*\((?:USA|U|Europe|E|Japan|J|World|W|Rev\s*\d*|V?\d+\.\d+|Beta|Proto|Unl|Pirate|PD|Hack)\)/gi, '')
+        .replace(/\s*\((?:USA|U|Europe|E|Japan|J|World|W|Rev\s*\d*|V?\d+\.\d+|Beta|Proto|Unl|Pirate|PD|Hack|M\d+|S|C|En,Fr,Es)\)/gi, '')
         .replace(/\s*\[(?:!|b\d*|a\d*|o\d*|p\d*|t\d*|f\d*|h\d*|T[+-]\w+)\]/gi, '')
-        .replace(/\s*\((?:M\d+|S|C)\)/gi, '')
+        .replace(/\s*\(.*?\)/g, '')
+        .replace(/\s*\[.*?\]/g, '')
         .trim()
 
-    // Replace underscores with spaces
-    title = title.replace(/_/g, ' ')
+    // 4. Remove trailing console tags
+    title = title.replace(/\s*[#-]\s*(?:GBA|GBC|GB|NES|SNES|NDS|N64)$/i, '')
 
-    // Clean up multiple spaces
-    title = title.replace(/\s+/g, ' ').trim()
+    // 5. Handle "Legend of Zelda, The" -> "The Legend of Zelda"
+    if (title.includes(', The')) {
+        title = 'The ' + title.replace(', The', '')
+    }
+
+    // 6. Final Polish
+    title = title
+        .replace(/Pokemon/gi, 'Pokémon')
+        .replace(/ - /g, ': ')
+        .replace(/_/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
 
     return title
 }
@@ -139,6 +172,8 @@ function cleanTitle(filename) {
 function normalizeForMatch(name) {
     return name
         .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // Remove accents
         .replace(/[^a-z0-9]/g, '')
 }
 

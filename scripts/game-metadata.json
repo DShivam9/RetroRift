@@ -1,5 +1,5 @@
 {
-    "Pokemon FireRed": {
+    "Pokémon FireRed": {
         "description": "Return to the Kanto region! Choose your starter and embark on an epic journey to become the Pokemon Champion.",
         "genre": "RPG",
         "developer": "Game Freak",
@@ -15,7 +15,7 @@
             "New Islands"
         ]
     },
-    "Pokemon Ruby": {
+    "Pokémon Ruby": {
         "description": "Explore the tropical Hoenn region and stop Team Magma from awakening the legendary Groudon.",
         "genre": "RPG",
         "developer": "Game Freak",
@@ -30,7 +30,7 @@
             "Secret Bases"
         ]
     },
-    "Pokemon Sapphire": {
+    "Pokémon Sapphire": {
         "description": "Dive into Hoenn and counter Team Aqua as they try to awaken Kyogre and flood the world.",
         "genre": "RPG",
         "developer": "Game Freak",
@@ -45,7 +45,7 @@
             "Team Aqua Story"
         ]
     },
-    "Pokemon Sapphire.": {
+    "Pokémon Sapphire.": {
         "description": "Dive into Hoenn and counter Team Aqua as they try to awaken Kyogre and flood the world.",
         "genre": "RPG",
         "developer": "Game Freak",
@@ -60,7 +60,7 @@
             "Team Aqua Story"
         ]
     },
-    "Pokemon Emerald": {
+    "Pokémon Emerald": {
         "description": "The definitive Hoenn experience with both Team Magma and Aqua, plus the legendary Battle Frontier.",
         "genre": "RPG",
         "developer": "Game Freak",
@@ -76,7 +76,7 @@
             "Animated Sprites"
         ]
     },
-    "Mario Kart - Super Circuit": {
+    "Mario Kart: Super Circuit": {
         "description": "Race as Mario and friends across 40 tracks in this portable racing classic.",
         "genre": "Racing",
         "developer": "Intelligent Systems",
@@ -123,7 +123,7 @@
             "Special Stages"
         ]
     },
-    "Pokemon Platinum": {
+    "Pokémon Platinum": {
         "description": "Explore Sinnoh and enter the mysterious Distortion World in this enhanced Pokemon adventure.",
         "genre": "RPG",
         "developer": "Game Freak",

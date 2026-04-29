@@ -193,8 +193,8 @@ export default function SaveManager() {
 
             <p className="save-manager__hint">
                 {isAuthenticated
-                    ? 'Your saves sync to the cloud automatically. Use Push/Pull for manual control.'
-                    : 'Export your saves locally, or sign in for automatic cloud sync.'
+                    ? 'Your game states and settings sync to the cloud automatically. Use Push/Pull for manual control.'
+                    : 'Export your saves locally, or sign in for automatic cloud sync of game states.'
                 }
             </p>
         </div>
