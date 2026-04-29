@@ -404,8 +404,6 @@
     margin-bottom: 16px;
 }
 
-}
-
 .player-save-btn:disabled {
     opacity: 0.6;
     cursor: wait;
