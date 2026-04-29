@@ -150,26 +150,22 @@ class GBAEmulator {
 
     try {
       // EmulatorJS exposes save state through the gameManager
-      if (this.emulatorInstance.gameManager && this.emulatorInstance.gameManager.saveState) {
-        const stateData = await this.emulatorInstance.gameManager.saveState()
+      // Priority 1: Check EJS_player (global) which is more reliable for direct core access
+      const player = window.EJS_player || this.emulatorInstance?.gameManager;
+      
+      if (player && player.saveState) {
+        const stateData = await player.saveState();
         // Convert to base64 for storage
-        const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)))
-        console.log('State saved, size:', stateData.byteLength)
-        return base64
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)));
+        console.log('State saved successfully, size:', stateData.byteLength);
+        return base64;
       }
 
-      // Alternative: Try to access through the EJS_player global
-      if (window.EJS_player && window.EJS_player.gameManager) {
-        const stateData = await window.EJS_player.gameManager.saveState()
-        const base64 = btoa(String.fromCharCode(...new Uint8Array(stateData)))
-        return base64
-      }
-
-      console.warn('Save state API not available')
-      return null
+      console.warn('Save state API not available on this core yet');
+      return null;
     } catch (error) {
-      console.error('Error saving state:', error)
-      return null
+      console.error('Error saving state:', error);
+      return null;
     }
   }
 

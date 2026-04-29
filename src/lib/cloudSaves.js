@@ -90,7 +90,7 @@ export async function saveGameState(uid, gameId, saveData) {
             date: sanitizeString(slot.date || '', 30),
             playtime: sanitizeString(slot.playtime || '', 20),
             slot: typeof slot.slot === 'number' ? slot.slot : 0,
-            stateData: slot.stateData || null // Included to allow cross-device cloud restoring
+            stateData: null // CRITICAL: Firestore has a 1MB limit. Save states (often 1MB+) MUST stay in localStorage.
         })),
         timestamp: serverTimestamp(),
         gameId: sanitizeString(gameId, 50)
