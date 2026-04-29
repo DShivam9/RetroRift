@@ -31,7 +31,7 @@ import {
   Heart, Gamepad2, Clock, Settings, Trash2, ShieldAlert,
   Edit3, Check, X, Award, Star, Zap, Flame, Palette,
   Camera, Activity, History, Sparkles, Frame, Trophy,
-  Gauge, Volume2, Monitor, Music, Layers,
+  Gauge, Volume2, Monitor, Music, Layers, HardDrive,
   CircleDot, Hexagon, Diamond, Shield, Square, User, MousePointer2, Sliders, Type as TypeIcon
 } from 'lucide-react'
 import './ProfilePage.css'
