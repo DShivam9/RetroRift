@@ -327,12 +327,6 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   }
 
   const handleLoadState = async (save) => {
-    if (!emulatorRef.current) {
-      setSaveMessage('Start the game first before loading a save')
-      setTimeout(() => setSaveMessage(''), 2000)
-      return
-    }
-
     let stateToLoad = save.stateData
 
     // If data isn't local, download it from cloud
@@ -350,6 +344,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           setSaveSlots(updatedSlots)
           localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
           setSaveMessage('Cloud save downloaded!')
+          setTimeout(() => setSaveMessage(''), 2000)
         } else {
           throw new Error('Download returned empty data')
         }
@@ -362,6 +357,13 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       } finally {
         setDownloadingSave(null)
       }
+    }
+
+    // Now check if we can actually load it into the emulator
+    if (!emulatorRef.current) {
+      setSaveMessage('Start the game first before loading a save')
+      setTimeout(() => setSaveMessage(''), 3000)
+      return
     }
 
     if (!stateToLoad) {
@@ -595,6 +597,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                     <h3>Chronicle Manifest</h3>
                     <span className="player-saves-count">{saveSlots.length} / {MAX_SAVE_SLOTS}</span>
                   </div>
+                  {saveMessage && (
+                    <div className="save-status-toast">
+                      <Zap size={12} className="animate-pulse" />
+                      <span>{saveMessage}</span>
+                    </div>
+                  )}
                 </div>
 
                 {!isAuthenticated ? (
