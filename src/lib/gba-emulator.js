@@ -253,20 +253,29 @@ class GBAEmulator {
     }
 
     try {
-      let stateData = inputData
+      let stateData
 
-      // Convert base64 to ArrayBuffer if necessary
+      // Normalize ALL inputs to Uint8Array — EmulatorJS requires this exact type
       if (typeof inputData === 'string') {
+        // Base64 string → Uint8Array
         const binaryString = atob(inputData)
-        const bytes = new Uint8Array(binaryString.length)
+        stateData = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i)
+          stateData[i] = binaryString.charCodeAt(i)
         }
-        stateData = bytes.buffer
+      } else if (inputData instanceof ArrayBuffer) {
+        stateData = new Uint8Array(inputData)
       } else if (inputData instanceof Uint8Array) {
-        stateData = inputData.buffer
+        stateData = inputData
+      } else if (inputData?.buffer instanceof ArrayBuffer) {
+        // TypedArray view
+        stateData = new Uint8Array(inputData.buffer)
+      } else {
+        console.error('[Emulator] Unknown state data type:', typeof inputData)
+        return false
       }
 
+      console.log('[Emulator] Loading state, size:', stateData.byteLength, 'bytes')
       const emu = window.EJS_emulator || this.emulatorInstance;
 
       // Method 1: gameManager.loadState() — the standard API
