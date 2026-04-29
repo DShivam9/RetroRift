@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext'
 import { saveGameState, loadGameState, downloadSaveState, deleteSaveState } from '../lib/cloudSaves'
 import { onPlayTimeRecorded } from '../lib/xpEngine'
 import { sanitizeSaveName } from '../lib/inputSanitizer'
+import {
   Save, FolderOpen, Trash2, ChevronRight, Star, Clock,
   Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn,
   Cpu, ShieldCheck, Info, HardDrive, BookOpen, Trophy
@@ -165,6 +166,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
 
     if (currentGame.romPath) {
+      window.scrollTo(0, 0)
       // Small delay to let page transition finish smoothly
       timeoutId = setTimeout(() => {
         loadROM()
@@ -441,44 +443,16 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             </div>
           </div>
 
-          <div className="player-editorial">
-            <div className="editorial-main">
-              <div className="editorial-card editorial-card--overview">
-                <div className="editorial-header">
-                  <div className="editorial-icon"><BookOpen size={16} /></div>
-                  <h3>Game Chronicle</h3>
-                </div>
-                <p className="player-description">{details.description}</p>
-              </div>
-
-              {details.features && details.features.length > 0 && (
-                <div className="editorial-card editorial-card--milestones">
-                  <div className="editorial-header">
-                    <div className="editorial-icon"><Trophy size={16} /></div>
-                    <h3>Key Milestones</h3>
-                  </div>
-                  <div className="milestone-grid">
-                    {details.features.map((f, idx) => (
-                      <div key={idx} className="milestone-item">
-                        <span className="milestone-dot" />
-                        <span>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Emulator Frame */}
+          {/* Emulator Frame - V3 Cinematic */}
           <div className="player-emulator">
             <div className="player-emulator__label">
-              <span className="player-emulator__label-text">Game Emulator</span>
+              <span className="player-emulator__label-text">Neural Link Active</span>
               <div className="player-emulator__leds">
                 <div className="player-led player-led--power"></div>
                 <div className="player-led player-led--activity"></div>
               </div>
             </div>
+            
             <div className="player-frame">
               {error ? (
                 <div className="player-error">
@@ -487,116 +461,100 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                   <button onClick={loadROM} className="btn btn--secondary">Retry</button>
                 </div>
               ) : loading ? (
-                <Loader text={`Loading ${currentGame.title}...`} />
+                <Loader text={`Syncing ${currentGame.title}...`} />
               ) : (
                 <canvas ref={canvasRef} className="player-canvas" />
               )}
             </div>
-
-            {/* Save Bar - Only for games that support saves */}
-            {supportsSaves && (
-              <div className="player-saves-bar">
-                <button
-                  className={`player-save-btn ${saveSlots.length >= MAX_SAVE_SLOTS ? 'player-save-btn--maxed' : ''}`}
-                  onClick={() => { setSaveModalMode('new'); setSaveModalDefault(''); setSaveModalOpen(true); }}
-                  disabled={savingToCloud}
-                >
-                  <Save size={16} />
-                  <span>{savingToCloud ? 'Saving...' : 'Save Game'}</span>
-                  <span className="player-save-counter">{saveSlots.length}/{MAX_SAVE_SLOTS}</span>
-                </button>
-                {saveMessage && <span className="player-save-msg">{saveMessage}</span>}
-                <div className="player-session">
-                  <Clock size={14} />
-                  <span>{formatTime(playtime)}</span>
-                </div>
-                <div className="player-cloud-status">
-                  {isAuthenticated ? (
-                    <><Cloud size={14} /> Cloud Active</>
-                  ) : (
-                    <><CloudOff size={14} /> Local Only</>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Soft & Sleek Game Overview Grid */}
-          <section className="player-intel">
-            <div className="player-intel-grid">
-              {/* Specs Card */}
-              <div className="intel-card">
-                <div className="intel-card__header">
-                  <div className="intel-card__icon">
-                    <Cpu size={20} />
-                  </div>
-                  <h3 className="intel-card__title">System Specs</h3>
+          {/* Neural Link - V3 Cinematic Bar */}
+          {supportsSaves && (
+            <div className="v3-operational-bar">
+              <div className="v3-bar-group">
+                <div className="v3-bar-pill">
+                  <Clock size={14} className="v3-icon-violet" />
+                  <span className="v3-bar-value">{formatTime(playtime)}</span>
                 </div>
-                <div className="intel-stats">
-                  <div className="intel-stat-item">
-                    <span className="stat-label">Platform</span>
-                    <span className="stat-value">{currentGame.console}</span>
-                  </div>
-                  <div className="intel-stat-item">
-                    <span className="stat-label">Engine</span>
-                    <span className="stat-value">
-                      {currentGame.console === 'GBA' ? 'mGBA' : currentGame.console === 'NDS' ? 'DeSmuME' : 'RetroArch'}
-                    </span>
-                  </div>
-                  <div className="intel-stat-item">
-                    <span className="stat-label">Region</span>
-                    <span className="stat-value">{details.region}</span>
-                  </div>
+                <div className="v3-bar-pill">
+                  {isAuthenticated ? <Cloud size={14} className="v3-icon-blue" /> : <CloudOff size={14} className="v3-icon-gray" />}
+                  <span className="v3-bar-label">{isAuthenticated ? 'Cluster Sync' : 'Local Node'}</span>
                 </div>
               </div>
+              
+              <button 
+                className="v3-save-button" 
+                onClick={() => { setSaveModalMode('new'); setSaveModalDefault(''); setSaveModalOpen(true); }}
+                disabled={savingToCloud}
+              >
+                <Save size={16} />
+                <span>{savingToCloud ? 'Saving...' : 'Save Game'}</span>
+                <span className="v3-save-counter">{saveSlots.length}/{MAX_SAVE_SLOTS}</span>
+              </button>
+            </div>
+          )}
 
-              {/* Controls Card */}
-              <div className="intel-card">
-                <div className="intel-card__header">
-                  <div className="intel-card__icon">
-                    <Gamepad2 size={20} />
-                  </div>
-                  <h3 className="intel-card__title">Controls</h3>
+          <div className="player-editorial-grid">
+            {/* Chronicle Lore */}
+            <div className="editorial-card editorial-card--lore">
+              <div className="editorial-header">
+                <div className="editorial-icon"><BookOpen size={16} /></div>
+                <h3>Chronicle Lore</h3>
+              </div>
+              <div className="lore-content">
+                <p className="player-description">{details.description}</p>
+              </div>
+            </div>
+
+            {/* Operational DNA */}
+            <div className="editorial-card editorial-card--dna">
+              <div className="editorial-header">
+                <div className="editorial-icon"><Zap size={16} /></div>
+                <h3>Operational DNA</h3>
+              </div>
+              <div className="dna-grid">
+                <div className="dna-item">
+                  <span className="dna-label">Platform Architecture</span>
+                  <span className="dna-value">{currentGame.console}</span>
                 </div>
-                <div className="intel-stats">
-                  <div className="control-item">
-                    <span className="stat-label">Movement</span>
-                    <kbd className="control-key">←↑↓→</kbd>
-                  </div>
-                  <div className="control-item">
-                    <span className="stat-label">Primary</span>
-                    <kbd className="control-key">Z / X</kbd>
-                  </div>
-                  <div className="control-item">
-                    <span className="stat-label">Select/Start</span>
-                    <kbd className="control-key">Tab/Enter</kbd>
-                  </div>
+                <div className="dna-item">
+                  <span className="dna-label">System Region</span>
+                  <span className="dna-value">{details.region}</span>
+                </div>
+                <div className="dna-item">
+                  <span className="dna-label">Deployment Era</span>
+                  <span className="dna-value">{currentGame.year}</span>
+                </div>
+                <div className="dna-item">
+                  <span className="dna-label">Operational Complexity</span>
+                  <span className="dna-value">{details.difficulty}</span>
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* Performance/Sync Card */}
-              <div className="intel-card">
-                <div className="intel-card__header">
-                  <div className="intel-card__icon">
-                    <ShieldCheck size={20} />
-                  </div>
-                  <h3 className="intel-card__title">Experience</h3>
+          {/* Intelligence Matrix - Final Integration */}
+          <section className="intelligence-matrix">
+            <div className="matrix-grid">
+              <div className="matrix-item">
+                <Gamepad2 size={20} className="matrix-icon" />
+                <div className="matrix-info">
+                  <h4>Control Interface</h4>
+                  <p>Primary: Z / X • Movement: Arrows</p>
                 </div>
-                <div className="intel-stats">
-                  <div className="intel-stat-item">
-                    <span className="stat-label">Playtime</span>
-                    <span className="stat-value">{details.playtime}</span>
-                  </div>
-                  <div className="intel-stat-item">
-                    <span className="stat-label">Cloud Sync</span>
-                    <span className={`stat-value ${isAuthenticated ? 'text-green-400' : 'text-gray-500'}`}>
-                      {isAuthenticated ? 'Active' : 'Offline'}
-                    </span>
-                  </div>
-                  <div className="intel-stat-item">
-                    <span className="stat-label">Difficulty</span>
-                    <span className="stat-value">{details.difficulty}</span>
-                  </div>
+              </div>
+              <div className="matrix-item">
+                <ShieldCheck size={20} className="matrix-icon" />
+                <div className="matrix-info">
+                  <h4>Integrity Status</h4>
+                  <p>{isAuthenticated ? 'Cluster Verified' : 'Local Sandbox'}</p>
+                </div>
+              </div>
+              <div className="matrix-item">
+                <Trophy size={20} className="matrix-icon" />
+                <div className="matrix-info">
+                  <h4>Accumulated Time</h4>
+                  <p>{details.playtime}</p>
                 </div>
               </div>
             </div>
@@ -605,25 +563,30 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
           {/* Save Slots — only for games that support saves */}
           {supportsSaves && (
-            <section className="player-saves-section">
-              <h2 className="player-section-title">
-                Save States
-                <span className="player-saves-count">{saveSlots.length} / {MAX_SAVE_SLOTS}</span>
-              </h2>
-              {!isAuthenticated ? (
-                <div className="player-saves-empty">
-                  <LogIn size={24} />
-                  <p>Sign in to save your game progress and sync across devices.</p>
-                </div>
-              ) : saveSlots.length === 0 ? (
-                <div className="player-saves-empty">
-                  <div className="empty-icon-circle">
-                    <Save size={24} />
+            <div className="player-editorial player-saves-section">
+              <div className="editorial-card editorial-card--saves">
+                <div className="editorial-header">
+                  <div className="editorial-icon"><Save size={16} /></div>
+                  <div className="editorial-header__flex">
+                    <h3>Chronicle Manifest</h3>
+                    <span className="player-saves-count">{saveSlots.length} / {MAX_SAVE_SLOTS}</span>
                   </div>
-                  <p>Your journey is just beginning. Save your progress anytime to resume later.</p>
                 </div>
-              ) : (
-                <div className="player-save-slots">
+
+                {!isAuthenticated ? (
+                  <div className="player-saves-empty">
+                    <LogIn size={20} />
+                    <p>Authentication required to sync chronologies across the cluster.</p>
+                  </div>
+                ) : saveSlots.length === 0 ? (
+                  <div className="player-saves-empty">
+                    <div className="empty-icon-circle">
+                      <HardDrive size={20} />
+                    </div>
+                    <p>No save manifests detected. Begin your journey to initialize a new state.</p>
+                  </div>
+                ) : (
+                  <div className="player-save-slots">
                   {saveSlots.map(save => (
                     <div key={save.id} className={`player-save-slot ${downloadingSave === save.id ? 'player-save-slot--syncing' : ''}`}>
                       <div className="player-save-info">
@@ -680,9 +643,10 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                   <span>Maximum saves reached. Delete a save to create a new one.</span>
                 </div>
               )}
-            </section>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
+      </div>
 
         {/* Sidebar */}
         <aside className="player-sidebar">
