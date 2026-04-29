@@ -85,7 +85,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 const local = prev.find(l => l.id === cloudSlot.id)
                 return {
                   ...cloudSlot,
-                  stateData: local?.stateData || null // Preserve local stateData
+                  stateData: local?.stateData || cloudSlot.stateData || null // Prefer local, fallback to cloud
                 }
               })
             })
@@ -254,7 +254,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         setTimeout(() => setSaveMessage(''), 2000)
       } catch (error) {
         console.error('Save state error:', error)
-        setSaveMessage('Save failed — emulator may not support saves for this game')
+        if (error.code === 'resource-exhausted' || error.message.includes('size')) {
+           setSaveMessage('Saved locally (Save file too large for cloud sync)')
+        } else {
+           setSaveMessage('Save failed — emulator may not support saves for this game')
+        }
         setTimeout(() => setSaveMessage(''), 3000)
       } finally {
         setSavingToCloud(false)

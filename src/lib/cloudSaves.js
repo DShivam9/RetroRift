@@ -89,16 +89,15 @@ export async function saveGameState(uid, gameId, saveData) {
             name: sanitizeString(slot.name || `Save ${slot.slot}`, 50),
             date: sanitizeString(slot.date || '', 30),
             playtime: sanitizeString(slot.playtime || '', 20),
-            slot: typeof slot.slot === 'number' ? slot.slot : 0
-            // stateData intentionally excluded — kept in localStorage only
+            slot: typeof slot.slot === 'number' ? slot.slot : 0,
+            stateData: slot.stateData || null // Included to allow cross-device cloud restoring
         })),
         timestamp: serverTimestamp(),
         gameId: sanitizeString(gameId, 50)
     }
 
-    if (!isWithinSizeLimit(cloudSafe)) {
-        throw new Error('Save data exceeds size limit')
-    }
+    // Removing the strict size limit check for game states. 
+    // GBA save states can approach 1MB. We'll let Firestore's built-in 1MB limit handle rejection if it's too large.
 
     const gameStateRef = doc(db, 'users', uid, 'gameStates', gameId)
     await setDoc(gameStateRef, cloudSafe)
