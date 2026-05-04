@@ -136,6 +136,11 @@ function AppContent() {
           if (data.favorites) setFavorites(data.favorites)
           if (data.lastPlayed) setLastPlayed(data.lastPlayed)
           
+          // Sync customization from cloud if needed
+          if (data.profile) {
+            setCustomization(data.profile)
+          }
+
           // Apply settings immediately
           refreshSettings()
           
@@ -150,11 +155,6 @@ function AppContent() {
           setXpData(data)
         }
       }).catch(err => console.error('XP cloud load failed:', err))
-
-      // Sync customization from cloud if needed
-      if (data && data.profile) {
-        setCustomization(data.profile)
-      }
     }
   }, [isAuthenticated, user?.uid])
 
