@@ -1,42 +1,37 @@
 import React from 'react'
 
 /**
- * LottieIcon — Lazy-loads Lottie animations from URLs (Icons8, LottieFiles, etc)
- * Uses an iframe approach for quick Icons8 integration, or embed SVG for simple animations
+ * Animated UI Components
+ * Optimized with React.memo to prevent unnecessary re-renders in heavy dashboards.
  */
 
-// Animated avatar component using CSS animations (no external deps needed)
-export function AnimatedAvatar({ size = 80, color = '#8b5cf6' }) {
+// Animated avatar component
+export const AnimatedAvatar = React.memo(({ size = 80, color = '#8b5cf6' }) => {
     const s = typeof size === 'number' ? `${size}px` : size
     return (
         <div className="animated-avatar" style={{ width: s, height: s }}>
             <svg viewBox="0 0 100 100" className="animated-avatar__svg">
-                {/* Face circle */}
                 <circle cx="50" cy="50" r="40" fill="none" stroke={color} strokeWidth="2" opacity="0.3">
                     <animate attributeName="r" values="38;42;38" dur="3s" repeatCount="indefinite" />
                 </circle>
                 <circle cx="50" cy="50" r="35" fill={`${color}15`} stroke={color} strokeWidth="1.5">
                     <animate attributeName="r" values="33;37;33" dur="4s" repeatCount="indefinite" />
                 </circle>
-                {/* Eyes */}
                 <circle cx="38" cy="42" r="4" fill={color}>
                     <animate attributeName="r" values="4;3;4" dur="2s" repeatCount="indefinite" />
                 </circle>
                 <circle cx="62" cy="42" r="4" fill={color}>
                     <animate attributeName="r" values="4;3;4" dur="2s" repeatCount="indefinite" begin="0.1s" />
                 </circle>
-                {/* Blink effect */}
                 <rect x="34" y="39" width="8" height="6" rx="3" fill="#0a0e14" opacity="0">
                     <animate attributeName="opacity" values="0;0;1;0;0" dur="4s" repeatCount="indefinite" keyTimes="0;0.48;0.5;0.52;1" />
                 </rect>
                 <rect x="58" y="39" width="8" height="6" rx="3" fill="#0a0e14" opacity="0">
                     <animate attributeName="opacity" values="0;0;1;0;0" dur="4s" repeatCount="indefinite" keyTimes="0;0.48;0.5;0.52;1" />
                 </rect>
-                {/* Smile */}
                 <path d="M 36 56 Q 50 68 64 56" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round">
                     <animate attributeName="d" values="M 36 56 Q 50 68 64 56;M 36 58 Q 50 65 64 58;M 36 56 Q 50 68 64 56" dur="3s" repeatCount="indefinite" />
                 </path>
-                {/* Pixel antenna */}
                 <line x1="50" y1="15" x2="50" y2="8" stroke={color} strokeWidth="2">
                     <animate attributeName="y2" values="8;5;8" dur="2s" repeatCount="indefinite" />
                 </line>
@@ -47,10 +42,10 @@ export function AnimatedAvatar({ size = 80, color = '#8b5cf6' }) {
             </svg>
         </div>
     )
-}
+});
 
 // Pixel heart animation
-export function PixelHeart({ size = 24, color = '#ec4899', animated = true }) {
+export const PixelHeart = React.memo(({ size = 24, color = '#ec4899', animated = true }) => {
     return (
         <svg viewBox="0 0 24 24" width={size} height={size} className={animated ? 'pixel-heart--animated' : ''}>
             <path
@@ -61,19 +56,17 @@ export function PixelHeart({ size = 24, color = '#ec4899', animated = true }) {
             </path>
         </svg>
     )
-}
+});
 
 // Gamepad animation
-export function AnimatedGamepad({ size = 24, color = '#22d3ee' }) {
+export const AnimatedGamepad = React.memo(({ size = 24, color = '#22d3ee' }) => {
     return (
         <svg viewBox="0 0 32 32" width={size} height={size}>
             <rect x="4" y="10" width="24" height="14" rx="7" fill="none" stroke={color} strokeWidth="2">
                 <animate attributeName="y" values="10;9;10" dur="2s" repeatCount="indefinite" />
             </rect>
-            {/* D-pad */}
             <rect x="9" y="14" width="2" height="6" rx="1" fill={color} />
             <rect x="7" y="16" width="6" height="2" rx="1" fill={color} />
-            {/* Buttons */}
             <circle cx="22" cy="15" r="1.5" fill={color}>
                 <animate attributeName="fill-opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite" />
             </circle>
@@ -82,10 +75,10 @@ export function AnimatedGamepad({ size = 24, color = '#22d3ee' }) {
             </circle>
         </svg>
     )
-}
+});
 
-// Trophy animation (for achievements)
-export function AnimatedTrophy({ size = 24, color = '#fbbf24' }) {
+// Trophy animation
+export const AnimatedTrophy = React.memo(({ size = 24, color = '#fbbf24' }) => {
     return (
         <svg viewBox="0 0 32 32" width={size} height={size}>
             <path d="M10 6h12v10a6 6 0 01-12 0V6z" fill="none" stroke={color} strokeWidth="2">
@@ -95,7 +88,6 @@ export function AnimatedTrophy({ size = 24, color = '#fbbf24' }) {
             <path d="M22 8h4a2 2 0 012 2v2a4 4 0 01-4 4h-2" fill="none" stroke={color} strokeWidth="1.5" />
             <rect x="14" y="22" width="4" height="4" rx="1" fill={color} />
             <rect x="10" y="26" width="12" height="2" rx="1" fill={color} />
-            {/* Sparkles */}
             <circle cx="16" cy="3" r="1" fill={color}>
                 <animate attributeName="r" values="0;1.5;0" dur="2s" repeatCount="indefinite" />
                 <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" />
@@ -110,10 +102,10 @@ export function AnimatedTrophy({ size = 24, color = '#fbbf24' }) {
             </circle>
         </svg>
     )
-}
+});
 
-// Sparkle burst (for leveling up, achievements)
-export function SparkleEffect({ size = 60, color = '#8b5cf6', active = true }) {
+// Sparkle effect
+export const SparkleEffect = React.memo(({ size = 60, color = '#8b5cf6', active = true }) => {
     if (!active) return null
     return (
         <svg viewBox="0 0 60 60" width={size} height={size} className="sparkle-effect">
@@ -128,13 +120,7 @@ export function SparkleEffect({ size = 60, color = '#8b5cf6', active = true }) {
                     strokeLinecap="round"
                     opacity="0.7"
                 >
-                    <animate
-                        attributeName="opacity"
-                        values="0;0.8;0"
-                        dur="1.5s"
-                        repeatCount="indefinite"
-                        begin={`${i * 0.15}s`}
-                    />
+                    <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" begin={`${i * 0.15}s`} />
                     <animate
                         attributeName="x2"
                         values={`${30 + 15 * Math.cos(angle * Math.PI / 180)};${30 + 25 * Math.cos(angle * Math.PI / 180)};${30 + 15 * Math.cos(angle * Math.PI / 180)}`}
@@ -153,27 +139,40 @@ export function SparkleEffect({ size = 60, color = '#8b5cf6', active = true }) {
             ))}
         </svg>
     )
-}
+});
 
 // XP Progress bar
-export function XPBar({ current = 0, max = 100, level = 1, color = '#8b5cf6' }) {
-    const pct = Math.min((current / max) * 100, 100)
+export const XPBar = React.memo(({ 
+    currentXP = 0, 
+    maxXP = 100, 
+    level = 1, 
+    accent = '#8b5cf6', 
+    style = 'default', 
+    hideLevel = false, 
+    hideHeader = false 
+}) => {
+    const pct = Math.min((currentXP / maxXP) * 100, 100)
+    
     return (
-        <div className="xp-bar">
-            <div className="xp-bar__header">
-                <span className="xp-bar__level">LVL {level}</span>
-                <span className="xp-bar__text">{current} / {max} XP</span>
-            </div>
-            <div className="xp-bar__track">
-                <div
-                    className="xp-bar__fill"
-                    style={{
-                        width: `${pct}%`,
-                        background: `linear-gradient(90deg, ${color}, ${color}88)`
-                    }}
-                />
-                <div className="xp-bar__glow" style={{ left: `${pct}%`, background: color }} />
+        <div className={`xp-bar-v4 xp-bar--${style}`} style={{ '--bar-accent': accent }}>
+            <div className="xp-bar__inner">
+                <div className="xp-bar__track">
+                    <div className="xp-bar__fill" style={{ width: `${pct}%` }}>
+                        <div className="xp-bar__energy" />
+                        <div className="xp-bar__particles" />
+                    </div>
+                    {pct > 0 && pct < 100 && (
+                        <div className="xp-bar__tip-glow" style={{ left: `${pct}%` }} />
+                    )}
+                    {style === 'glass-tube' && <div className="xp-bar__glass-reflection" />}
+                    {style === 'segmented' && (
+                        <div className="xp-bar__segment-overlay">
+                            {[...Array(10)].map((_, i) => <div key={i} className="xp-bar__segment-mark" />)}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     )
-}
+});
+

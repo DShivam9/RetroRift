@@ -1,6 +1,5 @@
 import React from 'react'
 import { Github, Twitter, Disc, Globe } from 'lucide-react'
-import FooterGrid from './effects/FooterGrid'
 import './Footer.css'
 
 export default function Footer() {
@@ -10,7 +9,6 @@ export default function Footer() {
     <footer className="footer">
       {/* Background Effect */}
       <div className="footer__bg">
-        <FooterGrid />
       </div>
 
       <div className="footer__container">

@@ -205,9 +205,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       const gameDiv = document.getElementById('game')
       if (gameDiv) gameDiv.remove()
       
-      // Record XP session
-      if (playtimeRef.current > 0) {
-        onPlayTimeRecorded(playtimeRef.current, currentGame.console)
+      if (playtimeRef.current > 0 && setXpData) {
+        setXpData(prev => onPlayTimeRecorded(prev, playtimeRef.current / 60))
       }
     }
   }, [currentGame.id, loadROM])

@@ -55,6 +55,16 @@ function AppContent() {
   // XP Engine state
   const [xpData, setXpData] = useState(() => loadXPData())
 
+  // Customization state
+  const [customization, setCustomization] = useState(() => {
+    try {
+      const saved = localStorage.getItem('profileCustomization')
+      return saved ? JSON.parse(saved) : null // ProfilePage will handle default if null
+    } catch {
+      return null
+    }
+  })
+
   // Favorites state (persisted)
   const [favorites, setFavorites] = useState(() => {
     try {
@@ -140,6 +150,11 @@ function AppContent() {
           setXpData(data)
         }
       }).catch(err => console.error('XP cloud load failed:', err))
+
+      // Sync customization from cloud if needed
+      if (data && data.profile) {
+        setCustomization(data.profile)
+      }
     }
   }, [isAuthenticated, user?.uid])
 
@@ -154,7 +169,7 @@ function AppContent() {
       }, 2000) // Debounce 2s
       return () => clearTimeout(timer)
     }
-  }, [favorites, lastPlayed, xpData, isAuthenticated, user?.uid])
+  }, [favorites, lastPlayed, xpData, customization, isAuthenticated, user?.uid])
 
   // Navigation with clean transition
   const navigate = (page) => {
@@ -229,6 +244,8 @@ function AppContent() {
     lastPlayed,
     xpData,
     setXpData,
+    customization,
+    setCustomization,
   }
 
   const isLoginPage = currentPage === 'login'

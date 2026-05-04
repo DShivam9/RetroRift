@@ -1,0 +1,240 @@
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.activity-feed__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.feed-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feed-title h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0;
+}
+
+.feed-stats {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* List & Cards */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.activity-card {
+  display: flex;
+  gap: 20px;
+  position: relative;
+}
+
+.activity-card__side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.activity-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(8, 8, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.icon-glow {
+  position: absolute;
+  inset: -5px;
+  background: var(--accent, #8b5cf6);
+  filter: blur(10px);
+  opacity: 0;
+  border-radius: 50%;
+  transition: opacity 0.3s;
+}
+
+.activity-card:hover .icon-glow {
+  opacity: 0.2;
+}
+
+.activity-card:hover .activity-icon-wrap {
+  border-color: var(--accent, #8b5cf6);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.activity-line {
+  width: 1px;
+  flex: 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  margin-top: 4px;
+}
+
+.activity-card:last-child .activity-line {
+  display: none;
+}
+
+.activity-card__main {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  transition: all 0.3s;
+  backdrop-filter: blur(4px);
+}
+
+.activity-card:hover .activity-card__main {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.activity-type {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.activity-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.activity-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.activity-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activity-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.activity-share {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.activity-share:hover {
+  color: #fff;
+}
+
+/* Card Special Styles */
+.card-ach .activity-icon-wrap { border-color: #fbbf24; }
+.card-ach .icon-glow { background: #fbbf24; }
+.icon-ach { color: #fbbf24; }
+
+.card-lvl .activity-icon-wrap { border-color: #f97316; }
+.card-lvl .icon-glow { background: #f97316; }
+.icon-lvl { color: #f97316; }
+
+.icon-game { color: #22d3ee; }
+
+/* Empty State */
+.activity-empty {
+  padding: 80px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.empty-visual {
+  position: relative;
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.pulse-ring {
+  position: absolute;
+  inset: -20px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 50%;
+  animation: pulse ringPulse 2s infinite;
+}
+
+@keyframes ringPulse {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.activity-empty h3 {
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.activity-empty p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.3);
+  max-width: 300px;
+}

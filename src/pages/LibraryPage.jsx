@@ -8,8 +8,7 @@ import './LibraryPage.css'
 /**
  * LibraryPage - Clean game catalog with filters
  */
-import GridScan from '../components/GridScan'
-import PixelSnow from '../components/effects/PixelSnow'
+
 
 export default function LibraryPage({
   navigate,

@@ -142,74 +142,108 @@ export default function SaveManager() {
     }
 
     return (
-        <div className="save-manager">
+        <div className="save-manager neural-interface">
             <div className="save-manager__header">
-                <h3 className="save-manager__title">
-                    <HardDrive size={20} />
-                    Save Data
-                </h3>
-                <span className="save-manager__size">{getStorageSize()} KB used</span>
+                <div className="header-main">
+                    <h3 className="save-manager__title">
+                        <Cloud className="title-icon" size={20} />
+                        Cloud Synchronizer
+                    </h3>
+                    <div className="neural-status">
+                        <div className="status-dot pulsing" />
+                        <span className="status-text">Neural Link Active</span>
+                    </div>
+                </div>
+                <div className="storage-meter">
+                    <div className="meter-label">Local Matrix Storage</div>
+                    <div className="meter-track">
+                        <div className="meter-fill" style={{ width: `${Math.min(100, (parseFloat(getStorageSize()) / 512) * 100)}%` }} />
+                    </div>
+                    <span className="save-manager__size">{getStorageSize()} KB</span>
+                </div>
             </div>
 
             {status && (
-                <div className={`save-manager__status save-manager__status--${status}`}>
+                <div className={`save-manager__status save-manager__status--${status} animate-slide-in`}>
+                    <div className="status-glow" />
                     {status === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
-                    {message}
+                    <span className="status-msg">{message}</span>
+                    <button className="status-close" onClick={() => setStatus(null)}><Trash2 size={12} /></button>
                 </div>
             )}
 
-            {/* Cloud Sync Section */}
-            {isAuthenticated && (
-                <div className="save-manager__cloud">
-                    <div className="save-manager__cloud-header">
-                        <Cloud size={16} />
-                        <span>Cloud Sync</span>
-                        <span className="save-manager__cloud-badge">Connected</span>
+            <div className="save-manager__grid">
+                {/* Cloud Control Hub */}
+                <div className="save-card cloud-hub">
+                    <div className="card-header">
+                        <Zap size={14} />
+                        <h4>Synaptic Link</h4>
                     </div>
-                    <div className="save-manager__cloud-actions">
-                        <button
-                            className="save-manager__btn save-manager__btn--cloud"
-                            onClick={handleCloudSync}
-                            disabled={syncing}
-                        >
-                            <Upload size={16} />
-                            <span>{syncing ? 'Syncing...' : 'Push to Cloud'}</span>
+                    
+                    {isAuthenticated ? (
+                        <div className="cloud-actions">
+                            <button
+                                className="sync-btn push"
+                                onClick={handleCloudSync}
+                                disabled={syncing}
+                            >
+                                <div className="btn-inner">
+                                    <Upload size={18} />
+                                    <div className="btn-text">
+                                        <span className="primary">Push to Cloud</span>
+                                        <span className="secondary">Upload local matrix</span>
+                                    </div>
+                                </div>
+                                {syncing && <div className="sync-progress" />}
+                            </button>
+
+                            <button
+                                className="sync-btn pull"
+                                onClick={handleCloudRestore}
+                                disabled={syncing}
+                            >
+                                <div className="btn-inner">
+                                    <Download size={18} />
+                                    <div className="btn-text">
+                                        <span className="primary">Pull from Cloud</span>
+                                        <span className="secondary">Restore remote state</span>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="auth-required">
+                            <CloudOff size={32} />
+                            <p>Authentication required for synaptic cloud linking.</p>
+                            <button className="auth-btn">Establish Connection</button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Local Matrix Hub */}
+                <div className="save-card local-hub">
+                    <div className="card-header">
+                        <HardDrive size={14} />
+                        <h4>Local Archive</h4>
+                    </div>
+                    <div className="local-actions">
+                        <button className="action-tile" onClick={handleExport}>
+                            <Download size={20} />
+                            <span>Export Matrix</span>
                         </button>
-                        <button
-                            className="save-manager__btn save-manager__btn--cloud"
-                            onClick={handleCloudRestore}
-                            disabled={syncing}
-                        >
-                            <Download size={16} />
-                            <span>{syncing ? 'Restoring...' : 'Pull from Cloud'}</span>
-                        </button>
+
+                        <label className="action-tile">
+                            <Upload size={20} />
+                            <span>Import Matrix</span>
+                            <input
+                                type="file"
+                                accept=".json"
+                                onChange={handleImport}
+                                style={{ display: 'none' }}
+                            />
+                        </label>
                     </div>
                 </div>
-            )}
-
-            {!isAuthenticated && (
-                <div className="save-manager__cloud save-manager__cloud--offline">
-                    <CloudOff size={16} />
-                    <span>Sign in to enable cloud saves</span>
-                </div>
-            )}
-
-            <div className="save-manager__actions">
-                <button className="save-manager__btn" onClick={handleExport}>
-                    <Download size={18} />
-                    <span>Export Saves</span>
-                </button>
-
-                <label className="save-manager__btn">
-                    <Upload size={18} />
-                    <span>Import Saves</span>
-                    <input
-                        type="file"
-                        accept=".json"
-                        onChange={handleImport}
-                        style={{ display: 'none' }}
-                    />
-                </label>
             </div>
 
             {/* Cloud Game Saves Gallery */}
