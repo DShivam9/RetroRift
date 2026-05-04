@@ -31,16 +31,26 @@ export const SmokeFogDrift = ({
     const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
     
     // Multi-stage falloff for wispy look
-    grad.addColorStop(0, smokeColor);
-    grad.addColorStop(0.2, smokeColor);
-    grad.addColorStop(0.4, smokeColor + '66');
-    grad.addColorStop(0.7, smokeColor + '22');
+    grad.addColorStop(0, smokeColor + 'aa');
+    grad.addColorStop(0.3, smokeColor + '44');
+    grad.addColorStop(0.6, smokeColor + '11');
     grad.addColorStop(1, 'transparent');
 
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
     ctx.fill();
+
+    // Add some noise/texture
+    for(let i = 0; i < 50; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const r = Math.random() * 20;
+      ctx.fillStyle = smokeColor + '08';
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
     
     offscreenCanvasRef.current = canvas;
   }, [smokeColor]);

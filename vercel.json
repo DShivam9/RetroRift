@@ -18,6 +18,10 @@
     {
       "source": "/__/auth/:path*",
       "destination": "https://retrorift-57c7e.firebaseapp.com/__/auth/:path*"
+    },
+    {
+      "source": "/site.xml",
+      "destination": "/sitemap.xml"
     }
   ]
 }
