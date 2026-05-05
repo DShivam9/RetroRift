@@ -249,7 +249,7 @@ export default function ProfilePage({
     .sort((a, b) => (b.currProg || 0) - (a.currProg || 0))[0]
 
   return (
-    <div
+    <main
       ref={profileRef}
       className={`profile gp-root cursor-${custom.cursorStyle}`}
       data-xp-style={custom.xpBarStyle}
@@ -487,6 +487,6 @@ export default function ProfilePage({
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

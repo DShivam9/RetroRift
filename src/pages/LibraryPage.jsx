@@ -64,7 +64,7 @@ export default function LibraryPage({
   const showFavoritesBg = isFavoritesPage || selectedConsole === 'FAVORITES'
 
   return (
-    <div className="library">
+    <main className="library">
       {/* Removed library__bg as it looks stretched in the catalog */}
 
       <div className="library__container">
@@ -176,6 +176,6 @@ export default function LibraryPage({
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }

@@ -65,7 +65,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
   }
 
   return (
-    <div className="home">
+    <main className="home">
       {/* Hero Section */}
       <section className="hero">
         <div className="hero__background">
@@ -293,6 +293,6 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
           </button>
         </div>
       </section>
-    </div>
+    </main>
   )
 }
