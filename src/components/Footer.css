@@ -1,278 +1,71 @@
-/* ==========================================================================
-   Footer — Living Cyber Deck with Micro-Animations
-   ========================================================================== */
+/* 
+   Professional & Natural Footer
+   Clean, spaced, and cinematic.
+*/
 
-.footer {
-    position: relative;
-    padding: 0;
-    margin-top: auto;
-    background: #050508;
-    border-top: 1px solid rgba(139, 92, 246, 0.3);
-    overflow: hidden;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
 }
 
-/* Background Layer */
-.footer__bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    opacity: 1;
+.font-pixel {
+  font-family: 'Press Start 2P', cursive;
 }
 
-.footer__container {
-    position: relative;
-    z-index: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 25px 40px 20px;
+.final-footer {
+  background: #050505;
+  position: relative;
 }
 
-/* ─── Main Content ─── */
-.footer__main {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 90px;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
+.footer-canvas-bg {
+  z-index: 0;
 }
 
-/* Brand Column */
-.footer__col--brand {
-    max-width: 300px;
+.pixelated {
+  image-rendering: pixelated;
 }
 
-.footer__brand {
-    font-family: var(--font-display, sans-serif);
-    font-size: 1.5rem;
-    color: #fff;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
-    margin-bottom: 16px;
-    animation: footerBrandGlow 4s ease-in-out infinite;
+/* Clear, simple links */
+.final-footer ul li a {
+  transition: all 0.2s ease;
 }
 
-@keyframes footerBrandGlow {
-
-    0%,
-    100% {
-        text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
-    }
-
-    50% {
-        text-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.2);
-    }
+.final-footer ul li a:hover {
+  padding-left: 4px;
 }
 
-.footer__desc {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.6;
-    margin-bottom: 24px;
+/* Subtle sprite floating */
+.final-footer img {
+  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.2));
+  animation: float-soft 3s ease-in-out infinite;
 }
 
-/* ─── System Status — Pulsing ─── */
-.footer__status {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
-    background: rgba(139, 92, 246, 0.1);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: #a78bfa;
-    letter-spacing: 0.05em;
-    transition: border-color 0.3s, box-shadow 0.3s;
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
-.footer__status:hover {
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
+/* Button Refinement */
+.final-footer a[href*="buymeacoffee"] {
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
 }
 
-.footer__status-dot {
-    width: 6px;
-    height: 6px;
-    background-color: #10b981;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #10b981;
-    animation: statusPulse 2s ease-in-out infinite;
+.final-footer a[href*="buymeacoffee"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
 }
 
-@keyframes statusPulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 4px #10b981;
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        box-shadow: 0 0 12px #10b981, 0 0 20px rgba(16, 185, 129, 0.3);
-        transform: scale(1.2);
-        opacity: 0.8;
-    }
-}
-
-/* ─── Links Grid ─── */
-.footer__links-grid {
-    display: flex;
-    gap: 60px;
-}
-
-.footer__heading {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 20px;
-    letter-spacing: 0.1em;
-    opacity: 0.9;
-    position: relative;
-    display: inline-block;
-}
-
-/* Heading underline shimmer */
-.footer__heading::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, #8b5cf6, transparent);
-    opacity: 0.3;
-}
-
-.footer__list {
-    display: flex;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .final-footer {
+    text-align: center;
+  }
+  .final-footer .flex-row {
     flex-direction: column;
-    gap: 12px;
-}
-
-/* ─── Links — Underline Slide ─── */
-.footer__link {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.5);
-    transition: all 0.25s ease;
-    position: relative;
-    display: inline-block;
-}
-
-.footer__link::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: #8b5cf6;
-    transition: width 0.3s ease;
-}
-
-.footer__link:hover {
-    color: #c4b5fd;
-    padding-left: 6px;
-}
-
-.footer__link:hover::after {
-    width: 100%;
-}
-
-/* ─── Divider — Shimmer Sweep ─── */
-.footer__div {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    margin-bottom: 30px;
-    position: relative;
-    overflow: hidden;
-}
-
-.footer__div::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
-    animation: dividerSweep 4s linear infinite;
-}
-
-@keyframes dividerSweep {
-    from {
-        left: -50%;
-    }
-
-    to {
-        left: 150%;
-    }
-}
-
-/* ─── Bottom Bar ─── */
-.footer__bottom {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 20px;
-}
-
-.footer__copy {
-    font-family: var(--font-mono, monospace);
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.3);
-}
-
-/* ─── Social Icons — Glow & Scale ─── */
-.footer__socials {
-    display: flex;
-    gap: 12px;
-}
-
-.footer__icon-link {
-    display: flex;
+  }
+  .final-footer .items-end {
     align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    backdrop-filter: blur(4px);
-}
-
-.footer__icon-link:hover {
-    background: rgba(139, 92, 246, 0.15);
-    border-color: rgba(139, 92, 246, 0.4);
-    color: #fff;
-    transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
-}
-
-.footer__icon-link:active {
-    transform: scale(0.9);
-    transition: transform 0.1s;
-}
-
-/* ─── Responsive ─── */
-@media (max-width: 900px) {
-    .footer__main {
-        flex-direction: column;
-        gap: 40px;
-    }
-
-    .footer__links-grid {
-        flex-wrap: wrap;
-        gap: 40px;
-    }
+  }
 }

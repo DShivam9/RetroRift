@@ -97,8 +97,8 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
       {/* Trigger Area */}
       <div className={`nav-trigger-wrap ${scrolled ? 'nav-trigger-wrap--scrolled' : ''}`}>
         <button className="nav-brand" onClick={() => navigate('home')}>
-          <span className="nav-brand__text">RETRO</span>
-          <span className="nav-brand__accent">RIFT</span>
+          <span className="nav-brand__text" data-text="RETRO">RETRO</span>
+          <span className="nav-brand__accent" data-text="RIFT">RIFT</span>
         </button>
 
         <div className="nav-actions">

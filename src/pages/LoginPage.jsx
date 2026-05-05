@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import ShapeGrid from '../components/ShapeGrid'
 import './LoginPage.css'
 
 export default function LoginPage({ navigate }) {
@@ -51,7 +52,29 @@ export default function LoginPage({ navigate }) {
     return (
         <div className="login">
             <div className="login__bg">
-                <div className="login__grid" />
+                <ShapeGrid 
+                    speed={0.5}
+                    squareSize={40}
+                    direction='diagonal'
+                    borderColor="#2F293A"
+                    hoverFillColor='#222'
+                    shape='square'
+                    hoverTrailAmount={0}
+                />
+            </div>
+
+            {/* Pokémon Sprites */}
+            <div className="login__sprites">
+                <img 
+                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/6.gif" 
+                    alt="Charizard" 
+                    className="sprite sprite--charizard"
+                />
+                <img 
+                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/150.gif" 
+                    alt="Mewtwo" 
+                    className="sprite sprite--mewtwo"
+                />
             </div>
 
             <div className="login__container">
@@ -63,9 +86,9 @@ export default function LoginPage({ navigate }) {
                 <div className="login__card">
                     {/* Header */}
                     <div className="login__header">
-                        <div className="login__logo">
-                            <span className="login__logo-icon">🎮</span>
-                            <h1 className="login__title">RetroPlay HUB</h1>
+                        <div className="login__logo-wrap">
+                            <span className="nav-brand__text">RETRO</span>
+                            <span className="nav-brand__accent">RIFT</span>
                         </div>
                         <p className="login__subtitle">
                             {isSignUp ? 'Create your account' : 'Welcome back, Player'}

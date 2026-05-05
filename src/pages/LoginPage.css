@@ -17,27 +17,25 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    opacity: 0.08;
+    opacity: 0.2; /* Adjusted for ShapeGrid visibility */
 }
 
-.login__grid {
-    width: 100%;
-    height: 100%;
-    background-image:
-        linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px);
-    background-size: 60px 60px;
-    animation: grid-scroll 20s linear infinite;
+.login__sprites .sprite {
+    position: absolute;
+    bottom: 40px;
+    width: 80px;
+    height: auto;
+    z-index: 5;
+    filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.4));
+    pointer-events: none;
+    transition: all 0.3s ease;
 }
 
-@keyframes grid-scroll {
-    0% {
-        transform: translate(0, 0);
-    }
+.sprite--charizard { left: 40px; }
+.sprite--mewtwo { right: 40px; }
 
-    100% {
-        transform: translate(60px, 60px);
-    }
+@media (max-width: 1024px) {
+    .login__sprites { display: none; }
 }
 
 .login__container {
@@ -98,38 +96,41 @@
     margin-bottom: 32px;
 }
 
-.login__logo {
+/* Branding */
+.login__logo-wrap {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
     margin-bottom: 12px;
+    position: relative;
+    padding: 10px 0;
 }
 
-.login__logo-icon {
-    font-size: 2rem;
-    animation: logo-pulse 3s ease-in-out infinite;
-}
-
-@keyframes logo-pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-.login__title {
+.login__logo-wrap .nav-brand__text,
+.login__logo-wrap .nav-brand__accent {
     font-family: var(--font-display, 'Orbitron', sans-serif);
-    font-size: 1.5rem;
-    color: var(--text-primary, #f5f5f7);
-    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 900;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+}
+
+.login__logo-wrap .nav-brand__text { color: #fff; }
+.login__logo-wrap .nav-brand__accent { color: #8b5cf6; }
+
+/* Atmospheric Glow for Login */
+.login__logo-wrap::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    pointer-events: none;
 }
 
 .login__subtitle {
@@ -271,56 +272,67 @@
     font-size: 0.85rem;
 }
 
-/* Submit */
+/* Submit - Retro Arcade Style */
 .login__submit {
     width: 100%;
-    padding: 13px 20px;
-    background: linear-gradient(135deg, #8b5cf6, #c084fc);
-    background-size: 200% 100%;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 14px 20px;
+    background: transparent;
+    color: #8b5cf6;
+    border: 2px solid #8b5cf6;
+    border-radius: 0px; /* Sharp corners for retro feel */
+    font-size: 0.95rem;
+    font-weight: 800;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    letter-spacing: 0.02em;
+    transition: all 0.1s steps(2); /* Snappy hardware feel */
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 0 0 transparent;
 }
 
-.login__submit::after {
+/* Scanline Overlay */
+.login__submit::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    transform: translate(-50%, -50%);
-    transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 2px
+    );
     opacity: 0;
-}
-
-.login__submit:active::after {
-    width: 400px;
-    height: 400px;
-    opacity: 1;
-    transition: 0s;
+    pointer-events: none;
 }
 
 .login__submit:hover {
-    background-position: 100% 50%;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.45),
-        0 0 12px rgba(139, 92, 246, 0.15);
+    background: #8b5cf6;
+    color: #000;
+    border-color: #ff00ff;
+    box-shadow: 4px 4px 0px #ff00ff; /* Hard retro shadow */
+    transform: translate(-2px, -2px);
+    text-shadow: 1px 1px #00ffff, -1px -1px #ff00ff; /* Subtle glitch effect */
+}
+
+.login__submit:hover::before {
+    opacity: 1;
+}
+
+.login__submit:active {
+    transform: translate(0, 0);
+    box-shadow: 0px 0px 0px #ff00ff;
 }
 
 .login__submit:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
+    border-color: #4a4a5a;
+    color: #4a4a5a;
 }
 
 /* Toggle */

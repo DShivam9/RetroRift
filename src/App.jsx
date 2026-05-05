@@ -22,6 +22,7 @@ const LibraryPage = lazy(() => import('./pages/LibraryPage'))
 const PlayerPage = lazy(() => import('./pages/PlayerPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
+const FeedbackPage = lazy(() => import('./pages/FeedbackPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 import DynamicSEO from './components/DynamicSEO'
 import MobileWarning from './components/MobileWarning'
@@ -271,13 +272,14 @@ function AppContent() {
             {currentPage === 'player' && <PlayerPage navigate={navigate} game={currentGame} favorites={favorites} toggleFavorite={toggleFavorite} onPlayGame={onPlayGame} xpData={xpData} setXpData={setXpData} />}
             {currentPage === 'profile' && <ProfilePage {...pageProps} />}
             {currentPage === 'login' && <LoginPage navigate={navigate} />}
-            {!['home', 'library', 'favorites', 'player', 'profile', 'login'].includes(currentPage) && <NotFoundPage navigate={navigate} />}
+            {currentPage === 'feedback' && <FeedbackPage navigate={navigate} user={user} />}
+            {!['home', 'library', 'favorites', 'player', 'profile', 'login', 'feedback'].includes(currentPage) && <NotFoundPage navigate={navigate} />}
           </div>
         </Suspense>
       </main>
 
       {/* Only show footer on main home page */}
-      {currentPage === 'home' && <Footer />}
+      {currentPage === 'home' && <Footer navigate={navigate} />}
 
       {/* Username setup modal for new users */}
       {isAuthenticated && needsUsername && (

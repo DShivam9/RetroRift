@@ -37,7 +37,10 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
           }
         })
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.01,
+        rootMargin: '0px 0px -50px 0px' 
+      }
     )
 
     if (featuredRef.current) observer.observe(featuredRef.current)

@@ -215,8 +215,8 @@
 .section {
     padding: 80px 0;
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .section--visible {
@@ -741,9 +741,9 @@
 
 .game-grid__item {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    transition-delay: calc(var(--i) * 60ms);
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition-delay: calc(var(--i) * 30ms);
 }
 
 .game-grid__item--show {
