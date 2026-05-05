@@ -116,7 +116,7 @@ export async function loadFromCloud(uid) {
 export async function uploadSaveState(uid, gameId, slotId, stateData) {
     requireAuth(uid)
     const path = `users/${uid}/saves/${gameId}/${slotId}.bin`
-    console.log('[CloudSave] uploadSaveState called:', { uid, gameId, slotId, path, dataType: typeof stateData, dataLength: stateData?.length || stateData?.byteLength || 'unknown' })
+    // console.log('[CloudSave] uploadSaveState called:', { uid, gameId, slotId, path, dataType: typeof stateData, dataLength: stateData?.length || stateData?.byteLength || 'unknown' })
     const storageRef = ref(storage, path)
     
     let dataToUpload = stateData
@@ -139,7 +139,7 @@ export async function uploadSaveState(uid, gameId, slotId, stateData) {
     try {
         await uploadBytes(storageRef, blob)
         const downloadURL = await getDownloadURL(storageRef)
-        console.log('[CloudSave] ✅ Upload successful! URL:', downloadURL.substring(0, 80) + '...')
+        // console.log('[CloudSave] ✅ Upload successful! URL:', downloadURL.substring(0, 80) + '...')
         return downloadURL
     } catch (err) {
         console.error('[CloudSave] ❌ Upload FAILED:', err.code, err.message)
@@ -229,7 +229,7 @@ export async function saveGameState(uid, gameId, saveData) {
     console.log('[CloudSave] Writing metadata to Firestore:', gameStateRef.path, '— slots:', processedSlots.length)
     try {
         await setDoc(gameStateRef, cloudSafe)
-        console.log('[CloudSave] ✅ Firestore metadata saved successfully!')
+        // console.log('[CloudSave] ✅ Firestore metadata saved successfully!')
     } catch (err) {
         console.error('[CloudSave] ❌ Firestore write FAILED:', err.code, err.message)
         throw err

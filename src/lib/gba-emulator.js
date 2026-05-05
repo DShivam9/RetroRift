@@ -6,7 +6,7 @@ class GBAEmulator {
     this.container = canvas.parentElement;
     this.emulatorDiv = null;
     this.emulatorInstance = null;
-    console.log(`GBAEmulator initialized for system: ${system}`);
+    // console.log(`GBAEmulator initialized for system: ${system}`);
 
     // Patch: Guard against EmulatorJS's broken setImmediate polyfill
     // Their main loop shifts from a queue and calls the result, but sometimes
@@ -136,7 +136,7 @@ class GBAEmulator {
   }
 
   start() {
-    console.log('Emulator start');
+    // console.log('Emulator start');
   }
 
   pause() {
@@ -343,7 +343,7 @@ class GBAEmulator {
       this.canvas.style.display = 'block'
     }
 
-    console.log('Emulator destroyed completely')
+    // console.log('Emulator destroyed completely')
   }
 }
 
