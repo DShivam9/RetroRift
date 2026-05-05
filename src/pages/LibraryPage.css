@@ -183,3 +183,28 @@
     background: rgba(139, 92, 246, 0.06);
     border-color: rgba(139, 92, 246, 0.3);
 }
+/* --- MOBILE STABILITY PASS --- */
+@media (max-width: 768px) {
+    .library {
+        padding: 100px 0 60px;
+    }
+    
+    .library__title {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+    
+    .library__count {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .library__controls {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .library__sort {
+        width: 100%;
+    }
+}

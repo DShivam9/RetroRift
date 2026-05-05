@@ -24,6 +24,7 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 import DynamicSEO from './components/DynamicSEO'
+import MobileWarning from './components/MobileWarning'
 
 /**
  * App - Main application with hash-based routing
@@ -254,6 +255,7 @@ function AppContent() {
   return (
     <div className="app">
       <DynamicSEO currentPage={currentPage} currentGame={currentGame} />
+      <MobileWarning />
       {/* Animated Background - Hide on long pages to avoid stretching */}
       {currentPage !== 'library' && currentPage !== 'favorites' && <AnimatedBackground />}
 

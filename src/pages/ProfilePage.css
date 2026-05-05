@@ -4669,6 +4669,80 @@
   }
 }
 
+/* --- MOBILE STABILITY PASS (SEO PROTECTION) --- */
+@media (max-width: 768px) {
+  .gp-hud-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    padding: 20px 15px;
+  }
+
+  .gp-id-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .gp-name-row {
+    justify-content: center;
+  }
+
+  .gp-meta-pills {
+    justify-content: center;
+  }
+
+  .gp-progression-hud {
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .gp-tabs {
+    padding: 0 10px;
+    gap: 5px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gp-tab {
+    padding: 10px 15px;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .gp-tab span {
+    display: none; /* Hide labels on very small screens to save space */
+  }
+
+  /* Bento Grid Mobile Fix */
+  .gp-bento-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .gp-bento-card--main,
+  .gp-bento-card--wide {
+    grid-column: span 1;
+  }
+
+  .gp-bento-val {
+    font-size: 2rem;
+  }
+
+  .gp-dashboard-shell {
+    margin-top: 10px;
+    border-radius: 20px 20px 0 0;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 768px) {
+  .gp-tab span {
+    display: inline;
+  }
+}
+
 .theme-upload-input {
   display: none !important;
 }
