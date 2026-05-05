@@ -229,13 +229,16 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
             ))}
           </nav>
 
-          {/* Footer System Status */}
+          {/* Decorative Spirit Container */}
           <div className="nav-drawer__footer">
-            <div className="nav-sys-status">
-              <div className="nav-sys__dot" />
-              <span className="nav-sys__text">SYSTEM ONLINE</span>
+            <div className="nav-spirits">
+              <img 
+                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/151.gif" 
+                alt="Mew" 
+                className="nav-spirit nav-spirit--mew"
+              />
             </div>
-            <span className="nav-version">v2.1.0</span>
+            <div className="nav-footer-accent" />
           </div>
         </div>
       </div>
