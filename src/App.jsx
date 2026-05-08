@@ -16,14 +16,34 @@ import { loadXPData, onGamePlayed, onFavoriteAdded } from './lib/xpEngine'
 import UsernameSetup from './components/UsernameSetup'
 import './App.css'
 
+// Helper for lazy loading with retry on chunk fail (fixes 404 errors after deployment)
+const lazyWithRetry = (componentImport) =>
+  lazy(async () => {
+    const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+      window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+    )
+
+    try {
+      const component = await componentImport()
+      window.sessionStorage.setItem('page-has-been-force-refreshed', 'false')
+      return component
+    } catch (error) {
+      if (!pageHasAlreadyBeenForceRefreshed) {
+        window.sessionStorage.setItem('page-has-been-force-refreshed', 'true')
+        window.location.reload()
+      }
+      throw error
+    }
+  })
+
 // Lazy-loaded pages
-const HomePage = lazy(() => import('./pages/HomePage'))
-const LibraryPage = lazy(() => import('./pages/LibraryPage'))
-const PlayerPage = lazy(() => import('./pages/PlayerPage'))
-const ProfilePage = lazy(() => import('./pages/ProfilePage'))
-const LoginPage = lazy(() => import('./pages/LoginPage'))
-const FeedbackPage = lazy(() => import('./pages/FeedbackPage'))
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+const HomePage = lazyWithRetry(() => import('./pages/HomePage'))
+const LibraryPage = lazyWithRetry(() => import('./pages/LibraryPage'))
+const PlayerPage = lazyWithRetry(() => import('./pages/PlayerPage'))
+const ProfilePage = lazyWithRetry(() => import('./pages/ProfilePage'))
+const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'))
+const FeedbackPage = lazyWithRetry(() => import('./pages/FeedbackPage'))
+const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage'))
 import DynamicSEO from './components/DynamicSEO'
 import MobileWarning from './components/MobileWarning'
 
