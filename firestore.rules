@@ -2,15 +2,36 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ─── Users: only the owner can read/write their own document ───
-    match /users/{userId} {
-      allow read, write: if request.auth != null
-                        && request.auth.uid == userId;
+    // Helper functions for validation
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
 
-      // All subcollections (data, gameStates, etc.)
+    function isValidString(str, maxLength) {
+      return str is string && str.size() <= maxLength;
+    }
+
+    // ─── Users: strict validation for the main user document ───
+    match /users/{userId} {
+      // Read allowed only for the owner
+      allow read: if isOwner(userId);
+      
+      // Write allowed for owner with strict schema validation
+      allow write: if isOwner(userId)
+                   // Prevent excessively large documents
+                   && request.resource.data.size() < 20
+                   // Ensure required/expected fields have correct types and lengths
+                   && (!('displayName' in request.resource.data) || isValidString(request.resource.data.displayName, 50))
+                   && (!('photoURL' in request.resource.data) || isValidString(request.resource.data.photoURL, 500))
+                   && (!('theme' in request.resource.data) || isValidString(request.resource.data.theme, 30))
+                   && (!('bio' in request.resource.data) || isValidString(request.resource.data.bio, 500));
+
+      // All subcollections (data, gameStates, etc.) - restrict size to prevent billing attacks
       match /{document=**} {
-        allow read, write: if request.auth != null
-                          && request.auth.uid == userId;
+        allow read: if isOwner(userId);
+        // Basic size limit for any sub-document (e.g., 50 fields max, or use a custom size function if needed)
+        // Here we ensure the document isn't bloated with thousands of fields.
+        allow write: if isOwner(userId) && request.resource.data.size() < 100;
       }
     }
 
