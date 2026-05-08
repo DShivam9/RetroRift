@@ -281,7 +281,7 @@ export default function ProfilePage({
                     <div className={`gp-av avatar-shape-${custom.avatarShape}`}>
                       {profilePhoto
                         ? <img src={profilePhoto} alt="Profile" className="profile__avatar-img" />
-                        : <AnimatedAvatar size={64} color={accent} />
+                        : <AnimatedAvatar size="100%" color={accent} />
                       }
                     </div>
                 </div>

@@ -5,7 +5,7 @@ import React from 'react'
  * Optimized with React.memo to prevent unnecessary re-renders in heavy dashboards.
  */
 
-// Default avatar — solid filled user silhouette, no animation
+// Default avatar — bold solid user silhouette, gaming-platform style
 export const AnimatedAvatar = React.memo(({ size = 80, color = '#8b5cf6' }) => {
     const s = typeof size === 'number' ? `${size}px` : size
     return (
@@ -13,23 +13,19 @@ export const AnimatedAvatar = React.memo(({ size = 80, color = '#8b5cf6' }) => {
             <svg viewBox="0 0 100 100" className="animated-avatar__svg">
                 <defs>
                     <clipPath id="av-clip">
-                        <circle cx="50" cy="50" r="48" />
+                        <circle cx="50" cy="50" r="50" />
                     </clipPath>
-                    <radialGradient id="av-bg" cx="50%" cy="40%" r="60%">
-                        <stop offset="0%" stopColor={color} stopOpacity="0.25" />
-                        <stop offset="100%" stopColor={color} stopOpacity="0.08" />
-                    </radialGradient>
                 </defs>
 
-                {/* Background fill */}
-                <circle cx="50" cy="50" r="48" fill="url(#av-bg)" />
+                {/* Solid dark background */}
+                <circle cx="50" cy="50" r="50" fill="#0a0a14" />
 
                 <g clipPath="url(#av-clip)">
-                    {/* Head */}
-                    <circle cx="50" cy="36" r="16" fill={color} opacity="0.55" />
+                    {/* Head — solid, bold */}
+                    <circle cx="50" cy="38" r="15" fill={color} />
 
-                    {/* Body — wide arc that fills bottom of circle */}
-                    <ellipse cx="50" cy="90" rx="30" ry="28" fill={color} opacity="0.4" />
+                    {/* Body — solid wide ellipse */}
+                    <ellipse cx="50" cy="88" rx="28" ry="24" fill={color} />
                 </g>
             </svg>
         </div>
