@@ -72,8 +72,8 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
     // 3. Update Canonical URL
     const existingCanonical = document.querySelector('link[rel="canonical"]');
     if (existingCanonical) {
-      const hash = currentPage === 'home' ? '' : `#${currentPage}`;
-      existingCanonical.setAttribute('href', `https://retro-rift.vercel.app/${hash}`);
+      const cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;
+      existingCanonical.setAttribute('href', `https://retro-rift.vercel.app${cleanPath}`);
     }
 
   }, [currentPage, currentGame]);

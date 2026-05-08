@@ -66,10 +66,15 @@ export default function App() {
 }
 
 function AppContent() {
-  // Get initial page from URL hash
+  // Get initial page from URL path or legacy hash
   const getInitialPage = () => {
     const hash = window.location.hash.slice(1)
-    return hash || 'home'
+    if (hash) return hash
+
+    const path = window.location.pathname.slice(1)
+    // Handle root / or empty string as 'home'
+    if (!path || path === '/') return 'home'
+    return path
   }
 
   const [currentPage, setCurrentPage] = useState(getInitialPage)
@@ -121,10 +126,18 @@ function AppContent() {
   // Handle browser back/forward
   useEffect(() => {
     const handlePopState = () => {
-      const page = window.location.hash.slice(1) || 'home'
-      setCurrentPage(page)
+      const path = window.location.pathname.slice(1) || 'home'
+      setCurrentPage(path)
     }
     window.addEventListener('popstate', handlePopState)
+    
+    // Legacy redirect: if user arrives with #library, redirect to /library
+    const hash = window.location.hash.slice(1)
+    if (hash) {
+      window.history.replaceState({ page: hash }, '', `/${hash}`)
+      window.location.hash = '' // Clear hash without reload
+    }
+
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
@@ -198,7 +211,10 @@ function AppContent() {
   const navigate = (page) => {
     if (page === currentPage) return
 
-    window.history.pushState({ page }, '', `#${page}`)
+    // Special handling for home root path
+    const urlPath = page === 'home' ? '/' : `/${page}`
+    window.history.pushState({ page }, '', urlPath)
+    
     setCurrentPage(page)
     setPageKey(prev => prev + 1)
     window.scrollTo({ top: 0, behavior: 'instant' })
