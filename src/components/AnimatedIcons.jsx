@@ -5,34 +5,32 @@ import React from 'react'
  * Optimized with React.memo to prevent unnecessary re-renders in heavy dashboards.
  */
 
-// Default avatar — clean, static geometric user icon
+// Default avatar — solid filled user silhouette, no animation
 export const AnimatedAvatar = React.memo(({ size = 80, color = '#8b5cf6' }) => {
     const s = typeof size === 'number' ? `${size}px` : size
     return (
         <div className="animated-avatar" style={{ width: s, height: s }}>
             <svg viewBox="0 0 100 100" className="animated-avatar__svg">
-                {/* Subtle hex frame */}
-                <polygon 
-                    points="50,14 78,30 78,62 50,78 22,62 22,30" 
-                    fill="none" 
-                    stroke={color} 
-                    strokeWidth="1.5" 
-                    strokeLinejoin="round"
-                    opacity="0.35"
-                />
+                <defs>
+                    <clipPath id="av-clip">
+                        <circle cx="50" cy="50" r="48" />
+                    </clipPath>
+                    <radialGradient id="av-bg" cx="50%" cy="40%" r="60%">
+                        <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+                        <stop offset="100%" stopColor={color} stopOpacity="0.08" />
+                    </radialGradient>
+                </defs>
 
-                {/* User head */}
-                <circle cx="50" cy="38" r="10" fill={`${color}20`} stroke={color} strokeWidth="1.5" opacity="0.8" />
+                {/* Background fill */}
+                <circle cx="50" cy="50" r="48" fill="url(#av-bg)" />
 
-                {/* User shoulders */}
-                <path 
-                    d="M 32 68 Q 32 54 41 50 Q 50 47 59 50 Q 68 54 68 68" 
-                    fill={`${color}12`} 
-                    stroke={color} 
-                    strokeWidth="1.5" 
-                    strokeLinecap="round"
-                    opacity="0.7"
-                />
+                <g clipPath="url(#av-clip)">
+                    {/* Head */}
+                    <circle cx="50" cy="36" r="16" fill={color} opacity="0.55" />
+
+                    {/* Body — wide arc that fills bottom of circle */}
+                    <ellipse cx="50" cy="90" rx="30" ry="28" fill={color} opacity="0.4" />
+                </g>
             </svg>
         </div>
     )
