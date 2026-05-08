@@ -291,16 +291,7 @@ const ProfileCustomizer = ({
                     })}
                 </div>
 
-                <div className="particle-control">
-                   <label>Environment Density</label>
-                   <RangeSlider 
-                     value={custom.particleDensity} 
-                     onChange={(v) => updateCustom('particleDensity', v)}
-                     min={10} max={100}
-                     color={accent}
-                     unit="%"
-                   />
-                </div>
+
               </div>
             )}
 
