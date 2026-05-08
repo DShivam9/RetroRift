@@ -5,87 +5,34 @@ import React from 'react'
  * Optimized with React.memo to prevent unnecessary re-renders in heavy dashboards.
  */
 
-// Animated avatar component — Cyberpunk geometric identity sigil
+// Default avatar — clean, static geometric user icon
 export const AnimatedAvatar = React.memo(({ size = 80, color = '#8b5cf6' }) => {
     const s = typeof size === 'number' ? `${size}px` : size
     return (
         <div className="animated-avatar" style={{ width: s, height: s }}>
             <svg viewBox="0 0 100 100" className="animated-avatar__svg">
-                <defs>
-                    <radialGradient id="av-core-glow" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-                        <stop offset="100%" stopColor={color} stopOpacity="0" />
-                    </radialGradient>
-                    <linearGradient id="av-shield-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor={color} stopOpacity="0.8" />
-                        <stop offset="100%" stopColor={color} stopOpacity="0.3" />
-                    </linearGradient>
-                </defs>
-
-                {/* Background glow pulse */}
-                <circle cx="50" cy="50" r="44" fill="url(#av-core-glow)">
-                    <animate attributeName="r" values="40;46;40" dur="4s" repeatCount="indefinite" />
-                    <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" repeatCount="indefinite" />
-                </circle>
-
-                {/* Outer orbit ring */}
-                <circle cx="50" cy="50" r="42" fill="none" stroke={color} strokeWidth="0.8" opacity="0.2" strokeDasharray="4 6">
-                    <animateTransform attributeName="transform" type="rotate" values="0 50 50;360 50 50" dur="20s" repeatCount="indefinite" />
-                </circle>
-
-                {/* Hexagonal shield frame */}
+                {/* Subtle hex frame */}
                 <polygon 
-                    points="50,12 79,28 79,60 50,76 21,60 21,28" 
+                    points="50,14 78,30 78,62 50,78 22,62 22,30" 
                     fill="none" 
-                    stroke="url(#av-shield-grad)" 
-                    strokeWidth="1.8" 
-                    strokeLinejoin="round"
-                >
-                    <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" />
-                </polygon>
-
-                {/* Inner hex */}
-                <polygon 
-                    points="50,22 70,33 70,55 50,66 30,55 30,33" 
-                    fill={`${color}08`} 
                     stroke={color} 
-                    strokeWidth="0.6" 
-                    opacity="0.4"
+                    strokeWidth="1.5" 
+                    strokeLinejoin="round"
+                    opacity="0.35"
                 />
 
-                {/* Central user silhouette — minimal geometric head + shoulders */}
-                {/* Head */}
-                <circle cx="50" cy="38" r="9" fill={`${color}25`} stroke={color} strokeWidth="1.5">
-                    <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite" />
-                </circle>
-                {/* Shoulders / torso arc */}
+                {/* User head */}
+                <circle cx="50" cy="38" r="10" fill={`${color}20`} stroke={color} strokeWidth="1.5" opacity="0.8" />
+
+                {/* User shoulders */}
                 <path 
-                    d="M 34 62 Q 34 50 42 48 Q 50 46 58 48 Q 66 50 66 62" 
-                    fill={`${color}15`} 
+                    d="M 32 68 Q 32 54 41 50 Q 50 47 59 50 Q 68 54 68 68" 
+                    fill={`${color}12`} 
                     stroke={color} 
                     strokeWidth="1.5" 
                     strokeLinecap="round"
-                >
-                    <animate attributeName="stroke-opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite" />
-                </path>
-
-                {/* Scan line effect */}
-                <line x1="26" y1="44" x2="74" y2="44" stroke={color} strokeWidth="0.5" opacity="0">
-                    <animate attributeName="y1" values="20;68;20" dur="3s" repeatCount="indefinite" />
-                    <animate attributeName="y2" values="20;68;20" dur="3s" repeatCount="indefinite" />
-                    <animate attributeName="opacity" values="0;0.4;0" dur="3s" repeatCount="indefinite" />
-                </line>
-
-                {/* Corner accent dots */}
-                <circle cx="50" cy="12" r="1.5" fill={color} opacity="0.7">
-                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="79" cy="28" r="1.5" fill={color} opacity="0.7">
-                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0.3s" />
-                </circle>
-                <circle cx="21" cy="28" r="1.5" fill={color} opacity="0.7">
-                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0.6s" />
-                </circle>
+                    opacity="0.7"
+                />
             </svg>
         </div>
     )

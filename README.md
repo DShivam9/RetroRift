@@ -16,14 +16,19 @@ The project marries state-of-the-art web development frameworks with timeless ga
 
 ## ✦ Visual Showcase
 
-*(Insert Main Dashboard Screenshot Here)*
-> *The central hub featuring dynamic backgrounds, game library grids, and a personalized user profile.*
+<div align="center">
+  <img src="docs/hero-screenshot.png" alt="RetroRift Hero" width="800" />
+  <br />
+  <em>The cinematic landing page — immersive 3D perspective grid with retro typography.</em>
+</div>
 
-*(Insert Gameplay Emulator Screenshot Here)*
-> *The emulation engine running a title with the custom cinematic CRT overlay and performance metrics.*
+<br />
 
-*(Insert Profile Customization Screenshot Here)*
-> *The user profile customization panel demonstrating the glassmorphic UI and theme selection.*
+<div align="center">
+  <img src="docs/library-screenshot.png" alt="RetroRift Game Library" width="800" />
+  <br />
+  <em>The game library — browse 22+ classic titles with console filtering and instant search.</em>
+</div>
 
 ---
 
