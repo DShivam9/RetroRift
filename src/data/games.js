@@ -44,7 +44,7 @@ export const games = [
     "console": "GBA",
     "year": null,
     "thumbnail": "/thumbnails/Crash Bandicoot Purple.jpg",
-    "romPath": "/roms/gba/Crash Bandicoot - Purple Riptos Rampage # GBA.zip",
+    "romPath": "/roms/gba/Crash Bandicoot - Purple Riptos Rampage GBA.zip",
     "genre": "Game",
     "developer": "Unknown",
     "description": "Play Crash Bandicoot: Purple on the Game Boy Advance. Experience this classic retro game right in your browser.",

@@ -156,7 +156,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       setError(null)
       setRomData(null)
 
-      const response = await fetch(currentGame.romPath)
+      const response = await fetch(encodeURI(currentGame.romPath))
       if (!response.ok) throw new Error('ROM file not found')
       const data = await response.arrayBuffer()
 
