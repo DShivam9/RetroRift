@@ -5,39 +5,86 @@ import React from 'react'
  * Optimized with React.memo to prevent unnecessary re-renders in heavy dashboards.
  */
 
-// Animated avatar component
+// Animated avatar component — Cyberpunk geometric identity sigil
 export const AnimatedAvatar = React.memo(({ size = 80, color = '#8b5cf6' }) => {
     const s = typeof size === 'number' ? `${size}px` : size
     return (
         <div className="animated-avatar" style={{ width: s, height: s }}>
             <svg viewBox="0 0 100 100" className="animated-avatar__svg">
-                <circle cx="50" cy="50" r="40" fill="none" stroke={color} strokeWidth="2" opacity="0.3">
-                    <animate attributeName="r" values="38;42;38" dur="3s" repeatCount="indefinite" />
+                <defs>
+                    <radialGradient id="av-core-glow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+                        <stop offset="100%" stopColor={color} stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient id="av-shield-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+                        <stop offset="100%" stopColor={color} stopOpacity="0.3" />
+                    </linearGradient>
+                </defs>
+
+                {/* Background glow pulse */}
+                <circle cx="50" cy="50" r="44" fill="url(#av-core-glow)">
+                    <animate attributeName="r" values="40;46;40" dur="4s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" repeatCount="indefinite" />
                 </circle>
-                <circle cx="50" cy="50" r="35" fill={`${color}15`} stroke={color} strokeWidth="1.5">
-                    <animate attributeName="r" values="33;37;33" dur="4s" repeatCount="indefinite" />
+
+                {/* Outer orbit ring */}
+                <circle cx="50" cy="50" r="42" fill="none" stroke={color} strokeWidth="0.8" opacity="0.2" strokeDasharray="4 6">
+                    <animateTransform attributeName="transform" type="rotate" values="0 50 50;360 50 50" dur="20s" repeatCount="indefinite" />
                 </circle>
-                <circle cx="38" cy="42" r="4" fill={color}>
-                    <animate attributeName="r" values="4;3;4" dur="2s" repeatCount="indefinite" />
+
+                {/* Hexagonal shield frame */}
+                <polygon 
+                    points="50,12 79,28 79,60 50,76 21,60 21,28" 
+                    fill="none" 
+                    stroke="url(#av-shield-grad)" 
+                    strokeWidth="1.8" 
+                    strokeLinejoin="round"
+                >
+                    <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" />
+                </polygon>
+
+                {/* Inner hex */}
+                <polygon 
+                    points="50,22 70,33 70,55 50,66 30,55 30,33" 
+                    fill={`${color}08`} 
+                    stroke={color} 
+                    strokeWidth="0.6" 
+                    opacity="0.4"
+                />
+
+                {/* Central user silhouette — minimal geometric head + shoulders */}
+                {/* Head */}
+                <circle cx="50" cy="38" r="9" fill={`${color}25`} stroke={color} strokeWidth="1.5">
+                    <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite" />
                 </circle>
-                <circle cx="62" cy="42" r="4" fill={color}>
-                    <animate attributeName="r" values="4;3;4" dur="2s" repeatCount="indefinite" begin="0.1s" />
-                </circle>
-                <rect x="34" y="39" width="8" height="6" rx="3" fill="#0a0e14" opacity="0">
-                    <animate attributeName="opacity" values="0;0;1;0;0" dur="4s" repeatCount="indefinite" keyTimes="0;0.48;0.5;0.52;1" />
-                </rect>
-                <rect x="58" y="39" width="8" height="6" rx="3" fill="#0a0e14" opacity="0">
-                    <animate attributeName="opacity" values="0;0;1;0;0" dur="4s" repeatCount="indefinite" keyTimes="0;0.48;0.5;0.52;1" />
-                </rect>
-                <path d="M 36 56 Q 50 68 64 56" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round">
-                    <animate attributeName="d" values="M 36 56 Q 50 68 64 56;M 36 58 Q 50 65 64 58;M 36 56 Q 50 68 64 56" dur="3s" repeatCount="indefinite" />
+                {/* Shoulders / torso arc */}
+                <path 
+                    d="M 34 62 Q 34 50 42 48 Q 50 46 58 48 Q 66 50 66 62" 
+                    fill={`${color}15`} 
+                    stroke={color} 
+                    strokeWidth="1.5" 
+                    strokeLinecap="round"
+                >
+                    <animate attributeName="stroke-opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite" />
                 </path>
-                <line x1="50" y1="15" x2="50" y2="8" stroke={color} strokeWidth="2">
-                    <animate attributeName="y2" values="8;5;8" dur="2s" repeatCount="indefinite" />
+
+                {/* Scan line effect */}
+                <line x1="26" y1="44" x2="74" y2="44" stroke={color} strokeWidth="0.5" opacity="0">
+                    <animate attributeName="y1" values="20;68;20" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="y2" values="20;68;20" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0;0.4;0" dur="3s" repeatCount="indefinite" />
                 </line>
-                <circle cx="50" cy="6" r="3" fill={color}>
-                    <animate attributeName="r" values="3;4;3" dur="1.5s" repeatCount="indefinite" />
-                    <animate attributeName="fill-opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite" />
+
+                {/* Corner accent dots */}
+                <circle cx="50" cy="12" r="1.5" fill={color} opacity="0.7">
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="79" cy="28" r="1.5" fill={color} opacity="0.7">
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0.3s" />
+                </circle>
+                <circle cx="21" cy="28" r="1.5" fill={color} opacity="0.7">
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0.6s" />
                 </circle>
             </svg>
         </div>
