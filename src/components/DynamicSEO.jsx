@@ -46,7 +46,7 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
             "name": game.title,
             "applicationCategory": "Game",
             "operatingSystem": "Web Browser",
-            "image": `https://retro-rift.vercel.app${game.thumbnail}`,
+            "image": `https://retrorift.online${game.thumbnail}`,
             "description": game.description,
             "aggregateRating": {
               "@type": "AggregateRating",
@@ -73,7 +73,7 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
     const existingCanonical = document.querySelector('link[rel="canonical"]');
     if (existingCanonical) {
       const cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;
-      existingCanonical.setAttribute('href', `https://retro-rift.vercel.app${cleanPath}`);
+      existingCanonical.setAttribute('href', `https://retrorift.online${cleanPath}`);
     }
 
   }, [currentPage, currentGame]);
