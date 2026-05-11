@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import { Github, Disc, Coffee } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../components/Toast'
 import './Footer.css'
 
 export default function Footer({ navigate }) {
   const { isAuthenticated } = useAuth()
+  const toast = useToast()
   const currentYear = new Date().getFullYear()
   const canvasRef = useRef(null)
 
@@ -19,8 +21,10 @@ export default function Footer({ navigate }) {
 
     const resize = () => {
       const parent = canvas.parentElement
-      canvas.width = parent.clientWidth
-      canvas.height = parent.clientHeight
+      if (canvas.width !== parent.clientWidth || canvas.height !== parent.clientHeight) {
+        canvas.width = parent.clientWidth
+        canvas.height = parent.clientHeight
+      }
     }
 
     // Use ResizeObserver for more reliable sizing in dynamic layouts
@@ -28,11 +32,13 @@ export default function Footer({ navigate }) {
     observer.observe(canvas.parentElement)
     resize()
 
-    const stars = Array.from({ length: 80 }, () => ({
-      x: Math.random() * window.innerWidth,
+    // Increased particle density
+    const stars = Array.from({ length: 200 }, () => ({
+      x: Math.random() * (window.innerWidth || 1000),
       y: Math.random() * 500,
       size: Math.random() * 1.5 + 0.5,
-      speed: Math.random() * 0.3 + 0.1,
+      speedY: Math.random() * 0.3 + 0.1,
+      speedX: (Math.random() - 0.5) * 0.1, // Subtle horizontal drift
       opacity: Math.random() * 0.7 + 0.3
     }))
 
@@ -42,11 +48,18 @@ export default function Footer({ navigate }) {
       stars.forEach(star => {
         ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`
         ctx.fillRect(star.x, star.y, star.size, star.size)
-        star.y -= star.speed
+        star.y -= star.speedY
+        star.x += star.speedX
+        
+        // Loop vertically
         if (star.y < 0) {
           star.y = canvas.height
           star.x = Math.random() * canvas.width
         }
+        
+        // Loop horizontally bounds
+        if (star.x < 0) star.x = canvas.width
+        if (star.x > canvas.width) star.x = 0
       })
 
       animationFrameId = requestAnimationFrame(draw)
@@ -95,7 +108,7 @@ export default function Footer({ navigate }) {
               <ul className="flex flex-col gap-3 text-gray-500 text-sm">
                 <li><button onClick={() => navigate('feedback')} className="hover:text-white transition-colors text-left">Feedback</button></li>
                 <li><a href="https://github.com/DShivam9" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Github</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Discord</a></li>
+                <li><button onClick={(e) => { e.preventDefault(); toast.info('Discord server is currently under construction!'); }} className="hover:text-white transition-colors">Discord</button></li>
               </ul>
             </div>
           </div>
@@ -107,20 +120,18 @@ export default function Footer({ navigate }) {
                   <a href="https://github.com/DShivam9" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors border border-white/5">
                     <Github size={18} className="text-white" />
                   </a>
-                  <a href="#" className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors border border-white/5">
+                  <button onClick={(e) => { e.preventDefault(); toast.info('Discord server is currently under construction!'); }} className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors border border-white/5">
                     <Disc size={18} className="text-white" />
-                  </a>
+                  </button>
                </div>
             </div>
-            <a 
-              href="https://www.buymeacoffee.com/dshivam9" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <button 
+              onClick={(e) => { e.preventDefault(); toast.info('Support link being updated for India! Stay tuned.'); }}
               className="flex items-center gap-3 px-6 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all text-sm shadow-xl"
             >
               <Coffee size={18} />
-              BUY ME A COFFEE
-            </a>
+              SUPPORT PROJECT
+            </button>
           </div>
 
         </div>

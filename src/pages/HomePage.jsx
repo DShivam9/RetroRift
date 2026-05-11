@@ -3,7 +3,7 @@ import GameCard from '../components/GameCard'
 import GridScan from '../components/GridScan'
 import { getFeaturedGames, getGameById, getAllGames } from '../data/games'
 import {
-  Play, ChevronRight, Sparkles, Zap, Trophy,
+  Play, ChevronRight, Sparkles, Trophy,
   Gamepad2, Music, Shuffle, Settings, Heart
 } from 'lucide-react'
 import { useToast } from '../components/Toast' // Import Toast
@@ -285,17 +285,6 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section section--cta">
-        <div className="cta">
-          <Zap className="cta__icon" />
-          <h2 className="cta__title">Ready to Play?</h2>
-          <p className="cta__desc">Explore our collection of classic games.</p>
-          <button className="cta__btn" onClick={() => navigate('library')}>
-            Enter Arcade
-          </button>
-        </div>
-      </section>
     </main>
   )
 }

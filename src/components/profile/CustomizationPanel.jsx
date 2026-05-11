@@ -8,7 +8,6 @@ import {
   Pipette, RefreshCcw
 } from 'lucide-react'
 import RangeSlider from '../RangeSlider'
-import ToggleSwitch from '../ToggleSwitch'
 import { XPBar } from '../AnimatedIcons'
 
 // ——— HSL Helpers ——— //
@@ -379,38 +378,12 @@ const ProfileCustomizer = ({
               </div>
             )}
 
-            {/* --- SYSTEM --- */}
             {activeCat === 'system' && (
               <div className="pane-section">
                 <header className="pane-header">
-                   <h3>Performance Engine</h3>
-                   <p>Optimize for your hardware capabilities.</p>
+                   <h3>Display Settings</h3>
+                   <p>Fine-tune your dashboard appearance.</p>
                 </header>
-                
-                <div className="toggle-stack">
-                   <div className="toggle-item">
-                      <div className="toggle-info">
-                        <h4>Hardware Acceleration</h4>
-                        <p>Uses GPU for smooth 60fps animations.</p>
-                      </div>
-                      <ToggleSwitch 
-                        checked={custom.hwAcceleration} 
-                        onChange={(v) => updateCustom('hwAcceleration', v)}
-                        color="#22c55e"
-                      />
-                   </div>
-                   <div className="toggle-item">
-                      <div className="toggle-info">
-                        <h4>Reduced Motion</h4>
-                        <p>Disables heavy parallax and physics effects.</p>
-                      </div>
-                      <ToggleSwitch 
-                        checked={custom.reducedMotion} 
-                        onChange={(v) => updateCustom('reducedMotion', v)}
-                        color={accent}
-                      />
-                   </div>
-                </div>
 
                 <div className="slider-group">
                    <div className="slider-item">
