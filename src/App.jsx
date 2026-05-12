@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react'
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnimatedBackground from './components/AnimatedBackground'
@@ -222,8 +222,11 @@ function AppContent() {
   }, [favorites, lastPlayed, xpData, customization, isAuthenticated, user?.uid])
 
   // Navigation with clean transition
+  // Navigation with clean transition
+  const lastNavRef = useRef(null)
   const navigate = (page) => {
-    if (page === currentPage) return
+    if (page === currentPage && lastNavRef.current === page) return
+    lastNavRef.current = page
 
     // Special handling for home root path
     const urlPath = page === 'home' ? '/' : `/${page}`
@@ -236,8 +239,13 @@ function AppContent() {
 
   // Play game handler
   const onPlayGame = (gameData) => {
+    // Prevent redundant navigation if already on the player page with this game
+    if (currentPage === 'player' && currentGame?.id === gameData.id) {
+      console.log('[App] Already playing this game, skipping redundant init')
+      return
+    }
+
     // Always find the freshest version of the game from the catalog
-    // This handles cases where gameData might be a stale object from localStorage
     const game = games.find(g => g.id === gameData.id) || gameData
 
     const payload = {
@@ -256,7 +264,7 @@ function AppContent() {
     setCurrentGame(game)
 
     // Award XP for playing
-    setXpData(prev => onGamePlayed(prev, game))
+    if (setXpData) setXpData(prev => onGamePlayed(prev, game))
 
     // Update play history
     try {
@@ -321,11 +329,22 @@ function AppContent() {
 
       <main className="app__main">
         <Suspense fallback={<Loader text="Loading..." />}>
-          <div key={pageKey} className={`app__page ${currentPage === 'profile' ? 'app__page--no-transform' : ''}`}>
+          <div key={currentPage} className={`app__page ${currentPage === 'profile' ? 'app__page--no-transform' : ''}`}>
             {currentPage === 'home' && <HomePage {...pageProps} />}
             {currentPage === 'library' && <LibraryPage {...pageProps} />}
             {currentPage === 'favorites' && <LibraryPage {...pageProps} defaultFilter="FAVORITES" />}
-            {currentPage === 'player' && <PlayerPage navigate={navigate} game={currentGame} favorites={favorites} toggleFavorite={toggleFavorite} onPlayGame={onPlayGame} xpData={xpData} setXpData={setXpData} />}
+            {currentPage === 'player' && (
+              <PlayerPage 
+                key={`player-${currentGame?.id || 'none'}`}
+                navigate={navigate} 
+                game={currentGame} 
+                favorites={favorites} 
+                toggleFavorite={toggleFavorite} 
+                onPlayGame={onPlayGame} 
+                xpData={xpData} 
+                setXpData={setXpData} 
+              />
+            )}
             {currentPage === 'profile' && <ProfilePage {...pageProps} />}
             {currentPage === 'login' && <LoginPage navigate={navigate} />}
             {currentPage === 'feedback' && <FeedbackPage navigate={navigate} user={user} />}
