@@ -187,9 +187,9 @@ class GBAEmulator {
       const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
       this.blobUrl = URL.createObjectURL(blob);
 
-      // Use main branch for better core compatibility
-      const dataPath = 'https://cdn.emulatorjs.org/main/data/';
-      console.log('Instantiating EmulatorJS with main dataPath:', dataPath);
+      // Use stable branch for correct asset structure
+      const dataPath = 'https://cdn.emulatorjs.org/stable/data/';
+      console.log('Instantiating EmulatorJS with stable dataPath:', dataPath);
       
       // Small delay to ensure DOM is ready and previous instance is cleared
       await new Promise(resolve => setTimeout(resolve, 50));
