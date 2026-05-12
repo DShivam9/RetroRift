@@ -278,6 +278,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   useEffect(() => {
     if (currentGame.id) {
       console.log(`[Player] Game active: ${currentGame.title} (${currentGame.id})`)
+      
+      // CRITICAL: Clean up existing emulator before switching games
+      if (emulatorRef.current) {
+        console.log('[Player] Destroying stale emulator instance...')
+        emulatorRef.current.destroy()
+        emulatorRef.current = null
+      }
+
       // Reset state
       setRomData(null)
       setError(null)
@@ -286,7 +294,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       // Load ROM
       loadROM()
     }
-  }, [currentGame.id, loadROM])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentGame.id]) // ONLY depend on ID to prevent loops when metadata syncs
 
   // Cleanup on unmount
   useEffect(() => {
@@ -324,26 +333,38 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
   // Initialize emulator after ROM loads
   useEffect(() => {
-    if (romData && canvasRef.current && !emulatorRef.current) {
-      try {
-        let system = 'gba'
-        const rawConsole = currentGame.console ? currentGame.console.toUpperCase() : ''
-        
-        if (rawConsole === 'NES') system = 'fceumm'
-        if (rawConsole === 'SNES') system = 'snes9x'
-        if (rawConsole === 'SEGACD') system = 'genesis_plus_gx'
-        if (rawConsole === 'NDS') system = 'melonds'
-        if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'mgba'
+    // We wait for loading to be false to ensure the canvas has been rendered in the DOM
+    if (!loading && romData && canvasRef.current && !emulatorRef.current) {
+      const initEmulator = async () => {
+        try {
+          let system = 'gba'
+          const rawConsole = currentGame.console ? currentGame.console.toUpperCase() : ''
+          
+          if (rawConsole === 'NES') system = 'fceumm'
+          if (rawConsole === 'SNES') system = 'snes9x'
+          if (rawConsole === 'SEGACD') system = 'genesis_plus_gx'
+          if (rawConsole === 'NDS') system = 'melonds'
+          if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'mgba'
 
-        console.log(`[Player] Initializing emulator with system: ${system} (for console: ${rawConsole})`)
-        emulatorRef.current = new GBAEmulator(canvasRef.current, system)
-        emulatorRef.current.loadROM(romData)
-        emulatorRef.current.start()
-      } catch (err) {
-        setError('Failed to start emulator')
+          console.log(`[Player] Initializing emulator with system: ${system} (for console: ${rawConsole})`)
+          
+          // Small delay to ensure canvas is fully ready/sized in the layout
+          await new Promise(resolve => setTimeout(resolve, 100))
+          
+          if (!canvasRef.current) return
+
+          emulatorRef.current = new GBAEmulator(canvasRef.current, system)
+          await emulatorRef.current.loadROM(romData)
+          emulatorRef.current.start()
+          console.log('[Player] Emulator started successfully')
+        } catch (err) {
+          console.error('[Player] Emulator init error:', err)
+          setError('Failed to start emulator. Please refresh and try again.')
+        }
       }
+      initEmulator()
     }
-  }, [romData, currentGame.console])
+  }, [romData, currentGame.console, loading])
 
   const formatTime = (s) => {
     const h = Math.floor(s / 3600)
@@ -697,7 +718,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
               ) : (currentGame.requiresUpload && !romData) ? (
                 <UploadRomArea onUpload={(buffer) => setRomData(buffer)} title={currentGame.title} />
               ) : (
-                <canvas ref={canvasRef} className={`player-canvas ${!romData ? 'hidden' : ''}`} />
+                <canvas 
+                  ref={canvasRef} 
+                  className="player-canvas" 
+                  style={{ opacity: romData ? 1 : 0 }} 
+                />
               )}
             </div>
           </div>
