@@ -35,12 +35,14 @@ export const SettingsProvider = ({ children }) => {
         localStorage.setItem('scanlines', scanlines)
         localStorage.setItem('reduced_motion', reducedMotion)
 
-        // Apply global classes
         if (crtMode) document.body.classList.add('crt-active')
         else document.body.classList.remove('crt-active')
 
         if (scanlines) document.body.classList.add('scanlines-active')
         else document.body.classList.remove('scanlines-active')
+
+        if (reducedMotion) document.body.classList.add('reduced-motion')
+        else document.body.classList.remove('reduced-motion')
 
     }, [audioEnabled, musicVolume, crtMode, scanlines, reducedMotion])
 

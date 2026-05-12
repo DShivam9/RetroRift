@@ -37,9 +37,9 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
           }
         })
       },
-      { 
-        threshold: 0.01,
-        rootMargin: '0px 0px -50px 0px' 
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -10% 0px'
       }
     )
 
@@ -193,8 +193,8 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
                     <h3 className="dashboard-card__title">Speedrun Act 1</h3>
                     <p className="dashboard-card__text">Beat Green Hill Zone under 45s</p>
                   </div>
-                  <button 
-                    className={`dashboard-card__action ${questAccepted ? 'dashboard-card__action--disabled' : ''}`} 
+                  <button
+                    className={`dashboard-card__action ${questAccepted ? 'dashboard-card__action--disabled' : ''}`}
                     onClick={handleDailyQuest}
                     disabled={questAccepted}
                     style={questAccepted ? { opacity: 0.5, cursor: 'not-allowed' } : {}}

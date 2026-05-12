@@ -16,13 +16,35 @@ import {
 import ShinyText from '../components/ShinyText'
 import '../styles/components.css'
 import './PlayerPage.css'
+import { getCachedROM, setCachedROM } from '../lib/rom-cache'
 
 /**
  * PlayerPage - Enhanced Emulator Page
  * Game details now come directly from the auto-generated catalog (games.js)
  */
 export default function PlayerPage({ navigate, game, favorites = [], toggleFavorite, onPlayGame, xpData, setXpData }) {
-  const currentGame = game || { title: 'Select a Game', console: 'N/A', year: '----', romPath: null }
+  // Enhanced state management: Synchronize prop with fresh catalog data to avoid staleness
+  const [syncedGame, setSyncedGame] = useState(() => {
+    const initial = game || { title: 'Select a Game', console: 'N/A', year: '----', romPath: null }
+    if (initial.id) {
+      return games.find(g => g.id === initial.id) || initial
+    }
+    return initial
+  })
+
+  // Self-healing effect: Re-sync whenever the game prop changes
+  useEffect(() => {
+    if (game?.id) {
+      const fresh = games.find(g => g.id === game.id)
+      if (fresh) {
+        setSyncedGame(fresh)
+      } else {
+        setSyncedGame(game)
+      }
+    }
+  }, [game])
+
+  const currentGame = syncedGame
   const details = {
     description: currentGame.description || 'A classic gaming experience.',
     region: currentGame.console || 'Unknown',
@@ -67,9 +89,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       g.genre === details.genre)
   ).slice(0, 4)
 
-  // Ensure page starts at top on every mount
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
+  // Ensure page starts at top on every mount (Aggressive Reset)
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+    // Secondary fallback for slow layout shifts
+    const timer = setTimeout(() => window.scrollTo(0, 0), 10)
+    return () => clearTimeout(timer)
   }, [currentGame.id])
 
   // Load existing save slots (local + cloud, only for games that support saves)
@@ -150,53 +175,136 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
   }, [setXpData])
 
-  // Load ROM
+  // Load ROM with fallback proxies
   const loadROM = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
-      setRomData(null)
 
-      let urlToFetch = currentGame.romPath;
-      if (currentGame.externalUrl) {
-        // Use a generic CORS proxy if fetching from an external archive
-        urlToFetch = `https://corsproxy.io/?url=${encodeURIComponent(currentGame.externalUrl)}`;
-      }
-
-      if (!urlToFetch && currentGame.requiresUpload) {
-        // No fetch required, waiting for user to drop a file
+      if (!currentGame.romPath && !currentGame.externalUrl && currentGame.requiresUpload) {
         setLoading(false)
         return
       }
 
-      const response = await fetch(encodeURI(urlToFetch))
-      if (!response.ok) throw new Error('ROM file not found')
-      const data = await response.arrayBuffer()
+      // Check Cache First
+      if (currentGame.externalUrl) {
+        const cachedData = await getCachedROM(currentGame.id)
+        if (cachedData) {
+          setRomData(cachedData)
+          setLoading(false)
+          return
+        }
+      }
 
-      setRomData(data)
-      setLoading(false)
+      // Local ROM fallback
+      if (currentGame.romPath && !currentGame.externalUrl) {
+        try {
+          const response = await fetch(encodeURI(currentGame.romPath))
+          if (response.ok) {
+            const data = await response.arrayBuffer()
+            setRomData(data)
+            setLoading(false)
+            return
+          }
+        } catch (e) {
+          console.warn('[Player] Local ROM fetch failed')
+        }
+      }
+
+      const proxies = [
+        (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+        (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+        (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+      ]
+
+      let lastError = null
+      let success = false
+
+      for (const proxyFn of proxies) {
+        try {
+          const cleanUrl = decodeURIComponent(currentGame.externalUrl)
+          const proxyUrl = proxyFn(cleanUrl)
+          console.log(`[Player] Attempting proxy: ${proxyUrl}`)
+          
+          const controller = new AbortController()
+          const timeoutId = setTimeout(() => controller.abort(), 15000)
+          
+          const response = await fetch(proxyUrl, { signal: controller.signal })
+          clearTimeout(timeoutId)
+
+          if (response.ok) {
+            const data = await response.arrayBuffer()
+            if (data.byteLength < 1000) {
+              throw new Error('Retrieved data too small to be a ROM')
+            }
+            console.log(`[Player] Download success! (${data.byteLength} bytes)`)
+            setRomData(data)
+            
+            // Cache it
+            try {
+              await setCachedROM(currentGame.id, data)
+              console.log('[Player] ROM cached for next time.')
+            } catch (cacheErr) {
+              console.warn('[Player] Failed to cache ROM:', cacheErr)
+            }
+            
+            success = true
+            setLoading(false)
+            break
+          } else {
+            console.warn(`[Player] Proxy returned ${response.status}`)
+          }
+        } catch (err) {
+          console.warn(`[Player] Proxy attempt failed:`, err.message)
+          lastError = err
+        }
+      }
+
+      if (!success) {
+        setLoading(false)
+        const errorMessage = lastError?.name === 'AbortError' 
+          ? 'Download timed out. The archival servers are slow today. Please try again.'
+          : 'Failed to retrieve ROM data from all sources. Please try again later or upload your own ROM.'
+        setError(errorMessage)
+      }
     } catch (err) {
-      setError(err.message)
+      console.error('[Player] loadROM fatal error:', err)
+      setError('An unexpected error occurred while loading the game.')
       setLoading(false)
     }
-  }, [currentGame.romPath, currentGame.externalUrl, currentGame.requiresUpload])
+  }, [currentGame])
 
-  // Cleanup and load on game change
+  // Trigger ROM load on mount or game change
   useEffect(() => {
-    let timeoutId = null
-
-    if (emulatorRef.current) {
-      emulatorRef.current.destroy()
-      emulatorRef.current = null
+    if (currentGame.id) {
+      console.log(`[Player] Game active: ${currentGame.title} (${currentGame.id})`)
+      // Reset state
       setRomData(null)
+      setError(null)
+      setLoading(true)
+      
+      // Load ROM
+      loadROM()
     }
+  }, [currentGame.id, loadROM])
 
-    if (currentGame.romPath || currentGame.externalUrl || currentGame.requiresUpload) {
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (emulatorRef.current) {
+        emulatorRef.current.destroy()
+        emulatorRef.current = null
+      }
+    }
+  }, [])
+
+  // Handle page-level details and playtime
+  useEffect(() => {
+    if (currentGame.id) {
       window.scrollTo(0, 0)
-      // Small delay to let page transition finish smoothly
-      timeoutId = setTimeout(() => {
-        loadROM()
-      }, 150)
+      
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      
       intervalRef.current = setInterval(() => {
         setPlaytime(t => {
           const next = t + 1
@@ -204,25 +312,15 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           return next
         })
       }, 1000)
-    } else {
-      setLoading(false)
     }
 
     return () => {
-      if (timeoutId) clearTimeout(timeoutId)
       if (intervalRef.current) clearInterval(intervalRef.current)
-      if (emulatorRef.current) {
-        emulatorRef.current.destroy()
-        emulatorRef.current = null
-      }
-      const gameDiv = document.getElementById('game')
-      if (gameDiv) gameDiv.remove()
-      
       if (playtimeRef.current > 0 && setXpData) {
         setXpData(prev => onPlayTimeRecorded(prev, playtimeRef.current / 60))
       }
     }
-  }, [currentGame.id, loadROM])
+  }, [currentGame.id, setXpData])
 
   // Initialize emulator after ROM loads
   useEffect(() => {
@@ -231,13 +329,13 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         let system = 'gba'
         const rawConsole = currentGame.console ? currentGame.console.toUpperCase() : ''
         
-        if (rawConsole === 'NES') system = 'nes'
-        if (rawConsole === 'SNES') system = 'snes'
-        if (rawConsole === 'SEGACD') system = 'segaCD'
-        if (rawConsole === 'NDS') system = 'nds'
-        if (rawConsole === 'GB') system = 'gb'
-        if (rawConsole === 'GBC') system = 'gbc'
+        if (rawConsole === 'NES') system = 'fceumm'
+        if (rawConsole === 'SNES') system = 'snes9x'
+        if (rawConsole === 'SEGACD') system = 'genesis_plus_gx'
+        if (rawConsole === 'NDS') system = 'melonds'
+        if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'mgba'
 
+        console.log(`[Player] Initializing emulator with system: ${system} (for console: ${rawConsole})`)
         emulatorRef.current = new GBAEmulator(canvasRef.current, system)
         emulatorRef.current.loadROM(romData)
         emulatorRef.current.start()
@@ -595,7 +693,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                   <button onClick={loadROM} className="btn btn--secondary">Retry</button>
                 </div>
               ) : loading ? (
-                <Loader text={`Syncing ${currentGame.title}...`} />
+                <Loader text={`DEPLOYING ${currentGame.title.toUpperCase()}... PLEASE WAIT`} />
               ) : (currentGame.requiresUpload && !romData) ? (
                 <UploadRomArea onUpload={(buffer) => setRomData(buffer)} title={currentGame.title} />
               ) : (
@@ -639,6 +737,20 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
               </div>
               <div className="lore-content">
                 <p className="player-description">{details.description}</p>
+                
+                {details.features && details.features.length > 0 && (
+                  <div className="player-features">
+                    <h4 className="player-features__title">Operational Features</h4>
+                    <ul className="player-features__list">
+                      {details.features.map((feature, i) => (
+                        <li key={i} className="player-feature-item">
+                          <Zap size={12} className="player-feature-icon" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
 

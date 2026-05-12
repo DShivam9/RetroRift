@@ -156,7 +156,11 @@ export default function ProfilePage({
   customization,
   setCustomization 
 }) {
-  const { audioEnabled, setAudioEnabled, clearAllData } = useSettings()
+  const { 
+    audioEnabled, setAudioEnabled, 
+    reducedMotion, setReducedMotion,
+    clearAllData 
+  } = useSettings()
   const [activeTab, setActiveTab] = React.useState('overview')
   const [showClearConfirm, setShowClearConfirm] = React.useState(false)
   const [isHudHidden, setIsHudHidden] = React.useState(false)
@@ -477,6 +481,11 @@ export default function ProfilePage({
                   <div className="cust-section">
                     <div className="cust-header"><Volume2 size={16} /> <h3>Master Audio</h3></div>
                     <ToggleSwitch checked={audioEnabled} onChange={setAudioEnabled} color={accent} />
+                  </div>
+
+                  <div className="cust-section">
+                    <div className="cust-header"><Gauge size={16} /> <h3>Reduced Motion</h3></div>
+                    <ToggleSwitch checked={reducedMotion} onChange={setReducedMotion} color={accent} />
                   </div>
                   <button className="cust-danger-btn" onClick={() => { if(confirm('Reset all data?')) clearAllData() }}>
                     <Trash2 size={14} /> Reset All Data

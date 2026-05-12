@@ -15,6 +15,7 @@ import {
 import { loadXPData, onGamePlayed, onFavoriteAdded } from './lib/xpEngine'
 import UsernameSetup from './components/UsernameSetup'
 import './App.css'
+import { games } from './data/games'
 
 // Helper for lazy loading with retry on chunk fail (fixes 404 errors after deployment)
 const lazyWithRetry = (componentImport) =>
@@ -113,11 +114,13 @@ function AppContent() {
     }
   })
 
-  // Current game for player
   const [currentGame, setCurrentGame] = useState(() => {
     try {
       const saved = localStorage.getItem('currentGame')
-      return saved ? JSON.parse(saved) : null
+      if (!saved) return null
+      const parsed = JSON.parse(saved)
+      // Always use fresh catalog data to avoid stale links/metadata
+      return games.find(g => g.id === parsed.id) || parsed
     } catch {
       return null
     }
@@ -163,6 +166,17 @@ function AppContent() {
   // Cloud sync: auto-sync when user signs in
   const { user, isAuthenticated, needsUsername, setUsername } = useAuth()
   const { refreshSettings } = useSettings()
+
+  // Global Scroll Reset on Page Change
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+    // Small delay to ensure browser doesn't override with scroll restoration
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0)
+      document.body.scrollTo(0, 0)
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [currentPage])
 
   useEffect(() => {
     if (isAuthenticated && user?.uid) {
@@ -221,7 +235,11 @@ function AppContent() {
   }
 
   // Play game handler
-  const onPlayGame = (game) => {
+  const onPlayGame = (gameData) => {
+    // Always find the freshest version of the game from the catalog
+    // This handles cases where gameData might be a stale object from localStorage
+    const game = games.find(g => g.id === gameData.id) || gameData
+
     const payload = {
       id: game.id,
       title: game.title,
@@ -229,6 +247,8 @@ function AppContent() {
       year: game.year,
       thumbnail: game.thumbnail,
       romPath: game.romPath,
+      externalUrl: game.externalUrl,
+      requiresUpload: game.requiresUpload,
       lastPlayedAt: Date.now()
     }
 

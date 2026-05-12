@@ -124,7 +124,7 @@ function cleanTitle(filename) {
         '1190 - Super Mario Advance 4 - Super Mario Bros 3': 'Super Mario Bros 3',
         '3538 - Grand Theft Auto - Chinatown Wars (EU)(M5)(XenoPhobia)': 'GTA: Chinatown Wars',
         'Classic NES Series - Super Mario Bros': 'Super Mario Bros',
-        'Crash Bandicoot - Purple Riptos Rampage # GBA': 'Crash Bandicoot: Purple',
+        'Crash Bandicoot - Purple Riptos Rampage GBA': 'Crash Bandicoot: Purple',
         'Legend of Zelda, The - Phantom Hourglass (USA) (En,Fr,Es)': 'The Legend of Zelda: Phantom Hourglass',
         'Pokemon - Blue Version (USA, Europe) (SGB Enhanced)': 'Pokémon Blue',
         'Pokemon - Yellow Version - Special Pikachu Edition (USA, Europe) (GBC,SGB Enhanced)': 'Pokémon Yellow',

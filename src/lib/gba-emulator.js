@@ -9,25 +9,102 @@ class GBAEmulator {
     // console.log(`GBAEmulator initialized for system: ${system}`);
 
     // Patch: Guard against EmulatorJS's broken setImmediate polyfill
-    // Their main loop shifts from a queue and calls the result, but sometimes
-    // it's not a function, causing "setImmediates.shift(...) is not a function"
     if (!window.__ejsSetImmediatePatched) {
       window.__ejsSetImmediatePatched = true;
-      const origAddEventListener = window.addEventListener.bind(window);
-      window.addEventListener('message', function ejsPatch(e) {
-        // Silently catch the setImmediate errors from EmulatorJS
-      }, false);
-      // Also override postMessage-based setImmediate if it exists
-      if (window.setImmediate) {
-        const origSetImmediate = window.setImmediate;
+      
+      // Some versions of EmulatorJS use a global setImmediates array
+      // We monitor it and ensure no null/undefined values enter the queue
+      const originalSetImmediate = window.setImmediate;
+      if (originalSetImmediate) {
         window.setImmediate = function(fn, ...args) {
           if (typeof fn === 'function') {
-            return origSetImmediate.call(window, fn, ...args);
+            return originalSetImmediate.call(window, fn, ...args);
           }
-          console.warn('[EmulatorJS Patch] Skipped non-function setImmediate call');
+          return 0;
         };
       }
+
+      // Intercept the message event that triggers the polyfill
+      const origAddEventListener = window.addEventListener;
+      window.addEventListener = function(type, listener, options) {
+        if (type === 'message') {
+          const wrappedListener = function(e) {
+            try {
+              // If we detect the broken setImmediates state, we clean it
+              if (window.setImmediates && Array.isArray(window.setImmediates)) {
+                // Filter out non-functions to prevent the ".shift(...) is not a function" error
+                for (let i = 0; i < window.setImmediates.length; i++) {
+                  if (typeof window.setImmediates[i] !== 'function') {
+                    window.setImmediates.splice(i, 1);
+                    i--;
+                  }
+                }
+              }
+              return listener.apply(this, arguments);
+            } catch (err) {
+              if (err.message && err.message.includes('setImmediates.shift')) {
+                // Silently swallow this specific EmulatorJS error
+                return;
+              }
+              throw err;
+            }
+          };
+          return origAddEventListener.call(this, type, wrappedListener, options);
+        }
+        return origAddEventListener.call(this, type, listener, options);
+      };
     }
+  }
+
+  // ROM Cache Helper using IndexedDB
+  async _getCache(key) {
+    return new Promise((resolve) => {
+      try {
+        const request = indexedDB.open('RetroPlayCache', 1);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('roms')) {
+            db.createObjectStore('roms');
+          }
+        };
+        request.onsuccess = (e) => {
+          const db = e.target.result;
+          const transaction = db.transaction('roms', 'readonly');
+          const store = transaction.objectStore('roms');
+          const getReq = store.get(key);
+          getReq.onsuccess = () => resolve(getReq.result);
+          getReq.onerror = () => resolve(null);
+        };
+        request.onerror = () => resolve(null);
+      } catch (err) {
+        resolve(null);
+      }
+    });
+  }
+
+  async _setCache(key, data) {
+    return new Promise((resolve) => {
+      try {
+        const request = indexedDB.open('RetroPlayCache', 1);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('roms')) {
+            db.createObjectStore('roms');
+          }
+        };
+        request.onsuccess = (e) => {
+          const db = e.target.result;
+          const transaction = db.transaction('roms', 'readwrite');
+          const store = transaction.objectStore('roms');
+          store.put(data, key);
+          transaction.oncomplete = () => resolve(true);
+          transaction.onerror = () => resolve(false);
+        };
+        request.onerror = () => resolve(false);
+      } catch (err) {
+        resolve(false);
+      }
+    });
   }
 
   // Ensure EmulatorJS assets (CSS + JS) are loaded exactly once
@@ -324,11 +401,26 @@ class GBAEmulator {
       this.emulatorInstance = null
     }
 
+    // DECISIVE CLEANUP: Kill the globals that cause the "classList" error in their loop
+    if (window.EJS_player) {
+      try {
+        // Stop their internal loops if possible
+        if (window.EJS_player.stop) window.EJS_player.stop();
+        window.EJS_player = null;
+      } catch (e) {}
+    }
+    
+    // Clear all potential EmulatorJS globals
+    const ejsGlobals = ['EJS_gameUrl', 'EJS_core', 'EJS_system', 'EJS_onSaveState', 'EJS_onLoadState'];
+    ejsGlobals.forEach(g => { if (window[g]) window[g] = null; });
+
     // Remove the emulator div completely
     if (this.emulatorDiv) {
       // Remove all child elements first
       while (this.emulatorDiv.firstChild) {
-        this.emulatorDiv.removeChild(this.emulatorDiv.firstChild)
+        try {
+          this.emulatorDiv.removeChild(this.emulatorDiv.firstChild)
+        } catch (e) { break; }
       }
       this.emulatorDiv.remove()
       this.emulatorDiv = null
