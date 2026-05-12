@@ -115,8 +115,10 @@
 }
 
 .player-page--hidden {
-  opacity: 0.01;
-  pointer-events: none;
+    display: block !important;
+    opacity: 1;
+    pointer-events: none;
+    min-height: 500px;
 }
 
 /* --- Breadcrumb (Pixel Style) --- */

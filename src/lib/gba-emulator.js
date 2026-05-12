@@ -77,7 +77,7 @@ class GBAEmulator {
         if (!document.querySelector('link[data-emulatorjs]')) {
           const cssLink = document.createElement('link');
           cssLink.rel = 'stylesheet';
-          cssLink.href = 'https://cdn.emulatorjs.org/stable/data/emulator.min.css';
+          cssLink.href = 'https://cdn.emulatorjs.org/latest/data/emulator.min.css';
           cssLink.setAttribute('data-emulatorjs', '');
           console.log('Loading EmulatorJS CSS from CDN:', cssLink.href);
           head.appendChild(cssLink);
@@ -85,7 +85,7 @@ class GBAEmulator {
 
         // Load script from CDN for better reliability
         const script = document.createElement('script');
-        script.src = 'https://cdn.emulatorjs.org/stable/data/emulator.min.js';
+        script.src = 'https://cdn.emulatorjs.org/latest/data/emulator.min.js';
         console.log('Loading EmulatorJS script from CDN:', script.src);
         script.async = true;
         script.setAttribute('data-emulatorjs', '');
@@ -140,18 +140,19 @@ class GBAEmulator {
       const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
       this.blobUrl = URL.createObjectURL(blob);
 
-      // Use stable branch for correct asset structure
-      const dataPath = 'https://cdn.emulatorjs.org/stable/data/';
-      console.log('Instantiating EmulatorJS with stable dataPath:', dataPath);
+      // Use latest branch for best compatibility
+      const dataPath = 'https://cdn.emulatorjs.org/latest/data/';
+      console.log('Instantiating EmulatorJS with latest dataPath:', dataPath);
       
       // Set globals as a fallback for finicky EmulatorJS versions
       window.EJS_gameUrl = this.blobUrl;
       window.EJS_core = this.system;
       window.EJS_system = this.system;
       window.EJS_gameName = 'RetroPlay Game';
+      window.EJS_startOnLoad = true;
       
       // Small delay to ensure DOM is ready and previous instance is cleared
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       this.emulatorInstance = new window.EmulatorJS('#game', {
         system: this.system,
