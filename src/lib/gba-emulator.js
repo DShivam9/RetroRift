@@ -185,20 +185,23 @@ class GBAEmulator {
 
       // Convert ArrayBuffer to Blob URL
       const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
-      const blobUrl = URL.createObjectURL(blob);
+      this.blobUrl = URL.createObjectURL(blob);
 
-      // Use CDN for emulator cores for better stability
-      const dataPath = 'https://cdn.emulatorjs.org/stable/data/';
-      console.log('Instantiating EmulatorJS with CDN dataPath:', dataPath);
+      // Use main branch for better core compatibility
+      const dataPath = 'https://cdn.emulatorjs.org/main/data/';
+      console.log('Instantiating EmulatorJS with main dataPath:', dataPath);
+      
+      // Small delay to ensure DOM is ready and previous instance is cleared
+      await new Promise(resolve => setTimeout(resolve, 50));
+
       this.emulatorInstance = new window.EmulatorJS('#game', {
         system: this.system,
         gameName: `${this.system.toUpperCase()} Game`,
-        gameUrl: blobUrl,
+        gameUrl: this.blobUrl,
         dataPath: dataPath,
         biosUrl: '',
         startOnLoad: true,
         color: '#06b6d4',
-        // Add additional options for better compatibility
         cheats: false,
         netplay: false,
         debug: false
@@ -416,6 +419,7 @@ class GBAEmulator {
 
     // Remove the emulator div completely
     if (this.emulatorDiv) {
+      console.log('Removing specific emulator div');
       // Remove all child elements first
       while (this.emulatorDiv.firstChild) {
         try {
@@ -426,9 +430,11 @@ class GBAEmulator {
       this.emulatorDiv = null
     }
 
-    // Also check for any #game divs and remove them
-    const gameDivs = document.querySelectorAll('#game')
-    gameDivs.forEach(div => div.remove())
+    // Revoke the blob URL to free memory
+    if (this.blobUrl) {
+      URL.revokeObjectURL(this.blobUrl);
+      this.blobUrl = null;
+    }
 
     // Show canvas again
     if (this.canvas) {

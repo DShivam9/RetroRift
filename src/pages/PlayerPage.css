@@ -114,6 +114,11 @@
     pointer-events: none;
 }
 
+.player-page--hidden {
+  opacity: 0.01;
+  pointer-events: none;
+}
+
 /* --- Breadcrumb (Pixel Style) --- */
 .player-breadcrumb {
     max-width: 1400px;

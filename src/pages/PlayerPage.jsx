@@ -344,7 +344,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           if (rawConsole === 'SNES') system = 'snes9x'
           if (rawConsole === 'SEGACD') system = 'genesis_plus_gx'
           if (rawConsole === 'NDS') system = 'melonds'
-          if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'mgba'
+          if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'gba'
 
           console.log(`[Player] Initializing emulator with system: ${system} (for console: ${rawConsole})`)
           
