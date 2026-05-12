@@ -377,13 +377,18 @@ function generateOutput(scannedGames, metadata) {
         const meta = findMetadata(game.title, metadata)
         const thumbnail = findThumbnail(game.title)
 
+        const requiresUpload = meta?.requiresUpload || meta?.virtual || (!game.romPath && !meta?.externalUrl);
+        const externalUrl = meta?.externalUrl || null;
+        
         const entry = {
             id: index + 1,
             title: game.title,
             console: game.console,
             year: meta?.year || null,
             thumbnail: thumbnail || '/thumbnails/default-cover.svg',
-            romPath: game.romPath,
+            romPath: (requiresUpload || externalUrl) ? null : game.romPath,
+            externalUrl: externalUrl,
+            requiresUpload: requiresUpload,
             genre: meta?.genre || 'Game',
             developer: meta?.developer || 'Unknown',
             description: meta?.description || generateDefaultDescription(game.title, game.console),
@@ -565,6 +570,23 @@ function main() {
         }
     }
 
+    // Inject Virtual Games
+    let virtualCount = 0
+    for (const [title, meta] of Object.entries(metadata)) {
+        if (meta.virtual || meta.requiresUpload || meta.externalUrl) {
+            const existing = scannedGames.find(g => normalizeForMatch(g.title) === normalizeForMatch(title))
+            if (!existing) {
+                scannedGames.push({
+                    title: title,
+                    console: meta.console || 'GBA', // default to GBA if not specified
+                    romPath: null,
+                    filePath: null
+                })
+                virtualCount++
+            }
+        }
+    }
+
     // Generate output
     const output = generateOutput(scannedGames, metadata)
     fs.writeFileSync(OUTPUT_FILE, output, 'utf-8')
@@ -573,7 +595,8 @@ function main() {
     console.log('')
     console.log('─'.repeat(50))
     console.log(`✅ Generated: src/data/games.js`)
-    console.log(`   📊 Total games: ${scannedGames.length}`)
+    console.log(`   📊 Total physical games: ${scannedGames.length - virtualCount}`)
+    console.log(`   🌐 Total virtual games: ${virtualCount}`)
     console.log(`   ✅ With metadata: ${matched}`)
     if (unmatched > 0) {
         console.log(`   ⚠️  Without metadata: ${unmatched} (using defaults)`)

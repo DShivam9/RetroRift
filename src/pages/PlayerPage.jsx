@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext'
 import { saveGameState, getGameSaveMetadata, downloadSaveState, deleteSaveState } from '../lib/cloudSaves'
 import { onPlayTimeRecorded } from '../lib/xpEngine'
 import { sanitizeSaveName } from '../lib/inputSanitizer'
+import UploadRomArea from '../components/UploadRomArea'
 import {
   Save, FolderOpen, Trash2, ChevronRight, Star, Clock, RefreshCw,
   Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn,
@@ -55,7 +56,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   // Simple games don't support save states (e.g. Pac-Man, Tetris)
   const NON_SAVE_GENRES = ['Arcade', 'Puzzle', 'Sports']
   const isEndless = details.playtime?.toLowerCase().includes('endless')
-  const supportsSaves = currentGame.romPath && !NON_SAVE_GENRES.includes(details.genre) && !isEndless
+  const supportsSaves = (currentGame.romPath || currentGame.requiresUpload || currentGame.externalUrl) && !NON_SAVE_GENRES.includes(details.genre) && !isEndless
 
   const isFavorite = favorites?.includes(currentGame.id)
 
@@ -156,7 +157,19 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       setError(null)
       setRomData(null)
 
-      const response = await fetch(encodeURI(currentGame.romPath))
+      let urlToFetch = currentGame.romPath;
+      if (currentGame.externalUrl) {
+        // Use a generic CORS proxy if fetching from an external archive
+        urlToFetch = `https://corsproxy.io/?url=${encodeURIComponent(currentGame.externalUrl)}`;
+      }
+
+      if (!urlToFetch && currentGame.requiresUpload) {
+        // No fetch required, waiting for user to drop a file
+        setLoading(false)
+        return
+      }
+
+      const response = await fetch(encodeURI(urlToFetch))
       if (!response.ok) throw new Error('ROM file not found')
       const data = await response.arrayBuffer()
 
@@ -166,7 +179,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       setError(err.message)
       setLoading(false)
     }
-  }, [currentGame.romPath])
+  }, [currentGame.romPath, currentGame.externalUrl, currentGame.requiresUpload])
 
   // Cleanup and load on game change
   useEffect(() => {
@@ -178,7 +191,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       setRomData(null)
     }
 
-    if (currentGame.romPath) {
+    if (currentGame.romPath || currentGame.externalUrl || currentGame.requiresUpload) {
       window.scrollTo(0, 0)
       // Small delay to let page transition finish smoothly
       timeoutId = setTimeout(() => {
@@ -583,8 +596,10 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 </div>
               ) : loading ? (
                 <Loader text={`Syncing ${currentGame.title}...`} />
+              ) : (currentGame.requiresUpload && !romData) ? (
+                <UploadRomArea onUpload={(buffer) => setRomData(buffer)} title={currentGame.title} />
               ) : (
-                <canvas ref={canvasRef} className="player-canvas" />
+                <canvas ref={canvasRef} className={`player-canvas ${!romData ? 'hidden' : ''}`} />
               )}
             </div>
           </div>

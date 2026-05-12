@@ -3,6 +3,8 @@
         "description": "Return to the Kanto region! Choose your starter and embark on an epic journey to become the Pokemon Champion.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GBA",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20FireRed.zip",
         "year": 2004,
         "difficulty": "Medium",
         "playtime": "25-40 hours",
@@ -19,6 +21,8 @@
         "description": "Explore the tropical Hoenn region and stop Team Magma from awakening the legendary Groudon.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GBA",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Ruby.zip",
         "year": 2002,
         "difficulty": "Medium",
         "playtime": "30-45 hours",
@@ -34,6 +38,8 @@
         "description": "Dive into Hoenn and counter Team Aqua as they try to awaken Kyogre and flood the world.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GBA",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Sapphire.zip",
         "year": 2002,
         "difficulty": "Medium",
         "playtime": "30-45 hours",
@@ -64,6 +70,8 @@
         "description": "The definitive Hoenn experience with both Team Magma and Aqua, plus the legendary Battle Frontier.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GBA",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Emerald.zip",
         "year": 2004,
         "difficulty": "Medium-Hard",
         "playtime": "40-60 hours",
@@ -127,6 +135,8 @@
         "description": "Explore Sinnoh and enter the mysterious Distortion World in this enhanced Pokemon adventure.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "NDS",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Platinum.zip",
         "year": 2008,
         "difficulty": "Medium",
         "playtime": "35-50 hours",
@@ -812,21 +822,6 @@
             "Dark Story"
         ]
     },
-    "Pokemon LeafGreen": {
-        "description": "The companion to FireRed, re-experience Kanto with updated graphics, new Sevii Islands, and wireless trading.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "year": 2004,
-        "difficulty": "Medium",
-        "playtime": "25-40 hours",
-        "rating": 4.7,
-        "features": [
-            "Sevii Islands",
-            "Wireless Adapter",
-            "151+ Pokémon",
-            "Kanto Nostalgia"
-        ]
-    },
     "Metroid Fusion": {
         "description": "Samus faces the terrifying SA-X in this intense, story-driven Metroid with a focus on horror and survival.",
         "genre": "Action-Adventure",
@@ -1144,10 +1139,12 @@
             "Multiple Endings"
         ]
     },
-    "Pokemon Diamond": {
+    "Pokémon Diamond": {
         "description": "Begin your Sinnoh adventure, face Team Galactic, and encounter the legendary Dialga — master of time.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "NDS",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Diamond%20Version%20%28USA%29%20%28Rev%205%29.zip",
         "year": 2006,
         "difficulty": "Medium",
         "playtime": "30-45 hours",
@@ -1159,10 +1156,12 @@
             "Day/Night Cycle"
         ]
     },
-    "Pokemon Pearl": {
+    "Pokémon Pearl": {
         "description": "Explore Sinnoh, battle Team Galactic, and capture the spatial Pokémon Palkia in this DS classic.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "NDS",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Pearl%20Version%20%28USA%29%20%28Rev%205%29.zip",
         "year": 2006,
         "difficulty": "Medium",
         "playtime": "30-45 hours",
@@ -1174,10 +1173,12 @@
             "Contests"
         ]
     },
-    "Pokemon HeartGold": {
+    "Pokémon HeartGold": {
         "description": "The beloved Johto journey reborn with the Pokéwalker, following Pokémon, and two full regions to explore.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "NDS",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20HeartGold%20Version%20%28USA%29.zip",
         "year": 2009,
         "difficulty": "Medium",
         "playtime": "40-60 hours",
@@ -1190,10 +1191,12 @@
             "Battle Frontier"
         ]
     },
-    "Pokemon SoulSilver": {
+    "Pokémon SoulSilver": {
         "description": "Relive the Johto saga with Lugia and Ho-Oh, featuring the Pokéwalker and the complete Kanto region.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "NDS",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20SoulSilver%20Version%20%28USA%29.zip",
         "year": 2009,
         "difficulty": "Medium",
         "playtime": "40-60 hours",
@@ -1449,10 +1452,12 @@
             "Special Stages"
         ]
     },
-    "Pokemon - Blue Version (USA, Europe) (SGB Enhanced)": {
+    "Pokémon Blue": {
         "description": "The original classic that started it all. Catch, train, and battle 151 original Pokémon in the Kanto region.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GB",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Blue%20Version%20%28USA%2C%20Europe%29%20%28SGB%20Enhanced%29.zip",
         "year": 1998,
         "difficulty": "Medium",
         "playtime": "20-30 hours",
@@ -1464,10 +1469,12 @@
             "Trade Evolutions"
         ]
     },
-    "Pokemon - Yellow Version - Special Pikachu Edition (USA, Europe) (GBC,SGB Enhanced)": {
+    "Pokémon Yellow": {
         "description": "Travel with Pikachu by your side in this special edition inspired by the Pokémon anime.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GBC",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Yellow%20Version%20-%20Special%20Pikachu%20Edition%20%28USA%2C%20Europe%29%20%28GBC%2CSGB%20Enhanced%29.zip",
         "year": 1999,
         "difficulty": "Medium",
         "playtime": "20-30 hours",
@@ -1525,10 +1532,12 @@
             "Multiplayer"
         ]
     },
-    "Pokemon - Leaf Green Version": {
+    "Pokémon Leaf Green": {
         "description": "The companion to FireRed, re-experience Kanto with updated graphics, new Sevii Islands, and wireless trading.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GBA",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Leaf%20Green%20Version.zip",
         "year": 2004,
         "difficulty": "Medium",
         "playtime": "25-40 hours",
@@ -1544,6 +1553,8 @@
         "description": "A comprehensive FireRed hack that allows you to catch every single Pokemon from the first three generations.",
         "genre": "RPG",
         "developer": "Hack (Lockstin)",
+        "console": "GBA",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Ultra%20Violet.zip",
         "year": 2013,
         "difficulty": "Medium",
         "playtime": "40-60 hours",
@@ -1556,10 +1567,12 @@
             "National Dex"
         ]
     },
-    "Pokemon - Crystal Version (USA, Europe)": {
+    "Pokémon Crystal": {
         "description": "The definitive Johto adventure. Watch Pokémon move for the first time and uncover the mysteries of Suicune.",
         "genre": "RPG",
         "developer": "Game Freak",
+        "console": "GBC",
+        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Crystal%20Version%20%28USA%2C%20Europe%29%20%28Rev%201%29.zip",
         "year": 2001,
         "difficulty": "Medium",
         "playtime": "30-50 hours",

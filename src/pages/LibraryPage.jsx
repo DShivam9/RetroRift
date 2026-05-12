@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { Upload } from 'lucide-react'
 import ShinyText from '../components/ShinyText'
 import GameCard from '../components/GameCard'
 import { games, getConsoles } from '../data/games'
@@ -129,6 +130,22 @@ export default function LibraryPage({
               <option value="year-desc">Newest</option>
               <option value="year-asc">Oldest</option>
             </select>
+
+            {/* Bring Your Own ROM */}
+            <button 
+              className="btn btn--primary"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.5rem 1rem' }}
+              onClick={() => onPlayGame({
+                id: 'custom-rom',
+                title: 'Custom Game',
+                console: 'GBA',
+                requiresUpload: true,
+                description: 'Playing a custom ROM file loaded directly from your device.'
+              })}
+            >
+              <Upload size={18} />
+              Play Custom ROM
+            </button>
           </div>
         </div>
 
