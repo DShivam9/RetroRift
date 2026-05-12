@@ -77,7 +77,7 @@ class GBAEmulator {
         if (!document.querySelector('link[data-emulatorjs]')) {
           const cssLink = document.createElement('link');
           cssLink.rel = 'stylesheet';
-          cssLink.href = 'https://cdn.emulatorjs.org/v1/data/emulator.min.css';
+          cssLink.href = 'https://cdn.emulatorjs.org/stable/data/emulator.min.css';
           cssLink.setAttribute('data-emulatorjs', '');
           console.log('Loading EmulatorJS CSS from CDN:', cssLink.href);
           head.appendChild(cssLink);
@@ -85,7 +85,7 @@ class GBAEmulator {
 
         // Load script from CDN for better reliability
         const script = document.createElement('script');
-        script.src = 'https://cdn.emulatorjs.org/v1/data/emulator.min.js';
+        script.src = 'https://cdn.emulatorjs.org/stable/data/emulator.min.js';
         console.log('Loading EmulatorJS script from CDN:', script.src);
         script.async = true;
         script.setAttribute('data-emulatorjs', '');
@@ -140,9 +140,9 @@ class GBAEmulator {
       const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
       this.blobUrl = URL.createObjectURL(blob);
 
-      // Use v1 branch for maximum stability in handover
-      const dataPath = 'https://cdn.emulatorjs.org/v1/data/';
-      console.log('Instantiating EmulatorJS with v1 dataPath:', dataPath);
+      // Use stable branch for correct asset structure
+      const dataPath = 'https://cdn.emulatorjs.org/stable/data/';
+      console.log('Instantiating EmulatorJS with stable dataPath:', dataPath);
       
       // Set globals as a fallback for finicky EmulatorJS versions
       window.EJS_gameUrl = this.blobUrl;
