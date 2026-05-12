@@ -6,54 +6,7 @@ class GBAEmulator {
     this.container = canvas.parentElement;
     this.emulatorDiv = null;
     this.emulatorInstance = null;
-    // console.log(`GBAEmulator initialized for system: ${system}`);
-
-    // Patch: Guard against EmulatorJS's broken setImmediate polyfill
-    if (!window.__ejsSetImmediatePatched) {
-      window.__ejsSetImmediatePatched = true;
-      
-      // Some versions of EmulatorJS use a global setImmediates array
-      // We monitor it and ensure no null/undefined values enter the queue
-      const originalSetImmediate = window.setImmediate;
-      if (originalSetImmediate) {
-        window.setImmediate = function(fn, ...args) {
-          if (typeof fn === 'function') {
-            return originalSetImmediate.call(window, fn, ...args);
-          }
-          return 0;
-        };
-      }
-
-      // Intercept the message event that triggers the polyfill
-      const origAddEventListener = window.addEventListener;
-      window.addEventListener = function(type, listener, options) {
-        if (type === 'message') {
-          const wrappedListener = function(e) {
-            try {
-              // If we detect the broken setImmediates state, we clean it
-              if (window.setImmediates && Array.isArray(window.setImmediates)) {
-                // Filter out non-functions to prevent the ".shift(...) is not a function" error
-                for (let i = 0; i < window.setImmediates.length; i++) {
-                  if (typeof window.setImmediates[i] !== 'function') {
-                    window.setImmediates.splice(i, 1);
-                    i--;
-                  }
-                }
-              }
-              return listener.apply(this, arguments);
-            } catch (err) {
-              if (err.message && err.message.includes('setImmediates.shift')) {
-                // Silently swallow this specific EmulatorJS error
-                return;
-              }
-              throw err;
-            }
-          };
-          return origAddEventListener.call(this, type, wrappedListener, options);
-        }
-        return origAddEventListener.call(this, type, listener, options);
-      };
-    }
+    this.blobUrl = null;
   }
 
   // ROM Cache Helper using IndexedDB
@@ -204,7 +157,11 @@ class GBAEmulator {
         color: '#06b6d4',
         cheats: false,
         netplay: false,
-        debug: false
+        debug: true,
+        EJS_DEBUG: true,
+        onGameStart: () => {
+          console.log('[Emulator] 🚀 Game engine started successfully!');
+        }
       });
 
       console.log('EmulatorJS instance created');

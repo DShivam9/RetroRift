@@ -69,8 +69,10 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const [saveModalDefault, setSaveModalDefault] = useState('')
   const [downloadingSave, setDownloadingSave] = useState(null) // saveId of slot being downloaded
   const canvasRef = useRef(null)
-  const intervalRef = useRef(null)
   const emulatorRef = useRef(null)
+  const isInitializingRef = useRef(false)
+  const isComponentMounted = useRef(true)
+  const intervalRef = useRef(null)
   const { user, isAuthenticated } = useAuth()
 
   const MAX_SAVE_SLOTS = 5
@@ -336,6 +338,9 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     // We wait for loading to be false to ensure the canvas has been rendered in the DOM
     if (!loading && romData && canvasRef.current && !emulatorRef.current) {
       const initEmulator = async () => {
+        if (isInitializingRef.current) return
+        isInitializingRef.current = true
+        
         try {
           let system = 'gba'
           const rawConsole = currentGame.console ? currentGame.console.toUpperCase() : ''
@@ -344,7 +349,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           if (rawConsole === 'SNES') system = 'snes9x'
           if (rawConsole === 'SEGACD') system = 'genesis_plus_gx'
           if (rawConsole === 'NDS') system = 'melonds'
-          if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'gba'
+          if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'mgba'
 
           console.log(`[Player] Initializing emulator with system: ${system} (for console: ${rawConsole})`)
           
@@ -360,6 +365,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         } catch (err) {
           console.error('[Player] Emulator init error:', err)
           setError('Failed to start emulator. Please refresh and try again.')
+          isInitializingRef.current = false
         }
       }
       initEmulator()
