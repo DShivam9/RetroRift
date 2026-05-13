@@ -39,6 +39,19 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "retro-rift.vercel.app"
+        }
+      ],
+      "destination": "https://retrorift.online/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/__/auth/:path*",
