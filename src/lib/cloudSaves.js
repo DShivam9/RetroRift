@@ -1,6 +1,6 @@
 // Cloud Saves API — Sync user data between localStorage and Firestore
 // All writes are sanitized. All operations require authentication.
-import { doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore'
+import { doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs, Bytes } from 'firebase/firestore'
 import { db } from './firebase'
 import { sanitizeObject, sanitizeString, isValidUID, isWithinSizeLimit } from './inputSanitizer'
 
@@ -137,9 +137,9 @@ export async function uploadSaveState(uid, gameId, slotId, stateData) {
     const binaryRef = doc(db, 'users', uid, 'gameStates', String(gameId), 'binaries', String(slotId))
     
     try {
-        // Firestore SDK handles Uint8Array as binary Bytes
+        // Wrap in Bytes.fromUint8Array to ensure Firestore recognizes it as binary
         await setDoc(binaryRef, {
-            data: dataToUpload,
+            data: Bytes.fromUint8Array(dataToUpload),
             updatedAt: serverTimestamp()
         })
         return true // Success indicator
@@ -161,8 +161,9 @@ export async function downloadSaveState(uid, gameId, slotId) {
         if (!snap.exists()) throw new Error('Save not found in cloud')
         
         const binData = snap.data().data
-        // Firestore returns Uint8Array or Bytes object
-        return binData.buffer || binData
+        // Convert Firestore Bytes object back to ArrayBuffer for the emulator
+        const uint8 = binData.toUint8Array ? binData.toUint8Array() : binData
+        return uint8.buffer || uint8
     } catch (err) {
         console.error('Download failed:', err)
         throw err
