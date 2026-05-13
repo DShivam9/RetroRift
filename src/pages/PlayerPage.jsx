@@ -148,6 +148,20 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
     loadSaves()
   }, [currentGame.id, isAuthenticated, user?.uid, supportsSaves])
+  
+  // Safety Lock: Prevent closing the window while saving to cloud
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (savingToCloud) {
+        const msg = 'Save in progress. Closing the window now may result in data loss.';
+        e.preventDefault();
+        e.returnValue = msg;
+        return msg;
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [savingToCloud]);
 
   // Prevent arrow keys / game keys from scrolling the page while emulator is active
   useEffect(() => {
@@ -543,7 +557,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         // Sync metadata and binary to cloud
         if (isAuthenticated && user?.uid) {
           try {
-            setSaveMessage('Uploading to cloud...')
+            setSaveMessage('Saving... Don\'t close window!')
             console.log('[SaveFlow] Step 4: Calling saveGameState for Firestore binary sync...')
             const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
             
@@ -588,7 +602,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         s.id === saveModalMode.saveId ? { ...s, name: saveName } : s
       )
       setSaveSlots(updatedSlots)
-      localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+      const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
+      localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly))
       if (isAuthenticated && user?.uid) {
         saveGameState(user.uid, currentGame.id, { slots: updatedSlots }).catch(() => { })
       }
@@ -614,12 +629,17 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         
         if (downloadedData) {
           stateToLoad = downloadedData
-          // Cache locally for faster future loads
+          
+          // Update React state with the heavy binary data for the current session
           const updatedSlots = saveSlots.map(s => 
             s.id === save.id ? { ...s, stateData: downloadedData } : s
           )
           setSaveSlots(updatedSlots)
-          localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+
+          // CRITICAL: Strip stateData before saving to localStorage to avoid massive JSON overhead
+          const slotsToCache = updatedSlots.map(({ stateData, ...rest }) => rest)
+          localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(slotsToCache))
+          
           setSaveMessage('Cloud save ready!')
         }
       } catch (err) {
@@ -676,7 +696,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
     try {
       setSavingToCloud(true)
-      setSaveMessage('Overwriting save...')
+      setSaveMessage('Saving... Don\'t close window!')
       const stateData = await emulatorRef.current.saveState()
 
       if (!stateData) {
@@ -693,12 +713,9 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       )
       setSaveSlots(updatedSlots)
 
-      try {
-        localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
-      } catch {
-        const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
-        try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly)) } catch { /* ignore */ }
-      }
+      // Cache to localStorage (metadata only to ensure speed)
+      const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
+      try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly)) } catch (e) { console.error('Storage error:', e) }
 
       // Re-upload to cloud
       if (isAuthenticated && user?.uid) {
@@ -738,7 +755,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const handleDeleteSave = async (saveId) => {
     const updatedSlots = saveSlots.filter(s => s.id !== saveId)
     setSaveSlots(updatedSlots)
-    localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
+    const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
+    localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly))
 
     // Sync deletion to cloud (metadata + binary)
     if (isAuthenticated && user?.uid) {

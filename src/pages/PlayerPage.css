@@ -1483,3 +1483,70 @@
     border-bottom-width: 2px;
     transform: translateY(2px);
 }.player-loading-container { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 20px; } .player-loading-note { font-family: var(--font-mono); font-size: 0.75rem; color: #71717a; text-align: center; max-width: 300px; line-height: 1.5; } .player-error__fallback { margin-top: 32px; padding-top: 24px; border-top: 1px dashed rgba(255, 255, 255, 0.1); display: flex; flex-direction: column; align-items: center; gap: 16px; } .player-error__fallback p { font-family: var(--font-mono); font-size: 0.75rem; color: #52525b; margin: 0; } .btn--outline { background: transparent; border: 1px solid rgba(74, 222, 128, 0.3); color: #4ade80; padding: 10px 20px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; } .btn--outline:hover { background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #fff; }
+
+/* --- Smooth UI Transitions --- */
+.save-status-toast {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 20px;
+    color: #4ade80;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+@keyframes toastSlideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(12px) scale(0.9);
+        filter: blur(4px);
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* Enhanced Progress Bar Smoothness */
+.player-save-slot--syncing {
+    position: relative;
+    overflow: hidden;
+}
+
+.player-save-slot--syncing::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #4ade80, transparent);
+    background-size: 200% 100%;
+    animation: progressGlow 1.5s linear infinite;
+}
+
+@keyframes progressGlow {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+/* Smooth button transitions */
+.player-save-btn, .player-save-load, .player-save-delete {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.player-save-btn:hover, .player-save-load:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
