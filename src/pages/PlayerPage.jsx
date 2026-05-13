@@ -544,24 +544,29 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         if (isAuthenticated && user?.uid) {
           try {
             setSaveMessage('Uploading to cloud...')
-            console.log('[SaveFlow] Step 4: Calling saveGameState for cloud sync...')
+            console.log('[SaveFlow] Step 4: Calling saveGameState for Firestore binary sync...')
             const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
-            console.log('[SaveFlow] Step 5: Cloud response:', cloudSlots ? `${cloudSlots.length} slots` : 'null')
+            
             if (cloudSlots) {
-              // After cloud upload, update local cache with cloudUrl and drop heavy binary
-              const mergedSlots = cloudSlots.map(cs => {
-                const local = updatedSlots.find(l => l.id === cs.id)
-                return { ...cs, stateData: local?.stateData || null }
+              // Update local slots with sync status
+              const mergedSlots = updatedSlots.map(ls => {
+                const cloud = cloudSlots.find(cs => cs.id === ls.id)
+                return { ...ls, isSynced: cloud?.isSynced || false }
               })
               setSaveSlots(mergedSlots)
-              // Also update localStorage with cloudUrl metadata (without binary to save space)
+              
+              // Update localStorage (meta only to save space)
               const metaForStorage = mergedSlots.map(s => ({ ...s, stateData: null }))
               try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaForStorage)) } catch { /* ignore */ }
             }
-            setSaveMessage('Saved to cloud! ☁️')
+            setSaveMessage('Synced to cloud! ☁️')
           } catch (err) {
-            console.error('[SaveFlow] ❌ Cloud save failed:', err.code, err.message, err)
-            setSaveMessage('Saved locally (cloud sync failed: ' + (err.message || 'unknown error') + ')')
+            console.error('[SaveFlow] ❌ Cloud sync failed:', err.message)
+            if (err.message.includes('1MB')) {
+              setSaveMessage('Saved locally (too large for cloud sync)')
+            } else {
+              setSaveMessage('Saved locally (cloud sync failed)')
+            }
           }
         } else {
           setSaveMessage('Saved locally')
@@ -593,11 +598,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const handleLoadState = async (save) => {
     let stateToLoad = save.stateData
 
-    // If data isn't local, download it from cloud
-    if (!stateToLoad && save.cloudUrl && isAuthenticated) {
+    // If data isn't local, download it from Firestore
+    if (!stateToLoad && save.isSynced && isAuthenticated) {
       try {
         setDownloadingSave(save.id)
-        setSaveMessage(`Downloading cloud save: ${save.name}...`)
+        setSaveMessage(`Fetching cloud save: ${save.name}...`)
         const downloadedData = await downloadSaveState(user.uid, currentGame.id, save.id)
         if (downloadedData) {
           stateToLoad = downloadedData
@@ -672,7 +677,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
       const updatedSlots = saveSlots.map(s =>
         s.id === saveId
-          ? { ...s, stateData, date: new Date().toLocaleString(), playtime: formatTime(playtime), cloudUrl: null }
+          ? { ...s, stateData, date: new Date().toLocaleString(), playtime: formatTime(playtime), isSynced: false }
           : s
       )
       setSaveSlots(updatedSlots)
@@ -700,7 +705,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           setSaveMessage('Save overwritten! ☁️')
         } catch (err) {
           console.error('Cloud overwrite failed:', err)
-          setSaveMessage('Overwritten locally (cloud sync failed)')
+          if (err.message.includes('1MB')) {
+            setSaveMessage('Overwritten locally (save too large for cloud)')
+          } else {
+            setSaveMessage('Overwritten locally (cloud sync failed)')
+          }
         }
       } else {
         setSaveMessage('Save overwritten locally')

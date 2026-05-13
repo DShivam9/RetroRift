@@ -1,8 +1,7 @@
 // Cloud Saves API — Sync user data between localStorage and Firestore
 // All writes are sanitized. All operations require authentication.
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
-import { db, storage } from './firebase'
+import { doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore'
+import { db } from './firebase'
 import { sanitizeObject, sanitizeString, isValidUID, isWithinSizeLimit } from './inputSanitizer'
 
 /**
@@ -111,19 +110,16 @@ export async function loadFromCloud(uid) {
 }
 
 /**
- * Upload binary save state to Firebase Storage
+ * Upload binary save state to Firestore (No Storage needed!)
+ * Firestore has a 1MB limit per document.
  */
 export async function uploadSaveState(uid, gameId, slotId, stateData) {
     requireAuth(uid)
-    const path = `users/${uid}/saves/${gameId}/${slotId}.bin`
-    // console.log('[CloudSave] uploadSaveState called:', { uid, gameId, slotId, path, dataType: typeof stateData, dataLength: stateData?.length || stateData?.byteLength || 'unknown' })
-    const storageRef = ref(storage, path)
     
     let dataToUpload = stateData
     
-    // If stateData is base64 string, convert to binary
+    // Convert to Uint8Array if string
     if (typeof stateData === 'string') {
-        console.log('[CloudSave] Converting base64 string to binary, length:', stateData.length)
         const binaryString = atob(stateData)
         const bytes = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
@@ -131,34 +127,42 @@ export async function uploadSaveState(uid, gameId, slotId, stateData) {
         }
         dataToUpload = bytes
     }
+
+    // Firestore 1MB check (allow 900KB to be safe with overhead)
+    const size = dataToUpload.byteLength || dataToUpload.length
+    if (size > 1000000) {
+        throw new Error('Save file is too large for cloud sync (1MB limit)')
+    }
     
-    // Ensure dataToUpload is a Uint8Array or Blob
-    const blob = dataToUpload instanceof Blob ? dataToUpload : new Blob([dataToUpload])
-    console.log('[CloudSave] Uploading blob, size:', blob.size, 'bytes')
+    const binaryRef = doc(db, 'users', uid, 'gameStates', String(gameId), 'binaries', String(slotId))
     
     try {
-        await uploadBytes(storageRef, blob)
-        const downloadURL = await getDownloadURL(storageRef)
-        // console.log('[CloudSave] ✅ Upload successful! URL:', downloadURL.substring(0, 80) + '...')
-        return downloadURL
+        // Firestore SDK handles Uint8Array as binary Bytes
+        await setDoc(binaryRef, {
+            data: dataToUpload,
+            updatedAt: serverTimestamp()
+        })
+        return true // Success indicator
     } catch (err) {
-        console.error('[CloudSave] ❌ Upload FAILED:', err.code, err.message)
+        console.error('[CloudSave] ❌ Firestore binary upload FAILED:', err.code, err.message)
         throw err
     }
 }
 
 /**
- * Download binary save state from Firebase Storage
+ * Download binary save state from Firestore
  */
 export async function downloadSaveState(uid, gameId, slotId) {
     requireAuth(uid)
-    const storageRef = ref(storage, `users/${uid}/saves/${gameId}/${slotId}.bin`)
+    const binaryRef = doc(db, 'users', uid, 'gameStates', String(gameId), 'binaries', String(slotId))
     
     try {
-        const url = await getDownloadURL(storageRef)
-        const response = await fetch(url)
-        if (!response.ok) throw new Error('Cloud save download failed')
-        return await response.arrayBuffer()
+        const snap = await getDoc(binaryRef)
+        if (!snap.exists()) throw new Error('Save not found in cloud')
+        
+        const binData = snap.data().data
+        // Firestore returns Uint8Array or Bytes object
+        return binData.buffer || binData
     } catch (err) {
         console.error('Download failed:', err)
         throw err
@@ -166,45 +170,40 @@ export async function downloadSaveState(uid, gameId, slotId) {
 }
 
 /**
- * Delete binary save state from Firebase Storage
+ * Delete binary save state from Firestore
  */
 export async function deleteSaveState(uid, gameId, slotId) {
     requireAuth(uid)
-    const storageRef = ref(storage, `users/${uid}/saves/${gameId}/${slotId}.bin`)
+    const binaryRef = doc(db, 'users', uid, 'gameStates', String(gameId), 'binaries', String(slotId))
     try {
-        await deleteObject(storageRef)
+        await deleteDoc(binaryRef)
     } catch (err) {
-        // If file doesn't exist, ignore
-        if (err.code !== 'storage/object-not-found') {
-            console.error('Storage delete failed:', err)
-            throw err
-        }
+        console.error('Firestore binary delete failed:', err)
+        throw err
     }
 }
 
 /**
- * Save game save-slot metadata to Firestore (sanitized).
- * Actual emulator state is uploaded to Storage.
+ * Save game save-slot metadata to Firestore.
  */
 export async function saveGameState(uid, gameId, saveData) {
     requireAuth(uid)
-    console.log('[CloudSave] saveGameState called:', { uid, gameId, slotCount: saveData?.slots?.length })
+    console.log('[CloudSave] saveGameState called (Firestore Binary Mode):', { uid, gameId, slotCount: saveData?.slots?.length })
 
     // Process slots and handle binary uploads for NEW slots
     const processedSlots = await Promise.all((saveData.slots || []).map(async (slot) => {
-        let cloudUrl = slot.cloudUrl || null
+        let isSynced = slot.isSynced || false
 
-        // If this slot has NEW stateData that isn't in the cloud yet, upload it
-        if (slot.stateData && !cloudUrl) {
-            console.log('[CloudSave] Slot', slot.id, 'has stateData but no cloudUrl — uploading binary...')
+        // If this slot has NEW stateData that isn't synced yet, upload it
+        if (slot.stateData && !isSynced) {
             try {
-                cloudUrl = await uploadSaveState(uid, gameId, slot.id, slot.stateData)
-                console.log('[CloudSave] ✅ Slot', slot.id, 'uploaded, cloudUrl:', cloudUrl ? 'yes' : 'no')
+                await uploadSaveState(uid, gameId, slot.id, slot.stateData)
+                isSynced = true
+                console.log('[CloudSave] ✅ Slot', slot.id, 'uploaded to Firestore')
             } catch (err) {
-                console.error(`[CloudSave] ❌ Failed to upload slot ${slot.id}:`, err.code, err.message)
+                console.error(`[CloudSave] ❌ Failed to upload slot ${slot.id}:`, err.message)
+                isSynced = false
             }
-        } else {
-            console.log('[CloudSave] Slot', slot.id, '— stateData:', !!slot.stateData, 'cloudUrl:', !!cloudUrl, '(skipping upload)')
         }
 
         return {
@@ -213,8 +212,8 @@ export async function saveGameState(uid, gameId, saveData) {
             date: sanitizeString(slot.date || '', 30),
             playtime: sanitizeString(slot.playtime || '', 20),
             slot: typeof slot.slot === 'number' ? slot.slot : 0,
-            cloudUrl: cloudUrl,
-            stateData: null // CRITICAL: Never store binary in Firestore
+            isSynced: isSynced, // Use boolean instead of cloudUrl
+            stateData: null // Never store binary in the metadata doc
         }
     }))
 
@@ -226,12 +225,11 @@ export async function saveGameState(uid, gameId, saveData) {
 
     const docId = String(gameId)
     const gameStateRef = doc(db, 'users', uid, 'gameStates', docId)
-    console.log('[CloudSave] Writing metadata to Firestore:', gameStateRef.path, '— slots:', processedSlots.length)
+    
     try {
         await setDoc(gameStateRef, cloudSafe)
-        // console.log('[CloudSave] ✅ Firestore metadata saved successfully!')
     } catch (err) {
-        console.error('[CloudSave] ❌ Firestore write FAILED:', err.code, err.message)
+        console.error('[CloudSave] ❌ Firestore metadata write FAILED:', err.code, err.message)
         throw err
     }
     return processedSlots
