@@ -4,11 +4,13 @@ import '../styles/components.css'
 /**
  * Loader - Clean loading spinner with optional text
  */
-export function Loader({ text = 'Loading...' }) {
+export function Loader({ text = 'Loading...', variant = 'full' }) {
+    const isInline = variant === 'inline'
     return (
-        <div className="loader">
+        <div className={`loader ${isInline ? 'loader--inline' : ''}`}>
             <div className="loader__spinner" />
-            {text && <p className="loader__text">{text}</p>}
+            {text && !isInline && <p className="loader__text">{text}</p>}
+            {text && isInline && <span className="loader__text">{text}</span>}
         </div>
     )
 }

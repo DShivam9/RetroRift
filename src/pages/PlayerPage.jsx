@@ -1060,7 +1060,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                           disabled={downloadingSave === save.id}
                         >
                           {downloadingSave === save.id ? (
-                            <Loader size={14} />
+                            <Loader variant="inline" text="" />
                           ) : (
                             <>
                               <FolderOpen size={14} />

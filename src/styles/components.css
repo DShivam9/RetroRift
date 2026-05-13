@@ -346,6 +346,24 @@
     padding: 40px 20px;
 }
 
+.loader--inline {
+    min-height: 0;
+    padding: 0;
+    gap: 8px;
+    flex-direction: row;
+}
+
+.loader--inline .loader__spinner {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
+.loader--inline .loader__text {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
 .loader__spinner {
     width: 48px;
     height: 48px;
