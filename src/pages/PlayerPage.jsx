@@ -11,7 +11,7 @@ import UploadRomArea from '../components/UploadRomArea'
 import {
   Save, FolderOpen, Trash2, ChevronRight, Star, Clock, RefreshCw,
   Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn,
-  Cpu, ShieldCheck, Info, HardDrive, BookOpen, Trophy
+  Cpu, ShieldCheck, Info, HardDrive, BookOpen, Trophy, Share2
 } from 'lucide-react'
 import ShinyText from '../components/ShinyText'
 import '../styles/components.css'
@@ -44,10 +44,22 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
   }, [game])
 
+  const currentGame = syncedGame
+  const details = {
+    description: currentGame.description || 'A classic gaming experience.',
+    region: currentGame.console || 'Unknown',
+    genre: currentGame.genre || 'Game',
+    developer: currentGame.developer || 'Unknown',
+    difficulty: currentGame.difficulty || 'Unknown',
+    playtime: currentGame.playtime || 'Varies',
+    rating: currentGame.rating || 4.0,
+    features: currentGame.features || []
+  }
+
   // --- SEO & Rich Snippets Architecture ---
   // Injects game-specific metadata and JSON-LD Schema to dominate search results
   useEffect(() => {
-    if (!currentGame || !currentGame.title || currentGame.title === 'Select a Game') return
+    if (!currentGame || !currentGame.title || currentGame.title === 'Select a Game' || !details) return
 
     // 1. Dynamic Meta Configuration
     const originalTitle = document.title
@@ -56,14 +68,31 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     
     document.title = metaTitle
 
-    let metaDescTag = document.querySelector('meta[name="description"]')
-    if (!metaDescTag) {
-      metaDescTag = document.createElement('meta')
-      metaDescTag.name = 'description'
-      document.head.appendChild(metaDescTag)
+    // Helper to update or create meta tags
+    const updateMeta = (name, content, attr = 'name') => {
+      let tag = document.querySelector(`meta[${attr}="${name}"]`)
+      if (!tag) {
+        tag = document.createElement('meta')
+        tag.setAttribute(attr, name)
+        document.head.appendChild(tag)
+      }
+      tag.content = content
     }
-    const originalDesc = metaDescTag.content
-    metaDescTag.content = metaDescription
+
+    updateMeta('description', metaDescription)
+    
+    // Social Media Previews (Open Graph)
+    updateMeta('og:title', metaTitle, 'property')
+    updateMeta('og:description', metaDescription, 'property')
+    updateMeta('og:image', `https://retrorift.online${currentGame.thumbnail}`, 'property')
+    updateMeta('og:url', `https://retrorift.online/play/${currentGame.title.toLowerCase().replace(/ /g, '-')}`, 'property')
+    updateMeta('og:type', 'website', 'property')
+
+    // Twitter Card metadata
+    updateMeta('twitter:card', 'summary_large_image')
+    updateMeta('twitter:title', metaTitle)
+    updateMeta('twitter:description', metaDescription)
+    updateMeta('twitter:image', `https://retrorift.online${currentGame.thumbnail}`)
 
     // 2. JSON-LD Structured Data (Rich Snippets: Stars, Ratings, Category)
     const schemaData = {
@@ -97,6 +126,9 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     document.head.appendChild(script)
 
     // 3. SEO Cleanup on unmount
+    const metaDescTag = document.querySelector('meta[name="description"]')
+    const originalDesc = metaDescTag ? metaDescTag.content : ""
+
     return () => {
       document.title = originalTitle
       if (metaDescTag) metaDescTag.content = originalDesc
@@ -105,17 +137,6 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
   }, [currentGame.id, details.rating, details.developer])
 
-  const currentGame = syncedGame
-  const details = {
-    description: currentGame.description || 'A classic gaming experience.',
-    region: currentGame.console || 'Unknown',
-    genre: currentGame.genre || 'Game',
-    developer: currentGame.developer || 'Unknown',
-    difficulty: currentGame.difficulty || 'Unknown',
-    playtime: currentGame.playtime || 'Varies',
-    rating: currentGame.rating || 4.0,
-    features: currentGame.features || []
-  }
 
   const [loading, setLoading] = useState(true)
   const [isEngineReady, setIsEngineReady] = useState(false)
@@ -137,6 +158,19 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const isComponentMounted = useRef(true)
   const intervalRef = useRef(null)
   const { user, isAuthenticated } = useAuth()
+  const [shareStatus, setShareStatus] = useState(null) // null | 'copied' | 'error'
+
+  const handleShare = async () => {
+    try {
+      const shareUrl = window.location.href
+      await navigator.clipboard.writeText(shareUrl)
+      setShareStatus('copied')
+      setTimeout(() => setShareStatus(null), 2000)
+    } catch (err) {
+      setShareStatus('error')
+      setTimeout(() => setShareStatus(null), 2000)
+    }
+  }
 
   const MAX_SAVE_SLOTS = 5
 
@@ -879,10 +913,23 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
               </div>
             </div>
             <div className="player-header__actions">
+              <button
+                className={`player-action-btn ${shareStatus === 'copied' ? 'player-action-btn--success' : ''}`}
+                onClick={handleShare}
+                title="Share Game"
+              >
+                {shareStatus === 'copied' ? (
+                  <ShieldCheck size={18} className="text-emerald-400" />
+                ) : (
+                  <Share2 size={18} />
+                )}
+                {shareStatus === 'copied' && <span className="player-share-toast">Link Copied!</span>}
+              </button>
               {toggleFavorite && (
                 <button
                   className={`player-action-btn ${isFavorite ? 'player-action-btn--active' : ''}`}
                   onClick={() => toggleFavorite(currentGame.id)}
+                  title="Add to Favorites"
                 >
                   <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
                 </button>

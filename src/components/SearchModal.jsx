@@ -19,20 +19,33 @@ export default function SearchModal({ isOpen, onClose, navigate, onPlayGame }) {
         }
     }, [isOpen])
 
-    // Search logic
+    // Search logic with ultra-forgiving fuzzy support
     useEffect(() => {
-        if (!query.trim()) {
+        const term = query.toLowerCase().trim();
+        if (!term) {
             setResults([])
             return
         }
 
-        const searchTerm = query.toLowerCase()
-        const filtered = games.filter(game =>
-            !game.hidden && (
-                game.title.toLowerCase().includes(searchTerm) ||
-                game.console.toLowerCase().includes(searchTerm)
-            )
-        ).slice(0, 8)
+        // Normalization helper to strip accents/diacritics (e.g. Pokémon -> Pokemon)
+        const normalize = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        
+        const normTerm = normalize(term);
+        const fuzzyPattern = normTerm.split('').map(char => char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*');
+        const regex = new RegExp(fuzzyPattern, 'i');
+        
+        const filtered = games.filter(game => {
+            if (game.hidden) return false
+            const rawTitle = game.title;
+            const normTitle = normalize(rawTitle);
+            const consoleName = game.console.toLowerCase();
+            
+            // 1. Direct match (Higher priority)
+            if (normTitle.includes(normTerm) || consoleName.includes(normTerm)) return true
+            
+            // 2. Fuzzy match
+            return regex.test(normTitle.replace(/\s+/g, '')) || regex.test(normTitle);
+        }).slice(0, 10);
 
         setResults(filtered)
         setSelectedIndex(0)
@@ -89,8 +102,11 @@ export default function SearchModal({ isOpen, onClose, navigate, onPlayGame }) {
                                 onClick={() => handleSelectGame(game)}
                                 onMouseEnter={() => setSelectedIndex(index)}
                             >
-                                <div className="search-modal__result-icon">
-                                    <Gamepad2 size={18} />
+                                <div className="search-modal__result-visual">
+                                    <img src={game.thumbnail} alt="" className="search-modal__result-thumb" />
+                                    <div className="search-modal__result-icon">
+                                        <Gamepad2 size={14} />
+                                    </div>
                                 </div>
                                 <div className="search-modal__result-info">
                                     <span className="search-modal__result-title">{game.title}</span>

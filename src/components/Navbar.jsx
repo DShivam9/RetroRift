@@ -59,15 +59,31 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
   }
 
-  // Search logic
+  // Search logic - Hyper-forgiving fuzzy search with accent normalization
   const handleSearch = (query) => {
     setSearchQuery(query)
     if (query.trim().length > 0) {
-      const results = games.filter(g =>
-        g.title.toLowerCase().includes(query.toLowerCase()) ||
-        g.console.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 6)
-      setSearchResults(results)
+      // Normalization helper: strips accents (Pokémon -> Pokemon)
+      const normalize = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      
+      const term = normalize(query).replace(/\s+/g, '')
+      
+      // Sequence matching: "pkm" -> "p.*k.*m" matches "Pokemon"
+      const chars = term.split('')
+      const regexStr = chars.map(c => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*')
+      const sequenceRegex = new RegExp(regexStr, 'i')
+
+      const filtered = games.filter(g => {
+        const normTitle = normalize(g.title)
+        const titleClean = normTitle.replace(/\s+/g, '')
+        
+        // Match normalized title, clean title, or console
+        return sequenceRegex.test(normTitle) || 
+               sequenceRegex.test(titleClean) || 
+               g.console.toLowerCase().includes(term)
+      }).slice(0, 8)
+
+      setSearchResults(filtered)
       setShowResults(true)
     } else {
       setSearchResults([])
@@ -122,8 +138,13 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
                       className="nav-search__result"
                       onClick={() => handleSelectGame(game)}
                     >
-                      <span className="nav-search__result-title">{game.title}</span>
-                      <span className="nav-search__result-meta">{game.console}</span>
+                      <div className="nav-search__result-visual">
+                        <img src={game.thumbnail} alt="" className="nav-search__result-thumb" />
+                      </div>
+                      <div className="nav-search__result-info">
+                        <span className="nav-search__result-title">{game.title}</span>
+                        <span className="nav-search__result-meta">{game.console} • {game.year}</span>
+                      </div>
                     </button>
                   ))}
                 </div>

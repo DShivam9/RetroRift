@@ -144,6 +144,37 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
+  // Global Keyboard Fix: Prevent emulator from stealing keys during typing
+  useEffect(() => {
+    const handleKeydown = (e) => {
+      // Robust detection: Are we in an input, or inside a modal/container that needs typing?
+      const isInput = e.target.tagName === 'INPUT' || 
+                      e.target.tagName === 'TEXTAREA' || 
+                      e.target.isContentEditable ||
+                      e.target.closest('.search-modal') ||
+                      e.target.closest('.save-modal') ||
+                      e.target.closest('.v3-modal');
+      
+      if (isInput) {
+        // stopImmediatePropagation is the most aggressive way to kill competing listeners
+        // This ensures the emulator listeners on 'window' or 'document' never see this event
+        e.stopImmediatePropagation();
+        // console.log('[KeyboardInterceptor] Blocking emulator from stealing focus');
+      }
+    };
+
+    // Use capture phase (true) + stopImmediatePropagation for total dominance
+    window.addEventListener('keydown', handleKeydown, true);
+    window.addEventListener('keyup', handleKeydown, true);
+    window.addEventListener('keypress', handleKeydown, true);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown, true);
+      window.removeEventListener('keyup', handleKeydown, true);
+      window.removeEventListener('keypress', handleKeydown, true);
+    };
+  }, [])
+
   // Persist favorites
   useEffect(() => {
     localStorage.setItem('favorites', JSON.stringify(favorites))
