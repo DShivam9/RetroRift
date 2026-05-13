@@ -395,15 +395,18 @@ class GBAEmulator {
         for (let i = 0; i < binaryString.length; i++) {
           stateData[i] = binaryString.charCodeAt(i)
         }
-      } else if (inputData instanceof ArrayBuffer) {
+      } else if (inputData instanceof ArrayBuffer || inputData?.constructor?.name === 'ArrayBuffer') {
         stateData = new Uint8Array(inputData)
-      } else if (inputData instanceof Uint8Array) {
+      } else if (inputData instanceof Uint8Array || inputData?.constructor?.name === 'Uint8Array') {
         stateData = inputData
-      } else if (inputData?.buffer instanceof ArrayBuffer) {
-        // TypedArray view
+      } else if (inputData && (inputData.buffer instanceof ArrayBuffer || inputData.buffer?.constructor?.name === 'ArrayBuffer')) {
+        // TypedArray or similar buffer-backed object
         stateData = new Uint8Array(inputData.buffer)
+      } else if (inputData && typeof inputData === 'object' && inputData.byteLength !== undefined) {
+        // Generic buffer-like object
+        stateData = new Uint8Array(inputData)
       } else {
-        console.error('[Emulator] Unknown state data type:', typeof inputData)
+        console.error('[Emulator] Unknown state data type:', typeof inputData, inputData?.constructor?.name)
         return false
       }
 
