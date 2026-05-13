@@ -603,25 +603,30 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       try {
         setDownloadingSave(save.id)
         setSaveMessage(`Fetching cloud save: ${save.name}...`)
-        const downloadedData = await downloadSaveState(user.uid, currentGame.id, save.id)
+        
+        // Add a safety timeout for the download
+        const downloadPromise = downloadSaveState(user.uid, currentGame.id, save.id)
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Cloud download timed out')), 10000)
+        )
+
+        const downloadedData = await Promise.race([downloadPromise, timeoutPromise])
+        
         if (downloadedData) {
           stateToLoad = downloadedData
-          // Cache locally
+          // Cache locally for faster future loads
           const updatedSlots = saveSlots.map(s => 
             s.id === save.id ? { ...s, stateData: downloadedData } : s
           )
           setSaveSlots(updatedSlots)
           localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
-          setSaveMessage('Cloud save downloaded!')
-          setTimeout(() => setSaveMessage(''), 2000)
-        } else {
-          throw new Error('Download returned empty data')
+          setSaveMessage('Cloud save ready!')
         }
       } catch (err) {
         console.error('Cloud download failed:', err)
-        setSaveMessage('Failed to download cloud save')
-        setTimeout(() => setSaveMessage(''), 3000)
+        setSaveMessage(err.message === 'Cloud download timed out' ? 'Connection timed out' : 'Failed to fetch cloud save')
         setDownloadingSave(null)
+        setTimeout(() => setSaveMessage(''), 3000)
         return
       } finally {
         setDownloadingSave(null)
@@ -642,16 +647,22 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
 
     try {
+      // Basic integrity check before passing to engine
+      if (!stateToLoad || (stateToLoad.byteLength < 100 && typeof stateToLoad !== 'string')) {
+        throw new Error('Save data is too small or corrupted')
+      }
+
+      console.log('[LoadFlow] Injecting state into emulator engine...')
       const loaded = await emulatorRef.current.loadState(stateToLoad)
       if (loaded) {
-        setSaveMessage(`Loaded: ${save.name || save.date}`)
+        setSaveMessage(`Successfully Loaded: ${save.name}`)
       } else {
-        setSaveMessage('Load failed — emulator may not support this. Try using in-game saves.')
+        setSaveMessage('Engine Error: Incompatible save file')
       }
-      setTimeout(() => setSaveMessage(''), 2000)
+      setTimeout(() => setSaveMessage(''), 3000)
     } catch (err) {
       console.error('Load state error:', err)
-      setSaveMessage('Failed to load — the save may be corrupted or incompatible')
+      setSaveMessage('Error: Save file corrupted')
       setTimeout(() => setSaveMessage(''), 3000)
     }
   }
