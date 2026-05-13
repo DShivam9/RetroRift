@@ -3,17 +3,23 @@ export const config = {
 };
 
 export default async function handler(req) {
-  const { searchParams } = new URL(req.url);
-  const url = searchParams.get('url');
-
-  if (!url) {
-    return new Response('Missing URL', { status: 400 });
-  }
-
   try {
-    // 1. Fetch from Archive.org server-side
-    // We follow redirects manually on the server to bypass CORS blocks
-    const response = await fetch(url, {
+    const requestUrl = new URL(req.url);
+    const url = requestUrl.searchParams.get('url');
+
+    if (!url) {
+      return new Response(JSON.stringify({ error: 'Missing url parameter' }), { 
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Decode the URL in case it was double-encoded
+    const targetUrl = decodeURIComponent(url);
+
+    console.log('Proxying request to:', targetUrl);
+
+    const response = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       },
@@ -21,28 +27,33 @@ export default async function handler(req) {
     });
 
     if (!response.ok) {
-      return new Response(`Failed to fetch: ${response.statusText}`, { status: response.status });
+      return new Response(`Origin server responded with ${response.status}: ${response.statusText}`, { 
+        status: response.status 
+      });
     }
 
-    // 2. Stream the response directly back to the browser
-    const { body, headers } = response;
-    
-    // We forward the essential headers to make it look like a direct download
+    // Prepare headers for the response
     const responseHeaders = new Headers();
     responseHeaders.set('Access-Control-Allow-Origin', '*');
-    responseHeaders.set('Content-Type', headers.get('Content-Type') || 'application/octet-stream');
+    responseHeaders.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    responseHeaders.set('Cache-Control', 'public, max-age=3600');
     
-    const contentLength = headers.get('Content-Length');
-    if (contentLength) {
-      responseHeaders.set('Content-Length', contentLength);
-    }
+    // Forward critical headers from the source
+    const contentType = response.headers.get('Content-Type');
+    if (contentType) responseHeaders.set('Content-Type', contentType);
+    
+    const contentLength = response.headers.get('Content-Length');
+    if (contentLength) responseHeaders.set('Content-Length', contentLength);
 
-    return new Response(body, {
+    // Stream the body directly
+    return new Response(response.body, {
       status: 200,
       headers: responseHeaders,
     });
   } catch (error) {
-    console.error('Proxy error:', error);
-    return new Response(`Proxy error: ${error.message}`, { status: 500 });
+    return new Response(JSON.stringify({ error: error.message }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
