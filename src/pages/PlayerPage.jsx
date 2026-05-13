@@ -142,7 +142,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             })
           }
         } catch (err) {
-          console.error('Cloud metadata load failed:', err)
+          // Silence noise for production
         }
       }
     }

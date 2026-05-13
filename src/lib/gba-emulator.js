@@ -230,6 +230,13 @@ class GBAEmulator {
         }
       });
 
+      // PROACTIVE START: Don't just wait for callbacks, consider it 'started' once initialized
+      // This solves the 'Starting engine...' hang on some browsers
+      setTimeout(() => {
+        console.log('[Emulator] ⚡ Forcing ready state...');
+        if (onStart) onStart();
+      }, 1500);
+
       // ROBUST FALLBACK: Detect engine presence via DOM/Global state
       let pollCount = 0;
       const startPoll = setInterval(() => {
@@ -243,7 +250,7 @@ class GBAEmulator {
         // Check for indicators that the engine is running
         const isReady = !!(window.EJS_emulator || window.EJS_player || internalCanvas);
         
-        if (isReady || pollCount > 40) { // Poll for 20 seconds
+        if (isReady || pollCount > 40) { 
           clearInterval(startPoll);
           if (isReady) {
             console.log('[Emulator] 🛡️ Engine detected via polling!');
