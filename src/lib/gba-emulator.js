@@ -77,7 +77,7 @@ class GBAEmulator {
         if (!document.querySelector('link[data-emulatorjs]')) {
           const cssLink = document.createElement('link');
           cssLink.rel = 'stylesheet';
-          cssLink.href = 'https://cdn.emulatorjs.org/latest/data/emulator.min.css';
+          cssLink.href = 'https://cdn.emulatorjs.org/stable/data/emulator.min.css';
           cssLink.setAttribute('data-emulatorjs', '');
           console.log('Loading EmulatorJS CSS from CDN:', cssLink.href);
           head.appendChild(cssLink);
@@ -85,7 +85,7 @@ class GBAEmulator {
 
         // Load script from CDN for better reliability
         const script = document.createElement('script');
-        script.src = 'https://cdn.emulatorjs.org/latest/data/emulator.min.js';
+        script.src = 'https://cdn.emulatorjs.org/stable/data/emulator.min.js';
         console.log('Loading EmulatorJS script from CDN:', script.src);
         script.async = true;
         script.setAttribute('data-emulatorjs', '');
@@ -126,48 +126,60 @@ class GBAEmulator {
     }
 
     try {
-      // Hide canvas – EmulatorJS manages its own DOM
-      this.canvas.style.display = 'none';
+      // Load fflate from CDN
+      if (typeof window.fflate === 'undefined') {
+        console.log('[Emulator] Loading fflate...');
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/fflate';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
 
-      // Create emulator container
+      let romData = new Uint8Array(arrayBuffer);
+      
+      // Manual Unzip to bypass "Decompress Game Data" hang
+      if (romData[0] === 0x50 && romData[1] === 0x4B && romData[2] === 0x03 && romData[3] === 0x04) {
+        console.log('[Emulator] ZIP detected, decompressing manually...');
+        const decompressed = window.fflate.unzipSync(romData);
+        const fileName = Object.keys(decompressed).find(name => 
+          name.toLowerCase().endsWith('.gba') || name.toLowerCase().endsWith('.bin')
+        );
+        
+        if (fileName) {
+          console.log(`[Emulator] Extracted: ${fileName}`);
+          romData = decompressed[fileName];
+        }
+      }
+
+      this.canvas.style.display = 'none';
+      if (this.emulatorDiv) this.emulatorDiv.remove();
       this.emulatorDiv = document.createElement('div');
       this.emulatorDiv.id = 'game';
       this.emulatorDiv.style.width = '100%';
       this.emulatorDiv.style.height = '100%';
       this.container.appendChild(this.emulatorDiv);
 
-      // Convert ArrayBuffer to Blob URL
-      const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+      const blob = new Blob([romData], { type: 'application/octet-stream' });
       this.blobUrl = URL.createObjectURL(blob);
 
-      // Use latest branch for best compatibility
-      const dataPath = 'https://cdn.emulatorjs.org/latest/data/';
-      console.log('Instantiating EmulatorJS with latest dataPath:', dataPath);
-      
-      // Set globals as a fallback for finicky EmulatorJS versions
+      const dataPath = 'https://cdn.emulatorjs.org/stable/data/';
       window.EJS_gameUrl = this.blobUrl;
-      window.EJS_core = this.system;
-      window.EJS_system = this.system;
-      window.EJS_gameName = 'RetroPlay Game';
+      window.EJS_core = 'gba';
+      window.EJS_dataPath = dataPath;
       window.EJS_startOnLoad = true;
       
-      // Small delay to ensure DOM is ready and previous instance is cleared
       await new Promise(resolve => setTimeout(resolve, 500));
 
       this.emulatorInstance = new window.EmulatorJS('#game', {
-        system: this.system,
-        gameName: 'RetroPlay Game',
+        system: 'gba',
         gameUrl: this.blobUrl,
         dataPath: dataPath,
-        biosUrl: '',
         startOnLoad: true,
-        color: '#06b6d4',
-        cheats: false,
-        netplay: false,
-        debug: true,
-        EJS_DEBUG: true,
         onGameStart: () => {
-          console.log('[Emulator] 🚀 Game engine started successfully!');
+          console.log('[Emulator] 🚀 Engine started!');
           if (onStart) onStart();
         }
       });
