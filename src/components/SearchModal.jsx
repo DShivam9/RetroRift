@@ -28,8 +28,10 @@ export default function SearchModal({ isOpen, onClose, navigate, onPlayGame }) {
 
         const searchTerm = query.toLowerCase()
         const filtered = games.filter(game =>
-            game.title.toLowerCase().includes(searchTerm) ||
-            game.console.toLowerCase().includes(searchTerm)
+            !game.hidden && (
+                game.title.toLowerCase().includes(searchTerm) ||
+                game.console.toLowerCase().includes(searchTerm)
+            )
         ).slice(0, 8)
 
         setResults(filtered)

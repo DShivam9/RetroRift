@@ -1482,4 +1482,4 @@
 .player-back-btn:active {
     border-bottom-width: 2px;
     transform: translateY(2px);
-}
+}.player-loading-container { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 20px; } .player-loading-note { font-family: var(--font-mono); font-size: 0.75rem; color: #71717a; text-align: center; max-width: 300px; line-height: 1.5; } .player-error__fallback { margin-top: 32px; padding-top: 24px; border-top: 1px dashed rgba(255, 255, 255, 0.1); display: flex; flex-direction: column; align-items: center; gap: 16px; } .player-error__fallback p { font-family: var(--font-mono); font-size: 0.75rem; color: #52525b; margin: 0; } .btn--outline { background: transparent; border: 1px solid rgba(74, 222, 128, 0.3); color: #4ade80; padding: 10px 20px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; } .btn--outline:hover { background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #fff; }

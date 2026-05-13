@@ -357,11 +357,12 @@
 }
 
 .loader__text {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: #52525b;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    letter-spacing: normal;
+    text-transform: none;
+    font-weight: 500;
     animation: loaderPulse 1.5s ease-in-out infinite;
 }
 

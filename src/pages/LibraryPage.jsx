@@ -30,7 +30,7 @@ export default function LibraryPage({
 
   // Filter and sort games
   const filteredGames = useMemo(() => {
-    let result = games
+    let result = games.filter(g => !g.hidden)
 
     // Console/Favorites filter
     if (selectedConsole === 'FAVORITES') {

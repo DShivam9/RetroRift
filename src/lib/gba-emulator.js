@@ -1,8 +1,9 @@
 // GBA Emulator using EmulatorJS (local)
 class GBAEmulator {
-  constructor(canvas, system = 'gba') {
+  constructor(canvas, system = 'gba', gameId = 'default') {
     this.canvas = canvas;
     this.system = system;
+    this.gameId = gameId;
     this.container = canvas.parentElement;
     this.emulatorDiv = null;
     this.emulatorInstance = null;
@@ -139,19 +140,52 @@ class GBAEmulator {
       }
 
       let romData = new Uint8Array(arrayBuffer);
+      const receivedSize = romData.byteLength;
       
       // Manual Unzip to bypass "Decompress Game Data" hang
       if (romData[0] === 0x50 && romData[1] === 0x4B && romData[2] === 0x03 && romData[3] === 0x04) {
-        console.log('[Emulator] ZIP detected, decompressing manually...');
-        const decompressed = window.fflate.unzipSync(romData);
-        const fileName = Object.keys(decompressed).find(name => 
-          name.toLowerCase().endsWith('.gba') || name.toLowerCase().endsWith('.bin')
-        );
-        
-        if (fileName) {
-          console.log(`[Emulator] Extracted: ${fileName}`);
-          romData = decompressed[fileName];
+        console.log(`[Emulator] ZIP detected (${receivedSize} bytes), decompressing manually...`);
+        try {
+          // Use async unzip for large files to avoid blocking the UI thread
+          const decompressed = await new Promise((resolve, reject) => {
+            window.fflate.unzip(romData, (err, data) => {
+              if (err) reject(err);
+              else resolve(data);
+            });
+          });
+
+          const fileName = Object.keys(decompressed).find(name => 
+            name.toLowerCase().endsWith('.gba') || 
+            name.toLowerCase().endsWith('.nds') || 
+            name.toLowerCase().endsWith('.bin') ||
+            name.toLowerCase().endsWith('.gb') ||
+            name.toLowerCase().endsWith('.gbc') ||
+            name.toLowerCase().endsWith('.nes') ||
+            name.toLowerCase().endsWith('.smc') ||
+            name.toLowerCase().endsWith('.sfc') ||
+            name.toLowerCase().endsWith('.z64')
+          );
+          
+          if (fileName) {
+            console.log(`[Emulator] ✅ Extracted: ${fileName} (${decompressed[fileName].byteLength} bytes)`);
+            romData = decompressed[fileName];
+          } else {
+            const errorMsg = `[Emulator] No compatible game file found in ZIP. Files: ${Object.keys(decompressed).join(', ')}`;
+            console.error(errorMsg);
+            throw new Error(errorMsg);
+          }
+        } catch (unzipErr) {
+          console.error('[Emulator] ❌ ZIP Decompression failed:', unzipErr);
+          const detail = receivedSize < 5000000 ? "File is likely truncated (too small)." : "Internal ZIP structure error.";
+          throw new Error(`Failed to extract game from ZIP: ${detail} (Error: ${unzipErr.message})`);
         }
+      } else {
+        console.log('[Emulator] Raw ROM detected (not a ZIP), proceeding...');
+      }
+
+      // Final sanity check
+      if (romData.byteLength < 1000) {
+        throw new Error('Game data is too small to be a valid ROM');
       }
 
       this.canvas.style.display = 'none';
@@ -167,24 +201,57 @@ class GBAEmulator {
 
       const dataPath = 'https://cdn.emulatorjs.org/stable/data/';
       window.EJS_gameUrl = this.blobUrl;
-      window.EJS_core = 'gba';
+      window.EJS_core = this.system; 
       window.EJS_dataPath = dataPath;
+      window.EJS_gameID = this.gameId; 
+      window.EJS_gameId = this.gameId; 
       window.EJS_startOnLoad = true;
+      window.EJS_DEBUG_MODE = true; // Enable logs for troubleshooting
+      
+      console.log(`[Emulator] Config: core=${window.EJS_core}, dataPath=${window.EJS_dataPath}`);
+      
+      // Global hook for game start
+      window.EJS_onGameStart = () => {
+        console.log('[Emulator] 🚀 Engine started (Global Hook)!');
+        if (onStart) onStart();
+      };
       
       await new Promise(resolve => setTimeout(resolve, 500));
 
       this.emulatorInstance = new window.EmulatorJS('#game', {
-        system: 'gba',
+        system: this.system,
         gameUrl: this.blobUrl,
         dataPath: dataPath,
+        gameId: this.gameId,
         startOnLoad: true,
         onGameStart: () => {
-          console.log('[Emulator] 🚀 Engine started!');
+          console.log('[Emulator] 🚀 Engine started (Instance Callback)!');
           if (onStart) onStart();
         }
       });
 
-      console.log('EmulatorJS instance created');
+      // ROBUST FALLBACK: Detect engine presence via DOM/Global state
+      let pollCount = 0;
+      const startPoll = setInterval(() => {
+        pollCount++;
+        
+        // Look for the iframe and canvas created by EmulatorJS
+        const iframe = this.emulatorDiv?.querySelector('iframe');
+        const internalCanvas = this.emulatorDiv?.querySelector('canvas') || 
+                               iframe?.contentDocument?.querySelector('canvas');
+        
+        // Check for indicators that the engine is running
+        const isReady = !!(window.EJS_emulator || window.EJS_player || internalCanvas);
+        
+        if (isReady || pollCount > 40) { // Poll for 20 seconds
+          clearInterval(startPoll);
+          if (isReady) {
+            console.log('[Emulator] 🛡️ Engine detected via polling!');
+            if (onStart) onStart();
+          }
+        }
+      }, 500);
+
       return true;
     } catch (error) {
       console.error('EmulatorJS initialization error:', error);

@@ -52,3 +52,19 @@ export const setCachedROM = async (gameId, arrayBuffer) => {
     return false;
   }
 };
+
+export const deleteCachedROM = async (gameId) => {
+  try {
+    const db = await openDB();
+    return new Promise((resolve) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.delete(gameId);
+      transaction.oncomplete = () => resolve(true);
+      transaction.onerror = () => resolve(false);
+    });
+  } catch (err) {
+    console.warn('ROM Cache delete failed:', err);
+    return false;
+  }
+};

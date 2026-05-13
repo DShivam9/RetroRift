@@ -16,7 +16,7 @@ import {
 import ShinyText from '../components/ShinyText'
 import '../styles/components.css'
 import './PlayerPage.css'
-import { getCachedROM, setCachedROM } from '../lib/rom-cache'
+import { getCachedROM, setCachedROM, deleteCachedROM } from '../lib/rom-cache'
 
 /**
  * PlayerPage - Enhanced Emulator Page
@@ -193,9 +193,23 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       if (currentGame.externalUrl) {
         const cachedData = await getCachedROM(currentGame.id)
         if (cachedData) {
-          setRomData(cachedData)
-          setLoading(false)
-          return
+          const consoleType = currentGame.console?.toUpperCase()
+          // Use the same dynamic thresholds as the fetcher
+          let minSize = 10000
+          if (consoleType === 'NDS') minSize = 8000000
+          if (consoleType === 'GBA') minSize = 2000000
+          if (consoleType === 'SNES') minSize = 500000
+          if (consoleType === 'GBC' || consoleType === 'GB') minSize = 100000
+
+          if (cachedData.byteLength >= minSize) {
+            console.log(`[Player] Using cached ROM data (${cachedData.byteLength} bytes)`)
+            setRomData(cachedData)
+            setLoading(false)
+            return
+          } else {
+            console.warn(`[Player] Cached ROM is truncated (${cachedData.byteLength} bytes). Purging and re-downloading...`)
+            // Continue to download
+          }
         }
       }
 
@@ -215,60 +229,109 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       }
 
       const proxies = [
-        (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-        (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-        (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+        { name: 'Direct', fn: (url) => url, type: 'raw' },
+        { name: 'AllOriginsJSON', fn: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, type: 'json' },
+        { name: 'CorsProxyIO', fn: (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`, type: 'raw' }
       ]
 
       let lastError = null
       let success = false
+      const consoleType = currentGame.console?.toUpperCase()
 
-      for (const proxyFn of proxies) {
+      for (const proxy of proxies) {
         try {
           const cleanUrl = decodeURIComponent(currentGame.externalUrl)
-          const proxyUrl = proxyFn(cleanUrl)
-          console.log(`[Player] Attempting proxy: ${proxyUrl}`)
+          const proxyUrl = proxy.fn(cleanUrl)
+          console.log(`[Player] Attempting ${proxy.name} fetch (${proxy.type})...`)
           
           const controller = new AbortController()
-          const timeoutId = setTimeout(() => controller.abort(), 15000)
+          // 10 MINUTE TIMEOUT: Archive.org is heavily throttled for NDS files.
+          const timeoutMs = consoleType === 'NDS' ? 600000 : 180000
+          const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
           
-          const response = await fetch(proxyUrl, { signal: controller.signal })
-          clearTimeout(timeoutId)
-
+          const response = await fetch(proxyUrl, { 
+            signal: controller.signal,
+            mode: proxy.name === 'Direct' ? 'cors' : 'cors'
+          })
+          
           if (response.ok) {
-            const data = await response.arrayBuffer()
-            if (data.byteLength < 1000) {
-              throw new Error('Retrieved data too small to be a ROM')
+            let data;
+            if (proxy.type === 'json') {
+              console.log('[Player] Proxy returned metadata, decoding base64...');
+              const json = await response.json()
+              if (!json.contents) throw new Error('Proxy returned empty contents')
+              
+              const base64 = json.contents.split(',')[1] || json.contents
+              const binaryString = window.atob(base64)
+              const len = binaryString.length
+              const bytes = new Uint8Array(len)
+              for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i)
+              }
+              data = bytes.buffer
+            } else {
+              data = await response.arrayBuffer()
             }
-            console.log(`[Player] Download success! (${data.byteLength} bytes)`)
+            
+            clearTimeout(timeoutId)
+            const size = data.byteLength
+            const uint8 = new Uint8Array(data)
+            
+            // ZIP INTEGRITY CHECK
+            let isZip = uint8[0] === 0x50 && uint8[1] === 0x4B && uint8[2] === 0x03 && uint8[3] === 0x04
+            if (isZip && size > 100) {
+              let foundEOCD = false
+              const scanRange = Math.min(size, 2048)
+              for (let i = size - 4; i > size - scanRange && i >= 0; i--) {
+                if (uint8[i] === 0x50 && uint8[i+1] === 0x4B && uint8[i+2] === 0x05 && uint8[i+3] === 0x06) {
+                  foundEOCD = true
+                  break
+                }
+              }
+              if (!foundEOCD) {
+                console.warn(`[Player] ${proxy.name} data is truncated (${size} bytes). Trying next...`)
+                continue
+              }
+            }
+
+            // DYNAMIC THRESHOLD
+            let minSize = 100000
+            if (consoleType === 'NDS') minSize = 25000000
+            if (consoleType === 'GBA') minSize = 2000000
+            
+            if (size < minSize) {
+              console.warn(`[Player] ${proxy.name} payload too small (${size} bytes). Trying next...`)
+              continue
+            }
+
+            console.log(`[Player] ✅ ${proxy.name} Success: ${size} bytes received.`)
             setRomData(data)
             
-            // Cache it
             try {
               await setCachedROM(currentGame.id, data)
-              console.log('[Player] ROM cached for next time.')
-            } catch (cacheErr) {
-              console.warn('[Player] Failed to cache ROM:', cacheErr)
-            }
+              console.log('[Player] ROM cached locally.')
+            } catch (cacheErr) {}
             
             success = true
             setLoading(false)
             break
           } else {
-            console.warn(`[Player] Proxy returned ${response.status}`)
+            clearTimeout(timeoutId)
+            console.warn(`[Player] ${proxy.name} HTTP Error: ${response.status}`)
           }
         } catch (err) {
-          console.warn(`[Player] Proxy attempt failed:`, err.message)
+          console.warn(`[Player] ${proxy.name} failed: ${err.message}`)
           lastError = err
         }
       }
 
       if (!success) {
         setLoading(false)
-        const errorMessage = lastError?.name === 'AbortError' 
-          ? 'Download timed out. The archival servers are slow today. Please try again.'
-          : 'Failed to retrieve ROM data from all sources. Please try again later or upload your own ROM.'
-        setError(errorMessage)
+        const isTimeout = lastError?.name === 'AbortError'
+        setError(isTimeout 
+          ? 'The download is taking too long (Archive.org throttling). Please try again or upload your own ROM.' 
+          : 'Archive.org is currently blocking all access. Please try the "Force Refresh" button or upload a ROM.')
+        return
       }
     } catch (err) {
       console.error('[Player] loadROM fatal error:', err)
@@ -359,27 +422,40 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           
           if (!canvasRef.current) return
 
-          emulatorRef.current = new GBAEmulator(canvasRef.current, system)
+          // Pass currentGame.id for better persistence and resolve the "gameId not set" warning
+          emulatorRef.current = new GBAEmulator(canvasRef.current, system, currentGame.id)
           
-          // Track engine start with a timeout
+          // Track engine start with a timeout for feedback only
           const startTimeout = setTimeout(() => {
             if (isComponentMounted.current && !isEngineReady) {
-              console.warn('[Player] Engine start timed out. Decompression might be stuck.')
-              // We don't throw an error yet, just log it. 
-              // The user might see the "Decompress Game Data" hang.
+              console.warn('[Player] Engine initialization is taking longer than expected...')
+              // We don't force it anymore; the polling in gba-emulator will eventually trigger onStart
             }
-          }, 15000)
+          }, 20000) 
 
-          await emulatorRef.current.loadROM(romData, () => {
+          const loadSuccess = await emulatorRef.current.loadROM(romData, () => {
             clearTimeout(startTimeout)
-            if (isComponentMounted.current) {
+            if (isComponentMounted.current && !isEngineReady) {
+              console.log('[Player] Engine active! Dismissing loader.')
               setIsEngineReady(true)
               setLoading(false)
             }
           })
           
-          emulatorRef.current.start()
-          console.log('[Player] Emulator initialized successfully')
+          if (loadSuccess) {
+            emulatorRef.current.start()
+            console.log('[Player] Emulator initialization call completed successfully')
+          } else {
+            console.error('[Player] Emulator loadROM returned false');
+            setError('The game engine failed to initialize the ROM data. This could be due to a corrupted file or CDN bottleneck.');
+            setLoading(false);
+            
+            // AUTO-PURGE: If load failed, the ROM data might be bad. Purge it so next try is clean.
+            try {
+              await deleteCachedROM(currentGame.id);
+              console.warn(`[Player] ROM cache purged for ${currentGame.id} due to load failure.`);
+            } catch (e) {}
+          }
         } catch (err) {
           console.error('[Player] Emulator init error:', err)
           setError('Failed to start emulator. Please refresh and try again.')
@@ -678,6 +754,18 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     return stars
   }
 
+  const handleForceRefresh = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      await deleteCachedROM(currentGame.id);
+      console.log(`[Player] Manual cache purge triggered for ${currentGame.id}`);
+      loadROM();
+    } catch (e) {
+      loadROM();
+    }
+  };
+
   return (
     <div className="player-page">
       {/* Breadcrumb */}
@@ -723,7 +811,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           {/* Emulator Frame - V3 Cinematic */}
           <div className="player-emulator">
             <div className="player-emulator__label">
-              <span className="player-emulator__label-text">Neural Link Active</span>
+              <span className="player-emulator__label-text">System Status: Active</span>
               <div className="player-emulator__leds">
                 <div className="player-led player-led--power"></div>
                 <div className="player-led player-led--activity"></div>
@@ -735,23 +823,33 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 <div className="player-error">
                   <span>⚠️</span>
                   <p>{error}</p>
-                  <button onClick={loadROM} className="btn btn--secondary">Retry</button>
+                  <div className="player-error__actions">
+                    <button onClick={loadROM} className="btn btn--secondary">Retry</button>
+                    <button onClick={handleForceRefresh} className="btn btn--ghost">Clear Cache & Refresh</button>
+                  </div>
+                  {currentGame.externalUrl && (
+                    <div className="player-error__fallback">
+                      <p>Still failing? Download directly and upload below:</p>
+                      <a href={currentGame.externalUrl} target="_blank" rel="noopener noreferrer" className="btn btn--outline btn--sm">
+                        Download from Archive.org
+                      </a>
+                    </div>
+                  )}
                 </div>
               ) : loading ? (
-                <Loader text={`DEPLOYING ${currentGame.title.toUpperCase()}...`} />
+                <div className="player-loading-container">
+                  <Loader text={`Loading ${currentGame.title}...`} />
+                  {currentGame.console === 'NDS' && (
+                    <p className="player-loading-note">Large game detected. Initial download may take 2-3 minutes...</p>
+                  )}
+                </div>
               ) : (currentGame.requiresUpload && !romData) ? (
                 <UploadRomArea onUpload={(buffer) => setRomData(buffer)} title={currentGame.title} />
               ) : (
                 <>
                   {!isEngineReady && (
                     <div className="player-engine-loading">
-                      <Loader text="STARTING ENGINE..." />
-                      <div className="player-engine-fallback">
-                        <p>Still stuck on decompression? Archive.org servers can be slow.</p>
-                        <button onClick={() => window.location.reload()} className="btn btn--secondary btn--sm">
-                          Reload Page
-                        </button>
-                      </div>
+                      <Loader text="Starting engine..." />
                     </div>
                   )}
                   <canvas 
