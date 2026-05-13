@@ -512,7 +512,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     setSaveModalOpen(true)
   }
 
-  // Called when user confirms save name from mod  const handleSaveConfirm = async (rawName) => {
+  // Called when user confirms save name from modal
+  const handleSaveConfirm = async (rawName) => {
     setSaveModalOpen(false)
     const saveName = sanitizeSaveName(rawName)
 
