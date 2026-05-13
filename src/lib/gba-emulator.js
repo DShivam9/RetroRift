@@ -402,11 +402,15 @@ class GBAEmulator {
       } else if (inputData && (inputData.buffer instanceof ArrayBuffer || inputData.buffer?.constructor?.name === 'ArrayBuffer')) {
         // TypedArray or similar buffer-backed object
         stateData = new Uint8Array(inputData.buffer)
+      } else if (inputData && typeof inputData === 'object' && typeof inputData.toUint8Array === 'function') {
+        // Firestore Bytes object
+        stateData = inputData.toUint8Array()
       } else if (inputData && typeof inputData === 'object' && inputData.byteLength !== undefined) {
         // Generic buffer-like object
         stateData = new Uint8Array(inputData)
       } else {
         console.error('[Emulator] Unknown state data type:', typeof inputData, inputData?.constructor?.name)
+        if (inputData) console.log('[Emulator] Corrupted object detail:', inputData)
         return false
       }
 

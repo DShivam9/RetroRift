@@ -613,6 +613,16 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const handleLoadState = async (save) => {
     let stateToLoad = save.stateData
 
+    // CRITICAL: If stateToLoad is a plain object '{}', it's corrupted data from a previous 
+    // failed localStorage save attempt. We must ignore it and force a cloud fetch.
+    if (stateToLoad && typeof stateToLoad === 'object' && 
+        !(stateToLoad instanceof Uint8Array) && 
+        !(stateToLoad instanceof ArrayBuffer) &&
+        stateToLoad.constructor?.name === 'Object') {
+      console.warn('[LoadFlow] ⚠️ Detected corrupted local save data, forcing cloud fetch.')
+      stateToLoad = null
+    }
+
     // If data isn't local, download it from Firestore
     if (!stateToLoad && save.isSynced && isAuthenticated) {
       try {
