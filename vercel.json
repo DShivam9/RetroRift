@@ -42,7 +42,7 @@
   "rewrites": [
     {
       "source": "/proxy/archive/:path*",
-      "destination": "https://archive.org/:path*"
+      "destination": "/api/proxy?url=https://archive.org/:path*"
     },
     {
       "source": "/__/auth/:path*",
