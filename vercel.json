@@ -41,6 +41,10 @@
   ],
   "rewrites": [
     {
+      "source": "/proxy/archive/:path*",
+      "destination": "https://archive.org/:path*"
+    },
+    {
       "source": "/__/auth/:path*",
       "destination": "https://retrorift-57c7e.firebaseapp.com/__/auth/:path*"
     },

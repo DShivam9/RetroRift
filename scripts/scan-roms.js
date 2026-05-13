@@ -34,6 +34,7 @@ const ROOT = path.resolve(__dirname, '..')
 const ROMS_DIR = path.join(ROOT, 'public', 'roms')
 const THUMBNAILS_DIR = path.join(ROOT, 'public', 'thumbnails')
 const OUTPUT_FILE = path.join(ROOT, 'src', 'data', 'games.js')
+const SITEMAP_FILE = path.join(ROOT, 'public', 'sitemap.xml')
 const METADATA_FILE = path.join(__dirname, 'game-metadata.json')
 
 // ─── Extension → Console mapping ───────────────────────────────────────
@@ -534,6 +535,62 @@ function createDefaultThumbnail() {
     console.log('🎨 Created default thumbnail: public/thumbnails/default-cover.svg')
 }
 
+// ─── Generate Sitemap XML ──────────────────────────────────────────────
+function generateSitemap(scannedGames) {
+    const baseUrl = 'https://retrorift.online'
+    const date = new Date().toISOString().split('T')[0]
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Core Pages -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <lastmod>${date}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/library</loc>
+    <lastmod>${date}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/favorites</loc>
+    <lastmod>${date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/profile</loc>
+    <lastmod>${date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+`
+
+    // Add individual game URLs
+    // Note: Since we are using hash-based routing or SPA routing, 
+    // we need to be careful with how search engines crawl.
+    // For now, we list them as subpaths which React handles.
+    for (const game of scannedGames) {
+        // Create a slug from the title
+        const slug = game.title.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')
+        
+        xml += `  <url>
+    <loc>${baseUrl}/play/${slug}</loc>
+    <lastmod>${date}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>\n`
+    }
+
+    xml += `</urlset>`
+    return xml
+}
+
 // ─── Main execution ────────────────────────────────────────────────────
 function main() {
     console.log('')
@@ -590,6 +647,11 @@ function main() {
     // Generate output
     const output = generateOutput(scannedGames, metadata)
     fs.writeFileSync(OUTPUT_FILE, output, 'utf-8')
+
+    // Generate Sitemap
+    console.log(`🌐 Generating: ${SITEMAP_FILE}`)
+    const sitemapContent = generateSitemap(scannedGames)
+    fs.writeFileSync(SITEMAP_FILE, sitemapContent, 'utf-8')
 
     // Summary
     console.log('')

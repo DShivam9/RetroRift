@@ -229,6 +229,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       }
 
       const proxies = [
+        { name: 'InternalProxy', fn: (url) => url.replace('https://archive.org', '/proxy/archive'), type: 'raw' },
         { name: 'Direct', fn: (url) => url, type: 'raw' },
         { name: 'AllOriginsJSON', fn: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, type: 'json' },
         { name: 'CorsProxyIO', fn: (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`, type: 'raw' }
