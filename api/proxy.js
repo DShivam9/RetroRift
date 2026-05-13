@@ -1,23 +1,24 @@
-export const config = {
-  runtime: 'edge',
-};
+import { Readable } from 'stream';
 
-export default async function handler(req) {
+export default async function handler(req, res) {
+  // 1. Set CORS headers immediately
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).json({ error: 'Missing url parameter' });
+  }
+
   try {
-    const requestUrl = new URL(req.url);
-    const url = requestUrl.searchParams.get('url');
-
-    if (!url) {
-      return new Response(JSON.stringify({ error: 'Missing url parameter' }), { 
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Decode the URL in case it was double-encoded
     const targetUrl = decodeURIComponent(url);
-
-    console.log('Proxying request to:', targetUrl);
+    console.log(`[Proxy] Fetching: ${targetUrl}`);
 
     const response = await fetch(targetUrl, {
       headers: {
@@ -27,33 +28,37 @@ export default async function handler(req) {
     });
 
     if (!response.ok) {
-      return new Response(`Origin server responded with ${response.status}: ${response.statusText}`, { 
-        status: response.status 
-      });
+      return res.status(response.status).send(`Origin error: ${response.statusText}`);
     }
 
-    // Prepare headers for the response
-    const responseHeaders = new Headers();
-    responseHeaders.set('Access-Control-Allow-Origin', '*');
-    responseHeaders.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    responseHeaders.set('Cache-Control', 'public, max-age=3600');
+    // 2. Forward headers
+    const contentType = response.headers.get('content-type');
+    if (contentType) res.setHeader('Content-Type', contentType);
     
-    // Forward critical headers from the source
-    const contentType = response.headers.get('Content-Type');
-    if (contentType) responseHeaders.set('Content-Type', contentType);
-    
-    const contentLength = response.headers.get('Content-Length');
-    if (contentLength) responseHeaders.set('Content-Length', contentLength);
+    const contentLength = response.headers.get('content-length');
+    if (contentLength) res.setHeader('Content-Length', contentLength);
 
-    // Stream the body directly
-    return new Response(response.body, {
-      status: 200,
-      headers: responseHeaders,
-    });
+    // 3. Convert Web Stream to Node Stream and pipe
+    // Node 18+ global fetch returns a web stream in response.body
+    if (response.body) {
+      const reader = response.body.getReader();
+      const nodeStream = new Readable({
+        async read() {
+          const { done, value } = await reader.read();
+          if (done) {
+            this.push(null);
+          } else {
+            this.push(Buffer.from(value));
+          }
+        }
+      });
+      nodeStream.pipe(res);
+    } else {
+      res.status(500).send('No response body from origin');
+    }
+
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { 
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error(`[Proxy] Fatal error: ${error.message}`);
+    res.status(500).json({ error: error.message });
   }
 }
