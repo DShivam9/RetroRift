@@ -512,8 +512,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     setSaveModalOpen(true)
   }
 
-  // Called when user confirms save name from modal
-  const handleSaveConfirm = async (rawName) => {
+  // Called when user confirms save name from mod  const handleSaveConfirm = async (rawName) => {
     setSaveModalOpen(false)
     const saveName = sanitizeSaveName(rawName)
 
@@ -521,40 +520,37 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       try {
         setSavingToCloud(true)
         setSaveMessage('Capturing game state...')
-        console.log('[SaveFlow] Step 1: Capturing emulator state...')
         const stateData = await emulatorRef.current.saveState()
-        console.log('[SaveFlow] Step 2: Got stateData, type:', typeof stateData, 'length:', stateData?.length || stateData?.byteLength || 'unknown')
 
-        // CRITICAL: If emulator returned null, don't create a broken save
         if (!stateData) {
-          setSaveMessage('Could not capture game state — try playing for a few more seconds first')
+          setSaveMessage('Could not capture game state — try playing for a few more seconds')
           setTimeout(() => setSaveMessage(''), 4000)
           setSavingToCloud(false)
           return
         }
 
         const newSave = {
-          id: Date.now(),
-          name: saveName,
+          id: Date.now().toString(),
+          slot: saveSlots.length + 1,
+          name: saveName || `Save ${saveSlots.length + 1}`,
           date: new Date().toLocaleString(),
           playtime: formatTime(playtime),
-          slot: saveSlots.length + 1,
-          stateData: stateData
+          isSynced: false
         }
-        const updatedSlots = [...saveSlots, newSave]
+
+        // Store binary in stealth cache (Non-reactive)
+        saveDataCache.current[newSave.id] = stateData
+
+        const updatedSlots = [newSave, ...saveSlots]
         setSaveSlots(updatedSlots)
 
-        // Try localStorage, but don't fail if quota exceeded (base64 saves can be large)
-        try {
-        // 5. Cache metadata to localStorage
+        // Cache metadata to localStorage (Fast)
         localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
 
-        // 6. Sync to cloud (metadata + binary)
         if (isAuthenticated && user?.uid) {
           try {
             setSaveMessage('Saving... Don\'t close window!')
             const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
-            
             if (cloudSlots) {
               setSaveSlots(cloudSlots)
               localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(cloudSlots))
@@ -562,20 +558,15 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             setSaveMessage('Synced to cloud! ☁️')
           } catch (err) {
             console.error('[SaveFlow] ❌ Cloud sync failed:', err.message)
-            setSaveMessage(err.message.includes('1MB') ? 'Saved locally (too large)' : 'Saved locally (cloud sync failed)')
+            setSaveMessage(err.message.includes('1MB') ? 'Saved locally (too large)' : 'Saved locally (failed)')
           }
         } else {
           setSaveMessage('Saved locally')
         }
-        
         setTimeout(() => setSaveMessage(''), 4000)
       } catch (error) {
-        console.error('[SaveFlow] ❌ Save state error:', error)
-        if (error.code === 'resource-exhausted' || error.message?.includes('size')) {
-           setSaveMessage('Saved locally (Save file too large for cloud sync)')
-        } else {
-           setSaveMessage('Save failed — try again after the game loads fully')
-        }
+        console.error('[SaveFlow] ❌ Save error:', error)
+        setSaveMessage('Save failed — try again')
         setTimeout(() => setSaveMessage(''), 4000)
       } finally {
         setSavingToCloud(false)
