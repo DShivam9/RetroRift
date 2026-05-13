@@ -63,6 +63,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const playtimeRef = useRef(0)
   const [romData, setRomData] = useState(null)
   const [saveSlots, setSaveSlots] = useState([])
+  const saveDataCache = useRef({}) // Persistent non-reactive cache for binary save data
   const [saveMessage, setSaveMessage] = useState('')
   const [savingToCloud, setSavingToCloud] = useState(false)
   const [saveModalOpen, setSaveModalOpen] = useState(false)
@@ -545,46 +546,28 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
         // Try localStorage, but don't fail if quota exceeded (base64 saves can be large)
         try {
-          localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
-          console.log('[SaveFlow] Step 3: Saved locally. isAuthenticated:', isAuthenticated, 'uid:', user?.uid)
-        } catch (storageErr) {
-          console.warn('[SaveFlow] localStorage full, saving metadata only:', storageErr.name)
-          // Save just metadata without binary data
-          const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
-          try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly)) } catch { /* ignore */ }
-        }
+        // 5. Cache metadata to localStorage
+        localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(updatedSlots))
 
-        // Sync metadata and binary to cloud
+        // 6. Sync to cloud (metadata + binary)
         if (isAuthenticated && user?.uid) {
           try {
             setSaveMessage('Saving... Don\'t close window!')
-            console.log('[SaveFlow] Step 4: Calling saveGameState for Firestore binary sync...')
             const cloudSlots = await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
             
             if (cloudSlots) {
-              // Update local slots with sync status
-              const mergedSlots = updatedSlots.map(ls => {
-                const cloud = cloudSlots.find(cs => cs.id === ls.id)
-                return { ...ls, isSynced: cloud?.isSynced || false }
-              })
-              setSaveSlots(mergedSlots)
-              
-              // Update localStorage (meta only to save space)
-              const metaForStorage = mergedSlots.map(s => ({ ...s, stateData: null }))
-              try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaForStorage)) } catch { /* ignore */ }
+              setSaveSlots(cloudSlots)
+              localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(cloudSlots))
             }
             setSaveMessage('Synced to cloud! ☁️')
           } catch (err) {
             console.error('[SaveFlow] ❌ Cloud sync failed:', err.message)
-            if (err.message.includes('1MB')) {
-              setSaveMessage('Saved locally (too large for cloud sync)')
-            } else {
-              setSaveMessage('Saved locally (cloud sync failed)')
-            }
+            setSaveMessage(err.message.includes('1MB') ? 'Saved locally (too large)' : 'Saved locally (cloud sync failed)')
           }
         } else {
           setSaveMessage('Saved locally')
         }
+        
         setTimeout(() => setSaveMessage(''), 4000)
       } catch (error) {
         console.error('[SaveFlow] ❌ Save state error:', error)
@@ -611,7 +594,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   }
 
   const handleLoadState = async (save) => {
-    let stateToLoad = save.stateData
+    // 1. Check stealth cache first
+    let stateToLoad = saveDataCache.current[save.id]
 
     // CRITICAL: If stateToLoad is a plain object '{}', it's corrupted data from a previous 
     // failed localStorage save attempt. We must ignore it and force a cloud fetch.
@@ -639,18 +623,9 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         
         if (downloadedData) {
           stateToLoad = downloadedData
-          
-          // Update React state with the heavy binary data for the current session
-          const updatedSlots = saveSlots.map(s => 
-            s.id === save.id ? { ...s, stateData: downloadedData } : s
-          )
-          setSaveSlots(updatedSlots)
-
-          // CRITICAL: Strip stateData before saving to localStorage to avoid massive JSON overhead
-          const slotsToCache = updatedSlots.map(({ stateData, ...rest }) => rest)
-          localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(slotsToCache))
-          
           setSaveMessage('Cloud save ready!')
+          // Give the browser a moment to breathe and update the UI before the heavy engine work
+          await new Promise(resolve => setTimeout(resolve, 150))
         }
       } catch (err) {
         console.error('Cloud download failed:', err)
@@ -682,6 +657,10 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         throw new Error('Save data is too small or corrupted')
       }
 
+      setSaveMessage('Injecting state...')
+      // Final breather for UI responsiveness
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       console.log('[LoadFlow] Injecting state into emulator engine...')
       const loaded = await emulatorRef.current.loadState(stateToLoad)
       if (loaded) {
@@ -716,16 +695,17 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         return
       }
 
+      saveDataCache.current[saveId] = stateData
+
       const updatedSlots = saveSlots.map(s =>
         s.id === saveId
-          ? { ...s, stateData, date: new Date().toLocaleString(), playtime: formatTime(playtime), isSynced: false }
+          ? { ...s, date: new Date().toLocaleString(), playtime: formatTime(playtime), isSynced: false }
           : s
       )
       setSaveSlots(updatedSlots)
-
-      // Cache to localStorage (metadata only to ensure speed)
+      
       const metaOnly = updatedSlots.map(s => ({ ...s, stateData: null }))
-      try { localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly)) } catch (e) { console.error('Storage error:', e) }
+      localStorage.setItem(`saves_${currentGame.id}`, JSON.stringify(metaOnly))
 
       // Re-upload to cloud
       if (isAuthenticated && user?.uid) {
