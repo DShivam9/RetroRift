@@ -116,7 +116,7 @@ class GBAEmulator {
     }
   }
 
-  async loadROM(arrayBuffer) {
+  async loadROM(arrayBuffer, onStart = null) {
     console.log('ROM received:', arrayBuffer.byteLength, 'bytes');
 
     const assetsReady = await this.ensureAssets();
@@ -168,6 +168,7 @@ class GBAEmulator {
         EJS_DEBUG: true,
         onGameStart: () => {
           console.log('[Emulator] 🚀 Game engine started successfully!');
+          if (onStart) onStart();
         }
       });
 

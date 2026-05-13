@@ -57,6 +57,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   }
 
   const [loading, setLoading] = useState(true)
+  const [isEngineReady, setIsEngineReady] = useState(false)
   const [error, setError] = useState(null)
   const [playtime, setPlaytime] = useState(0)
   const playtimeRef = useRef(0)
@@ -359,9 +360,26 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           if (!canvasRef.current) return
 
           emulatorRef.current = new GBAEmulator(canvasRef.current, system)
-          await emulatorRef.current.loadROM(romData)
+          
+          // Track engine start with a timeout
+          const startTimeout = setTimeout(() => {
+            if (isComponentMounted.current && !isEngineReady) {
+              console.warn('[Player] Engine start timed out. Decompression might be stuck.')
+              // We don't throw an error yet, just log it. 
+              // The user might see the "Decompress Game Data" hang.
+            }
+          }, 15000)
+
+          await emulatorRef.current.loadROM(romData, () => {
+            clearTimeout(startTimeout)
+            if (isComponentMounted.current) {
+              setIsEngineReady(true)
+              setLoading(false)
+            }
+          })
+          
           emulatorRef.current.start()
-          console.log('[Player] Emulator started successfully')
+          console.log('[Player] Emulator initialized successfully')
         } catch (err) {
           console.error('[Player] Emulator init error:', err)
           setError('Failed to start emulator. Please refresh and try again.')
@@ -720,15 +738,28 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                   <button onClick={loadROM} className="btn btn--secondary">Retry</button>
                 </div>
               ) : loading ? (
-                <Loader text={`DEPLOYING ${currentGame.title.toUpperCase()}... PLEASE WAIT`} />
+                <Loader text={`DEPLOYING ${currentGame.title.toUpperCase()}...`} />
               ) : (currentGame.requiresUpload && !romData) ? (
                 <UploadRomArea onUpload={(buffer) => setRomData(buffer)} title={currentGame.title} />
               ) : (
-                <canvas 
-                  ref={canvasRef} 
-                  className="player-canvas" 
-                  style={{ opacity: romData ? 1 : 0 }} 
-                />
+                <>
+                  {!isEngineReady && (
+                    <div className="player-engine-loading">
+                      <Loader text="STARTING ENGINE..." />
+                      <div className="player-engine-fallback">
+                        <p>Still stuck on decompression? Archive.org servers can be slow.</p>
+                        <button onClick={() => window.location.reload()} className="btn btn--secondary btn--sm">
+                          Reload Page
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <canvas 
+                    ref={canvasRef} 
+                    className={`player-canvas ${!isEngineReady ? 'player-canvas--loading' : ''}`}
+                    id="canvas"
+                  />
+                </>
               )}
             </div>
           </div>
