@@ -196,23 +196,24 @@ class GBAEmulator {
       this.emulatorDiv.style.height = '100%';
       this.container.appendChild(this.emulatorDiv);
 
-      const blob = new Blob([romData], { type: 'application/octet-stream' });
+      // Use the original arrayBuffer directly to avoid extraction conflicts
+      const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
       this.blobUrl = URL.createObjectURL(blob);
 
       const dataPath = 'https://cdn.emulatorjs.org/stable/data/';
+      
+      // Set globals FIRST
       window.EJS_gameUrl = this.blobUrl;
-      window.EJS_core = this.system; 
+      window.EJS_core = this.system.toLowerCase(); 
       window.EJS_dataPath = dataPath;
       window.EJS_gameID = this.gameId; 
-      window.EJS_gameId = this.gameId; 
       window.EJS_startOnLoad = true;
-      window.EJS_DEBUG_MODE = true; // Enable logs for troubleshooting
       
-      console.log(`[Emulator] Config: core=${window.EJS_core}, dataPath=${window.EJS_dataPath}`);
+      console.log(`[Emulator] Handing over to engine: core=${window.EJS_core}`);
       
       // Global hook for game start
       window.EJS_onGameStart = () => {
-        console.log('[Emulator] 🚀 Engine started (Global Hook)!');
+        console.log('[Emulator] 🚀 Engine started!');
         if (onStart) onStart();
       };
       
