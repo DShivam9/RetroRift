@@ -67,18 +67,28 @@ export default function App() {
 }
 
 function AppContent() {
-  // Get initial page from URL path or legacy hash
-  const getInitialPage = () => {
+  // Get initial state from URL path
+  const getInitialState = () => {
     const hash = window.location.hash.slice(1)
-    if (hash) return hash
+    if (hash) return { page: hash, game: null }
 
     const path = window.location.pathname.slice(1)
-    // Handle root / or empty string as 'home'
-    if (!path || path === '/') return 'home'
-    return path
+    if (!path || path === '/') return { page: 'home', game: null }
+
+    // Handle deep links: /play/pokemon-emerald
+    if (path.startsWith('play/')) {
+      const slug = path.replace('play/', '')
+      const foundGame = games.find(g => g.title.toLowerCase().replace(/ /g, '-') === slug)
+      if (foundGame) {
+        return { page: 'player', game: foundGame }
+      }
+    }
+
+    return { page: path, game: null }
   }
 
-  const [currentPage, setCurrentPage] = useState(getInitialPage)
+  const initialState = getInitialState()
+  const [currentPage, setCurrentPage] = useState(initialState.page)
   const [pageKey, setPageKey] = useState(0)
 
   // XP Engine state
@@ -88,7 +98,7 @@ function AppContent() {
   const [customization, setCustomization] = useState(() => {
     try {
       const saved = localStorage.getItem('profileCustomization')
-      return saved ? JSON.parse(saved) : null // ProfilePage will handle default if null
+      return saved ? JSON.parse(saved) : null
     } catch {
       return null
     }
@@ -115,11 +125,11 @@ function AppContent() {
   })
 
   const [currentGame, setCurrentGame] = useState(() => {
+    if (initialState.game) return initialState.game
     try {
       const saved = localStorage.getItem('currentGame')
       if (!saved) return null
       const parsed = JSON.parse(saved)
-      // Always use fresh catalog data to avoid stale links/metadata
       return games.find(g => g.id === parsed.id) || parsed
     } catch {
       return null
@@ -130,6 +140,17 @@ function AppContent() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.slice(1) || 'home'
+      
+      if (path.startsWith('play/')) {
+        const slug = path.replace('play/', '')
+        const foundGame = games.find(g => g.title.toLowerCase().replace(/ /g, '-') === slug)
+        if (foundGame) {
+          setCurrentGame(foundGame)
+          setCurrentPage('player')
+          return
+        }
+      }
+      
       setCurrentPage(path)
     }
     window.addEventListener('popstate', handlePopState)
@@ -308,7 +329,9 @@ function AppContent() {
       console.error('Failed to update play history:', err)
     }
 
-    navigate('player')
+    // Update URL to a shareable deep link
+    const slug = game.title.toLowerCase().replace(/ /g, '-')
+    navigate(`play/${slug}`)
   }
 
   // Use toast for notifications

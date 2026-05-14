@@ -56,86 +56,6 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     features: currentGame.features || []
   }
 
-  // --- SEO & Rich Snippets Architecture ---
-  // Injects game-specific metadata and JSON-LD Schema to dominate search results
-  useEffect(() => {
-    if (!currentGame || !currentGame.title || currentGame.title === 'Select a Game' || !details) return
-
-    // 1. Dynamic Meta Configuration
-    const originalTitle = document.title
-    const metaTitle = `Play ${currentGame.title} Online | ${currentGame.console} | RetroRift`
-    const metaDescription = `Play ${currentGame.title} (${currentGame.console}) instantly on RetroRift. Features ${details.genre} gameplay by ${details.developer} with cloud saves and high-speed emulation. No downloads needed.`
-    
-    document.title = metaTitle
-
-    // Helper to update or create meta tags
-    const updateMeta = (name, content, attr = 'name') => {
-      let tag = document.querySelector(`meta[${attr}="${name}"]`)
-      if (!tag) {
-        tag = document.createElement('meta')
-        tag.setAttribute(attr, name)
-        document.head.appendChild(tag)
-      }
-      tag.content = content
-    }
-
-    updateMeta('description', metaDescription)
-    
-    // Social Media Previews (Open Graph)
-    updateMeta('og:title', metaTitle, 'property')
-    updateMeta('og:description', metaDescription, 'property')
-    updateMeta('og:image', `https://retrorift.online${currentGame.thumbnail}`, 'property')
-    updateMeta('og:url', `https://retrorift.online/play/${currentGame.title.toLowerCase().replace(/ /g, '-')}`, 'property')
-    updateMeta('og:type', 'website', 'property')
-
-    // Twitter Card metadata
-    updateMeta('twitter:card', 'summary_large_image')
-    updateMeta('twitter:title', metaTitle)
-    updateMeta('twitter:description', metaDescription)
-    updateMeta('twitter:image', `https://retrorift.online${currentGame.thumbnail}`)
-
-    // 2. JSON-LD Structured Data (Rich Snippets: Stars, Ratings, Category)
-    const schemaData = {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": currentGame.title,
-      "operatingSystem": "Web Browser",
-      "applicationCategory": "GameApplication",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": details.rating || "4.8",
-        "bestRating": "5",
-        "ratingCount": Math.floor(Math.random() * 200) + 150 // Dynamic popularity signal
-      },
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": details.developer || "RetroRift Studios"
-      },
-      "featureList": details.features.join(', ')
-    }
-
-    const script = document.createElement('script')
-    script.type = 'application/ld+json'
-    script.text = JSON.stringify(schemaData)
-    script.id = 'game-json-ld'
-    document.head.appendChild(script)
-
-    // 3. SEO Cleanup on unmount
-    const metaDescTag = document.querySelector('meta[name="description"]')
-    const originalDesc = metaDescTag ? metaDescTag.content : ""
-
-    return () => {
-      document.title = originalTitle
-      if (metaDescTag) metaDescTag.content = originalDesc
-      const oldScript = document.getElementById('game-json-ld')
-      if (oldScript) oldScript.remove()
-    }
-  }, [currentGame.id, details.rating, details.developer])
 
 
   const [loading, setLoading] = useState(true)
@@ -161,8 +81,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   const [shareStatus, setShareStatus] = useState(null) // null | 'copied' | 'error'
 
   const handleShare = async () => {
+    if (!currentGame || !currentGame.id) return
+
     try {
-      const shareUrl = window.location.href
+      const slug = currentGame.title.toLowerCase().replace(/ /g, '-')
+      const shareUrl = `${window.location.origin}/play/${slug}`
       await navigator.clipboard.writeText(shareUrl)
       setShareStatus('copied')
       setTimeout(() => setShareStatus(null), 2000)

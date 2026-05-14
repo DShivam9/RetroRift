@@ -22,14 +22,32 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
       player: `Currently playing ${currentGame?.title || 'a classic retro game'} on RetroRift. Enjoy lag-free emulation with persistent save state support.`
     };
 
-    document.title = titles[currentPage] || 'RetroRift | Play Retro Games Online';
+    document.title = titles[currentPage] || titles.home || 'RetroRift | Play Retro Games Online';
     
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', descriptions[currentPage] || descriptions.home);
+      metaDesc.setAttribute('content', descriptions[currentPage] || descriptions.home || '');
     }
 
-    // 2. Inject Game Schema (JSON-LD) for better Google indexing
+    // 2. Update Social Meta Tags (OpenGraph & Twitter)
+    const updateMeta = (name, content, attr = 'name') => {
+      let tag = document.querySelector(`meta[${attr}="${name}"]`);
+      if (tag) tag.setAttribute('content', content);
+    };
+
+    const currentTitle = titles[currentPage] || titles.home;
+    const currentDesc = descriptions[currentPage] || descriptions.home;
+    const defaultImage = 'https://retrorift.online/og-image.png';
+    const gameImage = currentGame?.thumbnail ? `https://retrorift.online${currentGame.thumbnail}` : defaultImage;
+
+    updateMeta('og:title', currentTitle, 'property');
+    updateMeta('og:description', currentDesc, 'property');
+    updateMeta('og:image', gameImage, 'property');
+    updateMeta('twitter:title', currentTitle);
+    updateMeta('twitter:description', currentDesc);
+    updateMeta('twitter:image', gameImage);
+
+    // 3. Inject Game Schema (JSON-LD) for better Google indexing
     const existingSchema = document.getElementById('game-list-schema');
     if (existingSchema) existingSchema.remove();
 
@@ -87,7 +105,7 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
           {
             "@type": "ListItem",
             "position": 2,
-            "name": titles[currentPage].split('|')[1]?.trim() || currentPage,
+            "name": titles[currentPage]?.split('|')[1]?.trim() || currentPage,
             "item": `https://retrorift.online/${currentPage}`
           }
         ]
@@ -100,7 +118,7 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
       document.head.appendChild(bScript);
     }
 
-    // 4. Update Canonical URL
+    // 5. Update Canonical URL
     const existingCanonical = document.querySelector('link[rel="canonical"]');
     if (existingCanonical) {
       const cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;
