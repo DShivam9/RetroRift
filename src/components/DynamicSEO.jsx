@@ -5,21 +5,21 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
   useEffect(() => {
     // 1. Update Title and Meta Description
     const titles = {
-      home: 'RetroRift | Home - The Ultimate Retro Gaming Hub',
-      library: 'RetroRift | Library - Explore 100+ Retro Classics',
-      favorites: 'RetroRift | Favorites - Your Curated Collection',
-      profile: 'RetroRift | Profile - Achievements & Customization',
-      login: 'RetroRift | Login - Sync Your Cloud Saves',
-      player: currentGame ? `Playing ${currentGame.title} | RetroRift` : 'Playing Game | RetroRift'
+      home: 'RetroRift | Play GBA, NDS & Retro Games Online',
+      library: 'RetroRift | 100+ Classic Games - Play in Browser',
+      favorites: 'RetroRift | Your Collection - Quick Access Saves',
+      profile: 'RetroRift | Profile - Achievements & Progress',
+      login: 'RetroRift | Sign In - Secure Online Sync',
+      player: currentGame ? `${currentGame.title} | Play on RetroRift` : 'RetroRift | Play Retro Games'
     };
     
     const descriptions = {
-      home: 'Experience the next generation of retro gaming. Play GBA, NES, and SNES games instantly with cloud-synced saves and a high-end cinematic interface.',
-      library: 'Explore our massive collection of retro games. No downloads, just high-performance emulation directly in your browser.',
-      favorites: 'Access your favorite retro games instantly. Keep all your top picks in one place with cloud synchronization.',
-      profile: 'Level up your gaming journey. View your XP, unlock trophies, and customize your atmospheric dashboard.',
-      login: 'Sign in to RetroRift to unlock cloud saves, achievements, and cross-device synchronization for your retro games.',
-      player: `Now playing ${currentGame?.title || 'a classic retro game'} on RetroRift. Experience lag-free emulation with cloud save support.`
+      home: 'Play GBA, NDS, NES, and SNES games instantly with secure online storage for save states. Experience high-performance emulation with a premium cinematic interface.',
+      library: 'Browse over 100+ classic retro games. No downloads required, featuring high-speed browser-based emulation for the best gaming experience.',
+      favorites: 'Access your favorited retro games instantly. All your progress is synced securely via your personal online storage.',
+      profile: 'Track your retro gaming journey. View your global XP, unlock rare achievements, and customize your atmospheric dashboard.',
+      login: 'Sign in to RetroRift to enable secure online sync, persistent save states, and achievement tracking across all your devices.',
+      player: `Currently playing ${currentGame?.title || 'a classic retro game'} on RetroRift. Enjoy lag-free emulation with persistent save state support.`
     };
 
     document.title = titles[currentPage] || 'RetroRift | Play Retro Games Online';
@@ -69,7 +69,38 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
       document.head.appendChild(script);
     }
 
-    // 3. Update Canonical URL
+    // 3. Inject Breadcrumb Schema
+    const existingBreadcrumb = document.getElementById('breadcrumb-schema');
+    if (existingBreadcrumb) existingBreadcrumb.remove();
+
+    if (currentPage !== 'home') {
+      const breadcrumbData = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://retrorift.online/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": titles[currentPage].split('|')[1]?.trim() || currentPage,
+            "item": `https://retrorift.online/${currentPage}`
+          }
+        ]
+      };
+
+      const bScript = document.createElement('script');
+      bScript.id = 'breadcrumb-schema';
+      bScript.type = 'application/ld+json';
+      bScript.text = JSON.stringify(breadcrumbData);
+      document.head.appendChild(bScript);
+    }
+
+    // 4. Update Canonical URL
     const existingCanonical = document.querySelector('link[rel="canonical"]');
     if (existingCanonical) {
       const cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;

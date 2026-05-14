@@ -18,11 +18,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;600;700;800&family=Press+Start+2P&family=DM+Serif+Display&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     
-    <title>RetroRift | Play Retro Games Online with Cloud Saves</title>
+    <title>RetroRift | Play GBA, NDS & Retro Games Online</title>
     
     <!-- SEO & Social Media (OpenGraph) -->
     <meta property="og:site_name" content="RetroRift" />
-    <meta property="og:title" content="RetroRift - The Ultimate Retro Gaming Hub" />
+    <meta property="og:title" content="RetroRift | The Elite Retro Gaming Hub" />
     <meta property="og:description" content="Immerse yourself in a premium retro gaming experience. Play classic titles with secure online storage and a cinematic dashboard." />
     <meta property="og:image" content="https://retrorift.online/og-image.png" />
     <meta property="og:url" content="https://retrorift.online/" />
@@ -31,7 +31,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@RetroRift" />
-    <meta name="twitter:title" content="RetroRift - Cinematic Retro Gaming" />
+    <meta name="twitter:title" content="RetroRift | Play GBA & NDS Games Online" />
     <meta name="twitter:description" content="Play classic retro games with a futuristic, high-end dashboard. Sync your progress across devices securely." />
     <meta name="twitter:image" content="https://retrorift.online/og-image.png" />
 
@@ -39,27 +39,40 @@
     <link rel="canonical" href="https://retrorift.online/" />
     
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "RetroRift",
-      "operatingSystem": "Web Browser",
-      "applicationCategory": "GameApplication",
-      "url": "https://retrorift.online/",
-      "description": "Premium retro gaming platform featuring high-performance emulation and secure progress synchronization.",
-      "featureList": [
-        "High-performance GBA & NDS Emulation",
-        "Secure Online Save State Management",
-        "No Download Required",
-        "Cinematic User Interface",
-        "Progress Syncing Across Devices"
-      ],
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "RetroRift",
+        "url": "https://retrorift.online/",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://retrorift.online/library?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "RetroRift",
+        "operatingSystem": "Web Browser",
+        "applicationCategory": "GameApplication",
+        "url": "https://retrorift.online/",
+        "description": "Elite retro gaming platform with high-performance emulation and secure online sync.",
+        "featureList": [
+          "GBA, NDS, NES, SNES Emulation",
+          "Secure Online Storage & Progress Sync",
+          "Zero Download Instant Play",
+          "Cinematic Retro Dashboard",
+          "Achievement System & Global XP"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
       }
-    }
+    ]
     </script>
   </head>
   <body>
