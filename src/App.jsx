@@ -284,7 +284,9 @@ function AppContent() {
     const urlPath = page === 'home' ? '/' : `/${page}`
     window.history.pushState({ page }, '', urlPath)
     
-    setCurrentPage(page)
+    // Set internal page state (mapping deep links to the player component)
+    const targetPage = page.startsWith('play/') ? 'player' : page
+    setCurrentPage(targetPage)
     setPageKey(prev => prev + 1)
     window.scrollTo({ top: 0, behavior: 'instant' })
   }

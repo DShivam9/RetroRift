@@ -106,7 +106,9 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
             "@type": "ListItem",
             "position": 2,
             "name": titles[currentPage]?.split('|')[1]?.trim() || currentPage,
-            "item": `https://retrorift.online/${currentPage}`
+            "item": (currentPage === 'player' && currentGame) 
+              ? `https://retrorift.online/play/${currentGame.title.toLowerCase().replace(/ /g, '-')}`
+              : `https://retrorift.online/${currentPage}`
           }
         ]
       };
