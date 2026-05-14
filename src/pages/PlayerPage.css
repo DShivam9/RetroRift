@@ -709,12 +709,12 @@
 }
 
 .player-features__title {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
     font-weight: 700;
     color: #a78bfa;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -734,9 +734,10 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: inherit; /* Remove monospace */
+    font-size: 0.95rem;
     color: #cbd5e1;
+    line-height: 1.4;
 }
 
 .player-feature-icon {

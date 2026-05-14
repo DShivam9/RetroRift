@@ -945,19 +945,19 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             <div className="editorial-card editorial-card--lore">
               <div className="editorial-header">
                 <div className="editorial-icon"><BookOpen size={16} /></div>
-                <h3>Chronicle Lore</h3>
+                <h3>Game Lore</h3>
               </div>
               <div className="lore-content">
                 <p className="player-description">{details.description}</p>
                 
                 {details.features && details.features.length > 0 && (
                   <div className="player-features">
-                    <h4 className="player-features__title">Operational Features</h4>
+                    <h4 className="player-features__title">Key Highlights</h4>
                     <ul className="player-features__list">
                       {details.features.map((feature, i) => (
                         <li key={i} className="player-feature-item">
                           <Zap size={12} className="player-feature-icon" />
-                          <span>{feature}</span>
+                          <span className="feature-text">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -970,12 +970,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             <div className="editorial-card editorial-card--dna">
               <div className="editorial-header">
                 <div className="editorial-icon"><Zap size={16} /></div>
-                <h3>Operational DNA</h3>
+                <h3>Game Specifications</h3>
               </div>
               <div className="dna-grid">
                 <div className="dna-item">
                   <span className="dna-label">Platform Architecture</span>
-                  <span className="dna-value">{currentGame.console}</span>
+                  <span className="dna-value">{currentGame.console} Architecture</span>
                 </div>
                 <div className="dna-item">
                   <span className="dna-label">System Region</span>
@@ -1028,7 +1028,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 <div className="editorial-header">
                   <div className="editorial-icon"><Save size={16} /></div>
                   <div className="editorial-header__flex">
-                    <h3>Chronicle Manifest</h3>
+                    <h3>Save Archive</h3>
                     <span className="player-saves-count">{saveSlots.length} / {MAX_SAVE_SLOTS}</span>
                   </div>
                   {saveMessage && (

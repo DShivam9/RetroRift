@@ -77,8 +77,10 @@ function AppContent() {
 
     // Handle deep links: /play/pokemon-emerald
     if (path.startsWith('play/')) {
-      const slug = path.replace('play/', '')
-      const foundGame = games.find(g => g.title.toLowerCase().replace(/ /g, '-') === slug)
+      const slug = decodeURIComponent(path.replace('play/', ''))
+      const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ /g, '-')
+      
+      const foundGame = games.find(g => normalize(g.title) === normalize(slug))
       if (foundGame) {
         return { page: 'player', game: foundGame }
       }
@@ -142,8 +144,10 @@ function AppContent() {
       const path = window.location.pathname.slice(1) || 'home'
       
       if (path.startsWith('play/')) {
-        const slug = path.replace('play/', '')
-        const foundGame = games.find(g => g.title.toLowerCase().replace(/ /g, '-') === slug)
+        const slug = decodeURIComponent(path.replace('play/', ''))
+        const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ /g, '-')
+        
+        const foundGame = games.find(g => normalize(g.title) === normalize(slug))
         if (foundGame) {
           setCurrentGame(foundGame)
           setCurrentPage('player')
@@ -332,7 +336,8 @@ function AppContent() {
     }
 
     // Update URL to a shareable deep link
-    const slug = game.title.toLowerCase().replace(/ /g, '-')
+    const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ /g, '-')
+    const slug = normalize(game.title)
     navigate(`play/${slug}`)
   }
 
