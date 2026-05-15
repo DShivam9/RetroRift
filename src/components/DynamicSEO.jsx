@@ -107,7 +107,7 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
             "position": 2,
             "name": titles[currentPage]?.split('|')[1]?.trim() || currentPage,
             "item": (currentPage === 'player' && currentGame) 
-              ? `https://retrorift.online/play/${currentGame.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ /g, '-')}`
+              ? `https://retrorift.online/play/${currentGame.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/pok-mon/g, 'pokemon').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}`
               : `https://retrorift.online/${currentPage}`
           }
         ]
