@@ -14,13 +14,14 @@ const MobileWarning = () => {
           <Monitor size={18} />
         </div>
         <div className="mobile-warning__text">
-          <strong>Desktop Optimized</strong>
-          <span>Switch to PC for the full retro experience.</span>
+          <strong>Desktop Recommended</strong>
+          <span>High-performance emulation requires a keyboard and desktop browser for the best experience.</span>
         </div>
-        <button className="mobile-warning__close" onClick={() => setIsVisible(false)}>
+        <button className="mobile-warning__close" onClick={() => setIsVisible(false)} aria-label="Dismiss">
           <X size={14} />
         </button>
       </div>
+      <div className="mobile-warning__progress" />
       <div className="mobile-warning__glow" />
     </div>
   );

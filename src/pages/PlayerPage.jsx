@@ -11,7 +11,7 @@ import UploadRomArea from '../components/UploadRomArea'
 import {
   Save, FolderOpen, Trash2, ChevronRight, Star, Clock, RefreshCw,
   Gamepad2, Calendar, MapPin, Zap, Heart, Play, Volume2, Cloud, CloudOff, AlertTriangle, Edit3, LogIn,
-  Cpu, ShieldCheck, Info, HardDrive, BookOpen, Trophy, Share2
+  Cpu, ShieldCheck, Info, HardDrive, BookOpen, Trophy, Share2, Monitor
 } from 'lucide-react'
 import ShinyText from '../components/ShinyText'
 import '../styles/components.css'
@@ -31,6 +31,15 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     }
     return initial
   })
+
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 900px)').matches)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Self-healing effect: Re-sync whenever the game prop changes
   useEffect(() => {
@@ -379,6 +388,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     if (currentGame.id) {
       console.log(`[Player] Game active: ${currentGame.title} (${currentGame.id})`)
       
+      if (isMobile) {
+        console.log('[Player] Mobile device detected. Skipping heavy WASM engine initialization.')
+        setLoading(false)
+        return
+      }
+
       // CRITICAL: Clean up existing emulator before switching games
       if (emulatorRef.current) {
         console.log('[Player] Destroying stale emulator instance...')
@@ -395,7 +410,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       loadROM()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentGame.id]) // ONLY depend on ID to prevent loops when metadata syncs
+  }, [currentGame.id, isMobile]) // ONLY depend on ID and isMobile to prevent loops
 
   // Cleanup on unmount
   useEffect(() => {
@@ -1191,6 +1206,35 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         onConfirm={handleSaveConfirm}
         onCancel={() => setSaveModalOpen(false)}
       />
+
+      {isMobile && (
+        <div className="player-mobile-guard">
+          <div className="mobile-guard__content">
+            <div className="mobile-guard__visual">
+              <Monitor size={64} className="icon--glow" />
+              <div className="mobile-guard__scanner" />
+            </div>
+            <div className="mobile-guard__text">
+              <h2>Desktop Core Required</h2>
+              <p>The high-performance emulation engine requires a physical keyboard and desktop-class browser for safe execution.</p>
+              <div className="mobile-guard__specs">
+                <div className="spec-item">
+                  <Cpu size={14} />
+                  <span>WASM Performance</span>
+                </div>
+                <div className="spec-item">
+                  <Gamepad2 size={14} />
+                  <span>Input Mapping</span>
+                </div>
+              </div>
+              <button className="mobile-guard__btn" onClick={() => navigate('library')}>
+                Return to Library
+              </button>
+            </div>
+          </div>
+          <div className="mobile-guard__bg" />
+        </div>
+      )}
     </div>
   )
 }
