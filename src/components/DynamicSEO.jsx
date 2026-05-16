@@ -123,7 +123,14 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
     // 5. Update Canonical URL
     const existingCanonical = document.querySelector('link[rel="canonical"]');
     if (existingCanonical) {
-      const cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;
+      let cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;
+      
+      // Handle deep links for player
+      if (currentPage === 'player' && currentGame) {
+        const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/pok-mon/g, 'pokemon').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+        cleanPath = `/play/${normalize(currentGame.title)}`;
+      }
+      
       existingCanonical.setAttribute('href', `https://retrorift.online${cleanPath}`);
     }
 

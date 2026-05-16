@@ -132,7 +132,7 @@ export default function LibraryPage({
             </select>
 
             {/* Bring Your Own ROM */}
-            <button 
+            <button
               className="btn btn--primary"
               style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.5rem 1rem' }}
               onClick={() => onPlayGame({
