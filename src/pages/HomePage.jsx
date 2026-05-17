@@ -9,7 +9,39 @@ import {
 import { useToast } from '../components/Toast' // Import Toast
 import RotatingText from '../components/RotatingText'
 import ShinyText from '../components/ShinyText'
+import HoloCartridge from '../components/HoloCartridge'
+import VerticalGameTicker from '../components/VerticalGameTicker'
+import { motion, AnimatePresence } from 'framer-motion'
 import './HomePage.css'
+
+/**
+ * GlitchText - Scrambles text using ASCII characters during transitions
+ */
+const GlitchText = ({ text, isChanging }) => {
+  const [displayText, setDisplayText] = useState(text)
+  const chars = '!@#$%^&*()_+{}:"<>?|~`-=[]\\\';,./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  
+  useEffect(() => {
+    if (isChanging) {
+      let iterations = 0
+      const interval = setInterval(() => {
+        setDisplayText(prev => 
+          text.split('').map((char, index) => {
+            if (index < iterations) return text[index]
+            return chars[Math.floor(Math.random() * chars.length)]
+          }).join('')
+        )
+        iterations += 1/3
+        if (iterations >= text.length) clearInterval(interval)
+      }, 30)
+      return () => clearInterval(interval)
+    } else {
+      setDisplayText(text)
+    }
+  }, [text, isChanging])
+
+  return <span>{displayText}</span>
+}
 
 /**
  * HomePage - Clean retro gaming experience
@@ -21,9 +53,18 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
   const [featuredVisible, setFeaturedVisible] = useState(false)
   const [continueVisible, setContinueVisible] = useState(false)
   const [questAccepted, setQuestAccepted] = useState(false)
-  const featuredGames = getFeaturedGames(8)
+  // Load 12 games for a rich scrolling marquee
+  const featuredGames = React.useMemo(() => getFeaturedGames(12), [])
+  const [activeGame, setActiveGame] = useState(featuredGames[0] || null)
   const allGames = getAllGames()
   const toast = useToast()
+  const [isChanging, setIsChanging] = useState(false)
+
+  useEffect(() => {
+    setIsChanging(true)
+    const timer = setTimeout(() => setIsChanging(false), 600)
+    return () => clearTimeout(timer)
+  }, [activeGame])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -93,61 +134,52 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
           />
         </div>
 
-        <div className="hero__content">
-          <span className="hero__tag">
-            <ShinyText
-              text="RETRO GAMING REIMAGINED"
-              disabled={false}
-              speed={3}
-              className=""
-              color="#8b5cf6"
-              shineColor="#ffffff"
-            />
-          </span>
-
-          <h1 className="hero__title">
-            Play <div className="hero__rotator">
-              <RotatingText
-                texts={['CLASSIC', 'VINTAGE', 'LEGENDS', 'CONSOLE']}
-                mainClassName="hero__rotating-text"
-                staggerFrom="last"
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "-120%" }}
-                staggerDuration={0.025}
-                rotationInterval={3000}
-                splitLevelClassName="hero__rotator-split"
-                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+        <div className="hero__layout">
+          <div className="hero__text-col">
+            <h1 className="hero__title">
+              Play Your Favorite<br />
+              <ShinyText
+                text="Retro Console Games"
+                className="hero__title-accent"
+                color="#8b5cf6"
+                shineColor="#e0b0ff"
+                speed={3}
               />
-            </div> Games<br />
-            <ShinyText
-              text="In Your Browser"
-              className="hero__title-accent"
-              color="#8b5cf6"
-              shineColor="#e0b0ff"
-              speed={3}
+            </h1>
+
+            <p className="hero__desc">
+              Experience classic titles with high-performance emulation and secure cloud saves. No downloads required.
+            </p>
+
+            <div className="hero__buttons">
+              <button
+                className="hero__btn hero__btn--primary"
+                onClick={() => activeGame && onPlayGame(activeGame)}
+              >
+                <Play className="hero__btn-icon" />
+                Play <GlitchText text={activeGame?.title || 'Now'} isChanging={isChanging} />
+              </button>
+              <button
+                className="hero__btn hero__btn--ghost"
+                onClick={() => navigate('library')}
+              >
+                Browse Library
+                <ChevronRight className="hero__btn-icon" />
+              </button>
+            </div>
+          </div>
+
+          <div className="hero__visual-col">
+            <VerticalGameTicker 
+              games={featuredGames} 
+              activeGame={activeGame} 
+              setActiveGame={setActiveGame} 
+              onPlayGame={onPlayGame} 
             />
-          </h1>
-
-          <p className="hero__desc">
-            No downloads. No setup. Just pure nostalgia.
-          </p>
-
-          <div className="hero__buttons">
-            <button
-              className="hero__btn hero__btn--primary"
-              onClick={() => navigate('library')}
-            >
-              <Play className="hero__btn-icon" />
-              Start Playing
-            </button>
-            <button
-              className="hero__btn hero__btn--ghost"
-              onClick={() => navigate('library')}
-            >
-              Browse Library
-              <ChevronRight className="hero__btn-icon" />
-            </button>
+            
+            <div className="hero__cartridge-wrapper">
+              <HoloCartridge activeGame={activeGame} />
+            </div>
           </div>
         </div>
       </section>

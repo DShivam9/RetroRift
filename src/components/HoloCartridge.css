@@ -1,0 +1,480 @@
+/* ==========================================================================
+   HoloCartridge — 3D CSS Interactive Game Cartridge
+   ========================================================================== */
+
+:root {
+    /* Dynamic styling defaults */
+    --scene-width: 280px;
+    --scene-height: 380px;
+    --depth: 30px;
+    --depth-half: 15px;
+    
+    --shell-color: rgba(52, 73, 94, 0.75);
+    --shell-color-solid: #34495e;
+    --shell-glow: rgba(44, 62, 80, 0.4);
+    --label-inset: 15px;
+}
+
+/* Console Dimensions & Mechanics */
+.cart-gba {
+    --scene-width: 330px;
+    --scene-height: 240px;
+    --depth: 24px;
+    --depth-half: 12px;
+}
+
+.cart-gb, .cart-gbc {
+    --scene-width: 270px;
+    --scene-height: 335px;
+    --depth: 28px;
+    --depth-half: 14px;
+}
+
+/* Cartridge Themes & Coloring */
+.cart-gba--emerald {
+    --shell-color: rgba(39, 174, 96, 0.7);
+    --shell-color-solid: #27ae60;
+    --shell-glow: rgba(46, 204, 113, 0.45);
+    --label-inset: 12px;
+}
+
+.cart-gba--firered {
+    --shell-color: rgba(192, 41, 43, 0.7);
+    --shell-color-solid: #c0292b;
+    --shell-glow: rgba(231, 76, 60, 0.45);
+    --label-inset: 12px;
+}
+
+.cart-gba--leafgreen {
+    --shell-color: rgba(46, 204, 113, 0.7);
+    --shell-color-solid: #2ecc71;
+    --shell-glow: rgba(39, 174, 96, 0.45);
+    --label-inset: 12px;
+}
+
+.cart-gba--sapphire {
+    --shell-color: rgba(41, 128, 185, 0.7);
+    --shell-color-solid: #2980b9;
+    --shell-glow: rgba(52, 152, 219, 0.45);
+    --label-inset: 12px;
+}
+
+.cart-gba--classic {
+    --shell-color: rgba(44, 62, 80, 0.75);
+    --shell-color-solid: #2c3e50;
+    --shell-glow: rgba(52, 73, 94, 0.45);
+    --label-inset: 12px;
+}
+
+.cart-gbc--crystal {
+    --shell-color: rgba(64, 224, 208, 0.65);
+    --shell-color-solid: #40e0d0;
+    --shell-glow: rgba(72, 209, 204, 0.4);
+    --label-inset: 15px;
+}
+
+.cart-gbc--yellow {
+    --shell-color: rgba(241, 196, 15, 0.75);
+    --shell-color-solid: #f1c40f;
+    --shell-glow: rgba(243, 156, 18, 0.4);
+    --label-inset: 15px;
+}
+
+.cart-gbc--classic {
+    --shell-color: rgba(149, 165, 166, 0.8);
+    --shell-color-solid: #95a5a6;
+    --shell-glow: rgba(127, 140, 141, 0.4);
+    --label-inset: 15px;
+}
+
+.cart-gb--classic {
+    --shell-color: rgba(127, 140, 141, 0.95);
+    --shell-color-solid: #7f8c8d;
+    --shell-glow: rgba(189, 195, 199, 0.3);
+    --label-inset: 15px;
+}
+
+/* Scene Setup */
+.holo-container {
+    perspective: 1200px;
+    width: 360px;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    user-select: none;
+}
+
+/* Ambient dynamic back glow */
+.holo-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 90%;
+    background: radial-gradient(circle, var(--shell-glow) 0%, transparent 70%);
+    filter: blur(50px);
+    z-index: 0;
+    pointer-events: none;
+    transition: background 0.4s ease;
+}
+
+.holo-scene {
+    position: relative;
+    width: var(--scene-width);
+    height: var(--scene-height);
+    transform-style: preserve-3d;
+    cursor: grab;
+    z-index: 1;
+    will-change: transform;
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.holo-tilt-wrapper {
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.holo-scene:active {
+    cursor: grabbing;
+}
+
+/* Base Face Styles */
+.holo-face {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    backface-visibility: hidden;
+    transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease;
+}
+
+/* Premium 3D Face calculations using custom sizing variables */
+.holo-face--front,
+.holo-face--back {
+    width: var(--scene-width);
+    height: var(--scene-height);
+    margin-left: calc(-1 * var(--scene-width) / 2);
+    margin-top: calc(-1 * var(--scene-height) / 2);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--shell-color);
+    backdrop-filter: blur(3px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+.holo-face--front {
+    transform: translateZ(var(--depth-half));
+    border-color: rgba(255, 255, 255, 0.25);
+    backface-visibility: visible !important;
+    overflow: visible !important;
+    transform-style: preserve-3d;
+}
+
+.holo-face--back {
+    transform: rotateY(180deg) translateZ(var(--depth-half));
+    background: var(--shell-color);
+}
+
+/* Optimized Sides (Straight, flat polygons without border radius) */
+.holo-face--left,
+.holo-face--right {
+    width: var(--depth);
+    height: var(--scene-height);
+    margin-left: calc(-1 * var(--depth-half));
+    margin-top: calc(-1 * var(--scene-height) / 2);
+    background: linear-gradient(to bottom, var(--shell-color-solid) 0%, rgba(0, 0, 0, 0.5) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.holo-face--left {
+    transform: rotateY(-90deg) translateZ(calc(var(--scene-width) / 2));
+}
+
+.holo-face--right {
+    transform: rotateY(90deg) translateZ(calc(var(--scene-width) / 2));
+}
+
+.holo-face--top,
+.holo-face--bottom {
+    width: var(--scene-width);
+    height: var(--depth);
+    margin-left: calc(-1 * var(--scene-width) / 2);
+    margin-top: calc(-1 * var(--depth-half));
+    background: linear-gradient(to right, var(--shell-color-solid) 0%, rgba(0, 0, 0, 0.5) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.holo-face--top {
+    transform: rotateX(90deg) translateZ(calc(var(--scene-height) / 2));
+}
+
+.holo-face--bottom {
+    transform: rotateX(-90deg) translateZ(calc(var(--scene-height) / 2));
+}
+
+/* Faux Internals: Realistic PCB Board underneath transparent shells */
+.cartridge-pcb {
+    position: absolute;
+    inset: 12px;
+    background: rgba(46, 117, 89, 0.08);
+    border-radius: 4px;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+    opacity: 0.9;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.pcb-line {
+    position: absolute;
+    background: rgba(241, 196, 15, 0.06);
+}
+
+.pcb-line--1 {
+    top: 20%;
+    left: -10%;
+    width: 120%;
+    height: 2px;
+    transform: rotate(15deg);
+}
+
+.pcb-line--2 {
+    bottom: 30%;
+    left: -10%;
+    width: 120%;
+    height: 1.5px;
+    transform: rotate(-25deg);
+}
+
+.pcb-chip {
+    position: absolute;
+    background: rgba(20, 20, 25, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.pcb-chip--rom {
+    width: 70px;
+    height: 45px;
+    bottom: 15px;
+    left: 20px;
+}
+
+.pcb-chip--battery {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+    border: 1.5px solid #bdc3c7;
+    top: 45px;
+    right: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.pcb-gold-pins {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    height: 10px;
+    background: repeating-linear-gradient(
+        to right,
+        rgba(241, 196, 15, 0.55) 0px,
+        rgba(241, 196, 15, 0.55) 3px,
+        transparent 3px,
+        transparent 6px
+    );
+    border-top: 1px solid rgba(241, 196, 15, 0.7);
+}
+
+/* Debossed Plastic Headers */
+.gba-header, .gbc-header, .gb-header {
+    width: 100%;
+    height: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.12);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.18);
+    box-shadow: inset 0 -3px 6px rgba(0,0,0,0.12);
+    position: relative;
+    padding-top: 4px;
+    z-index: 1;
+}
+
+.gba-logo-text, .gbc-logo-text, .gb-logo-text {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--shell-color-solid);
+    filter: brightness(0.65);
+    /* Debossed beveled shadow */
+    text-shadow: 
+      -1px -1px 0px rgba(0, 0, 0, 0.8),
+       1px 1px 0px rgba(255, 255, 255, 0.12);
+}
+
+.gba-groove, .gbc-groove, .gb-groove {
+    width: 88%;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.22);
+    border-radius: 1.5px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4), 0 1px 0px rgba(255,255,255,0.08);
+    margin-top: 4px;
+}
+
+/* Cartridge Front Label (Sticker) */
+.holo-label {
+    position: absolute;
+    inset: var(--label-inset);
+    top: calc(var(--label-inset) + 48px); /* Position underneath the header */
+    bottom: calc(var(--label-inset) + 12px);
+    border-radius: 5px;
+    background: #000;
+    overflow: hidden;
+    /* Recessed sticker slot frame shadow */
+    box-shadow: 
+      inset 0 4px 8px rgba(0, 0, 0, 0.95), 
+      0 1px 0px rgba(255, 255, 255, 0.1);
+    z-index: 2;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    transition: inset 0.3s ease, top 0.3s ease, bottom 0.3s ease;
+}
+
+.holo-label__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Holographic Glare Overlay */
+.holo-label__glare {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.25) 40%,
+        rgba(139, 92, 246, 0.25) 50%,
+        transparent 60%
+    );
+    background-size: 300% 100%;
+    mix-blend-mode: color-dodge;
+    pointer-events: none;
+}
+
+/* GBA Embossed Arrow detail */
+.gba-arrow-wrap {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.gba-arrow {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--shell-color-solid);
+    filter: brightness(0.6) drop-shadow(-1px -1px 0px rgba(0,0,0,0.8)) drop-shadow(1px 1px 0px rgba(255,255,255,0.12));
+}
+
+/* GBC Glitter effects */
+.cart-gbc--crystal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.15) 1.5px, transparent 1.5px);
+    background-size: 20px 20px, 35px 35px;
+    background-position: 0 0, 10px 15px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.85;
+}
+
+/* Detail grooves on GBA Sides */
+.cart-gba .holo-face--left,
+.cart-gba .holo-face--right {
+    background: repeating-linear-gradient(
+        to bottom,
+        var(--shell-color-solid),
+        var(--shell-color-solid) 8px,
+        rgba(0,0,0,0.4) 8px,
+        rgba(0,0,0,0.4) 10px
+    );
+}
+
+/* Detail lines on GB/GBC Top */
+.holo-detail-lines {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent 4px,
+        rgba(0, 0, 0, 0.4) 4px,
+        rgba(0, 0, 0, 0.4) 8px
+    );
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .holo-container {
+        width: 300px;
+        height: 380px;
+    }
+    
+    .holo-scene {
+        transform: scale(0.75);
+    }
+}
+
+/* Tactile snap insertion connection flare */
+.holo-scene.is-inserting::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.22) 50%,
+        rgba(255, 255, 255, 0) 70%
+    );
+    background-size: 200% 200%;
+    animation: connection-flare 0.18s ease-out;
+    pointer-events: none;
+    z-index: 15;
+    border-radius: inherit;
+}
+
+@keyframes connection-flare {
+    0% { background-position: 150% 150%; opacity: 0; }
+    50% { opacity: 1; }
+    100% { background-position: -50% -50%; opacity: 0; }
+}
+
+

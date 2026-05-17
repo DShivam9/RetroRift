@@ -1,0 +1,85 @@
+.v-ticker-wrapper {
+    width: 100%;
+    max-width: 240px;
+    min-width: 200px;
+    flex-shrink: 0;
+    position: relative;
+    height: 300px; /* Compact height */
+    overflow: hidden;
+}
+
+.v-ticker-header {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(139, 92, 246, 0.6);
+    margin-bottom: 15px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.v-ticker-container {
+    height: 100%;
+    padding-top: 125px; /* (Container Height / 2) - (Item Height / 2) */
+    padding-bottom: 125px;
+    mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 40%, black 60%, transparent);
+    position: relative;
+}
+
+.v-ticker-track-css {
+    display: flex;
+    flex-direction: column;
+    animation: vertical-marquee linear infinite;
+}
+
+@keyframes vertical-marquee {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+.v-ticker-item-css {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 50px; /* Consistent item height */
+    padding: 0 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    opacity: 0.25;
+}
+
+.v-ticker-item-css.active {
+    opacity: 1;
+    transform: scale(1.05) translateX(5px);
+}
+
+.v-ticker-console {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 800;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.v-ticker-title {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.02em;
+}
+
+.v-ticker-item-css.active .v-ticker-title {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}

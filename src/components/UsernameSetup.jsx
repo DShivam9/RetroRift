@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { checkUsername } from '../lib/profanityFilter'
+import { sanitizeString } from '../lib/inputSanitizer'
 import { Gamepad2, Sparkles } from 'lucide-react'
 import './UsernameSetup.css'
 
@@ -26,18 +27,19 @@ export default function UsernameSetup({ uid, onComplete }) {
         }
 
         const trimmed = username.trim()
+        const sanitized = sanitizeString(trimmed)
         setSaving(true)
         setError('')
 
         try {
             const userRef = doc(db, 'users', uid)
             await setDoc(userRef, {
-                displayName: trimmed,
+                displayName: sanitized,
                 usernameSet: true,
                 updatedAt: serverTimestamp()
             }, { merge: true })
 
-            onComplete(trimmed)
+            onComplete(sanitized)
         } catch (err) {
             setError('Failed to save username. Try again.')
             setSaving(false)

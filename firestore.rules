@@ -26,12 +26,24 @@ service cloud.firestore {
                    && (!('theme' in request.resource.data) || isValidString(request.resource.data.theme, 30))
                    && (!('bio' in request.resource.data) || isValidString(request.resource.data.bio, 500));
 
-      // All subcollections (data, gameStates, etc.) - restrict size to prevent billing attacks
-      match /{document=**} {
+      // Explicit subcollection: data (saves, xp)
+      match /data/{docId} {
         allow read: if isOwner(userId);
-        // Basic size limit for any sub-document (e.g., 50 fields max, or use a custom size function if needed)
-        // Here we ensure the document isn't bloated with thousands of fields.
         allow write: if isOwner(userId) && request.resource.data.size() < 100;
+      }
+
+      // Explicit subcollection: gameStates metadata
+      match /gameStates/{gameId} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) && request.resource.data.size() < 100;
+      }
+      
+      // Explicit subcollection: gameStates binaries (hard limit to 1MB)
+      match /gameStates/{gameId}/binaries/{slotId} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) 
+                     && request.resource.data.size() <= 5
+                     && (!('data' in request.resource.data) || (request.resource.data.data is bytes && request.resource.data.data.size() < 1000000));
       }
     }
 
