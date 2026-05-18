@@ -18,19 +18,33 @@ import '../styles/components.css'
 import './PlayerPage.css'
 import { getCachedROM, setCachedROM, deleteCachedROM } from '../lib/rom-cache'
 
-// Safe production logging utility to prevent console noise / info leakage
+// Safe production logging utility: active on localhost, Vercel previews, or when private debug flag is set in localStorage
+const isDebugEnabled = () => {
+  if (typeof window === 'undefined') return false;
+  try {
+    return (
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname.endsWith('.vercel.app') ||
+      localStorage.getItem('debug') === 'true'
+    );
+  } catch {
+    return false;
+  }
+};
+
 const log = (...args) => {
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+  if (isDebugEnabled()) {
     console.log(...args);
   }
 };
 const warn = (...args) => {
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+  if (isDebugEnabled()) {
     console.warn(...args);
   }
 };
 const error = (...args) => {
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+  if (isDebugEnabled()) {
     console.error(...args);
   }
 };
