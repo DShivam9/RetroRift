@@ -1,4 +1,22 @@
 // GBA Emulator using EmulatorJS (local)
+
+// Safe production logging utility to prevent console noise / info leakage
+const log = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.log(...args);
+  }
+};
+const warn = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.warn(...args);
+  }
+};
+const error = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.error(...args);
+  }
+};
+
 class GBAEmulator {
   constructor(canvas, system = 'gba', gameId = 'default') {
     this.canvas = canvas;
@@ -80,22 +98,22 @@ class GBAEmulator {
           cssLink.rel = 'stylesheet';
           cssLink.href = 'https://cdn.emulatorjs.org/stable/data/emulator.min.css';
           cssLink.setAttribute('data-emulatorjs', '');
-          console.log('Loading EmulatorJS CSS from CDN:', cssLink.href);
+          log('Loading EmulatorJS CSS from CDN:', cssLink.href);
           head.appendChild(cssLink);
         }
 
         // Load script from CDN for better reliability
         const script = document.createElement('script');
         script.src = 'https://cdn.emulatorjs.org/stable/data/emulator.min.js';
-        console.log('Loading EmulatorJS script from CDN:', script.src);
+        log('Loading EmulatorJS script from CDN:', script.src);
         script.async = true;
         script.setAttribute('data-emulatorjs', '');
         script.onload = () => {
-          console.log('EmulatorJS script loaded');
+          log('EmulatorJS script loaded');
           resolve(true);
         };
         script.onerror = (e) => {
-          console.error('Failed to load EmulatorJS', e);
+          error('Failed to load EmulatorJS', e);
           reject(new Error('EmulatorJS load failed'));
         };
         head.appendChild(script);
@@ -118,18 +136,18 @@ class GBAEmulator {
   }
 
   async loadROM(arrayBuffer, onStart = null) {
-    console.log('ROM received:', arrayBuffer.byteLength, 'bytes');
+    log('ROM received:', arrayBuffer.byteLength, 'bytes');
 
     const assetsReady = await this.ensureAssets();
     if (!assetsReady) {
-      console.error('EmulatorJS assets not available after load attempt');
+      error('EmulatorJS assets not available after load attempt');
       return false;
     }
 
     try {
       // Load fflate from CDN
       if (typeof window.fflate === 'undefined') {
-        console.log('[Emulator] Loading fflate...');
+        log('[Emulator] Loading fflate...');
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
           script.src = 'https://unpkg.com/fflate';
@@ -144,7 +162,7 @@ class GBAEmulator {
       
       // Manual Unzip to bypass "Decompress Game Data" hang
       if (romData[0] === 0x50 && romData[1] === 0x4B && romData[2] === 0x03 && romData[3] === 0x04) {
-        console.log(`[Emulator] ZIP detected (${receivedSize} bytes), decompressing manually...`);
+        log(`[Emulator] ZIP detected (${receivedSize} bytes), decompressing manually...`);
         try {
           // Use async unzip for large files to avoid blocking the UI thread
           const decompressed = await new Promise((resolve, reject) => {
@@ -167,20 +185,20 @@ class GBAEmulator {
           );
           
           if (fileName) {
-            console.log(`[Emulator] ✅ Extracted: ${fileName} (${decompressed[fileName].byteLength} bytes)`);
+            log(`[Emulator] ✅ Extracted: ${fileName} (${decompressed[fileName].byteLength} bytes)`);
             romData = decompressed[fileName];
           } else {
             const errorMsg = `[Emulator] No compatible game file found in ZIP. Files: ${Object.keys(decompressed).join(', ')}`;
-            console.error(errorMsg);
+            error(errorMsg);
             throw new Error(errorMsg);
           }
         } catch (unzipErr) {
-          console.error('[Emulator] ❌ ZIP Decompression failed:', unzipErr);
+          error('[Emulator] ❌ ZIP Decompression failed:', unzipErr);
           const detail = receivedSize < 5000000 ? "File is likely truncated (too small)." : "Internal ZIP structure error.";
           throw new Error(`Failed to extract game from ZIP: ${detail} (Error: ${unzipErr.message})`);
         }
       } else {
-        console.log('[Emulator] Raw ROM detected (not a ZIP), proceeding...');
+        log('[Emulator] Raw ROM detected (not a ZIP), proceeding...');
       }
 
       // Final sanity check
@@ -209,11 +227,11 @@ class GBAEmulator {
       window.EJS_gameID = this.gameId; 
       window.EJS_startOnLoad = true;
       
-      console.log(`[Emulator] Handing over to engine: core=${window.EJS_core}`);
+      log(`[Emulator] Handing over to engine: core=${window.EJS_core}`);
       
       // Global hook for game start
       window.EJS_onGameStart = () => {
-        console.log('[Emulator] 🚀 Engine started!');
+        log('[Emulator] 🚀 Engine started!');
         if (onStart) onStart();
       };
       
@@ -226,7 +244,7 @@ class GBAEmulator {
         gameId: this.gameId,
         startOnLoad: true,
         onGameStart: () => {
-          console.log('[Emulator] 🚀 Engine started (Instance Callback)!');
+          log('[Emulator] 🚀 Engine started (Instance Callback)!');
           if (onStart) onStart();
         }
       });
@@ -234,7 +252,7 @@ class GBAEmulator {
       // PROACTIVE START: Don't just wait for callbacks, consider it 'started' once initialized
       // This solves the 'Starting engine...' hang on some browsers
       setTimeout(() => {
-        console.log('[Emulator] ⚡ Forcing ready state...');
+        log('[Emulator] ⚡ Forcing ready state...');
         if (onStart) onStart();
       }, 1500);
 
@@ -254,7 +272,7 @@ class GBAEmulator {
         if (isReady || pollCount > 40) { 
           clearInterval(startPoll);
           if (isReady) {
-            console.log('[Emulator] 🛡️ Engine detected via polling!');
+            log('[Emulator] 🛡️ Engine detected via polling!');
             if (onStart) onStart();
           }
         }
@@ -262,17 +280,17 @@ class GBAEmulator {
 
       return true;
     } catch (error) {
-      console.error('EmulatorJS initialization error:', error);
+      error('EmulatorJS initialization error:', error);
       return false;
     }
   }
 
   start() {
-    // console.log('Emulator start');
+    // log('Emulator start');
   }
 
   pause() {
-    console.log('Pausing emulator')
+    log('Pausing emulator')
     if (this.emulatorInstance) {
       try {
         if (this.emulatorInstance.pause) {
@@ -282,8 +300,8 @@ class GBAEmulator {
         if (this.emulatorInstance.pauseGame) {
           this.emulatorInstance.pauseGame()
         }
-      } catch (error) {
-        console.error('Error pausing:', error)
+      } catch (err) {
+        error('Error pausing:', err)
       }
     }
   }
@@ -309,47 +327,47 @@ class GBAEmulator {
   // Save state - returns base64 encoded state data
   async saveState() {
     if (!this.emulatorInstance) {
-      console.error('[Emulator] No emulator instance for save state')
+      error('[Emulator] No emulator instance for save state')
       return null
     }
 
     try {
       // EmulatorJS uses EJS_emulator as the global reference
       const emu = window.EJS_emulator || this.emulatorInstance;
-      console.log('[Emulator] Attempting save state...')
+      log('[Emulator] Attempting save state...')
 
       // Method 1: gameManager.getState() — the documented EmulatorJS API
       if (emu.gameManager && typeof emu.gameManager.getState === 'function') {
-        console.log('[Emulator] Using gameManager.getState()')
+        log('[Emulator] Using gameManager.getState()')
         const stateData = await emu.gameManager.getState();
         if (stateData && stateData.byteLength > 0) {
           const base64 = this._arrayBufferToBase64(stateData);
-          console.log('[Emulator] ✅ State saved via getState(), size:', stateData.byteLength);
+          log('[Emulator] ✅ State saved via getState(), size:', stateData.byteLength);
           return base64;
         }
       }
 
       // Method 2: gameManager.saveState() — alternative API
       if (emu.gameManager && typeof emu.gameManager.saveState === 'function') {
-        console.log('[Emulator] Using gameManager.saveState()')
+        log('[Emulator] Using gameManager.saveState()')
         const stateData = await emu.gameManager.saveState();
         if (stateData && stateData.byteLength > 0) {
           const base64 = this._arrayBufferToBase64(stateData);
-          console.log('[Emulator] ✅ State saved via saveState(), size:', stateData.byteLength);
+          log('[Emulator] ✅ State saved via saveState(), size:', stateData.byteLength);
           return base64;
         }
       }
 
       // Method 3: Direct save method on emulator instance
       if (typeof emu.saveState === 'function') {
-        console.log('[Emulator] Using emu.saveState()')
+        log('[Emulator] Using emu.saveState()')
         const stateData = await emu.saveState();
         if (stateData) {
           const raw = stateData instanceof ArrayBuffer ? stateData : 
                       stateData.buffer ? stateData.buffer : stateData;
           if (raw.byteLength > 0) {
             const base64 = this._arrayBufferToBase64(raw);
-            console.log('[Emulator] ✅ State saved via direct saveState(), size:', raw.byteLength);
+            log('[Emulator] ✅ State saved via direct saveState(), size:', raw.byteLength);
             return base64;
           }
         }
@@ -359,20 +377,20 @@ class GBAEmulator {
       if (window.EJS_player && window.EJS_player.gameManager) {
         const gm = window.EJS_player.gameManager;
         if (typeof gm.getState === 'function') {
-          console.log('[Emulator] Using EJS_player.gameManager.getState()')
+          log('[Emulator] Using EJS_player.gameManager.getState()')
           const stateData = await gm.getState();
           if (stateData && stateData.byteLength > 0) {
             const base64 = this._arrayBufferToBase64(stateData);
-            console.log('[Emulator] ✅ State saved via EJS_player, size:', stateData.byteLength);
+            log('[Emulator] ✅ State saved via EJS_player, size:', stateData.byteLength);
             return base64;
           }
         }
       }
 
-      console.warn('[Emulator] ❌ Save state API not available on this core yet');
+      warn('[Emulator] ❌ Save state API not available on this core yet');
       return null;
-    } catch (error) {
-      console.error('[Emulator] Error saving state:', error);
+    } catch (err) {
+      error('[Emulator] Error saving state:', err);
       return null;
     }
   }
@@ -380,7 +398,7 @@ class GBAEmulator {
   // Load state from data (base64 string or ArrayBuffer)
   async loadState(inputData) {
     if (!this.emulatorInstance || !inputData) {
-      console.error('[Emulator] No emulator instance or state data')
+      error('[Emulator] No emulator instance or state data')
       return false
     }
 
@@ -409,45 +427,45 @@ class GBAEmulator {
         // Generic buffer-like object
         stateData = new Uint8Array(inputData)
       } else {
-        console.error('[Emulator] Unknown state data type:', typeof inputData, inputData?.constructor?.name)
-        if (inputData) console.log('[Emulator] Corrupted object detail:', inputData)
+        error('[Emulator] Unknown state data type:', typeof inputData, inputData?.constructor?.name)
+        if (inputData) log('[Emulator] Corrupted object detail:', inputData)
         return false
       }
 
-      console.log('[Emulator] Loading state, size:', stateData.byteLength, 'bytes')
+      log('[Emulator] Loading state, size:', stateData.byteLength, 'bytes')
       const emu = window.EJS_emulator || this.emulatorInstance;
 
       // Method 1: gameManager.loadState() — the standard API
       if (emu.gameManager && typeof emu.gameManager.loadState === 'function') {
         await emu.gameManager.loadState(stateData)
-        console.log('[Emulator] ✅ State loaded via gameManager.loadState()')
+        log('[Emulator] ✅ State loaded via gameManager.loadState()')
         return true
       }
 
       // Method 2: Direct loadState on emulator
       if (typeof emu.loadState === 'function') {
         await emu.loadState(stateData)
-        console.log('[Emulator] ✅ State loaded via emu.loadState()')
+        log('[Emulator] ✅ State loaded via emu.loadState()')
         return true
       }
 
       // Method 3: EJS_player fallback
       if (window.EJS_player && window.EJS_player.gameManager) {
         await window.EJS_player.gameManager.loadState(stateData)
-        console.log('[Emulator] ✅ State loaded via EJS_player')
+        log('[Emulator] ✅ State loaded via EJS_player')
         return true
       }
 
-      console.warn('[Emulator] Load state API not available')
+      warn('[Emulator] Load state API not available')
       return false
-    } catch (error) {
-      console.error('[Emulator] Error loading state:', error)
+    } catch (err) {
+      error('[Emulator] Error loading state:', err)
       return false
     }
   }
 
   destroy() {
-    console.log('Destroying emulator instance')
+    log('Destroying emulator instance')
 
     // Stop the emulator completely
     if (this.emulatorInstance) {
@@ -457,16 +475,15 @@ class GBAEmulator {
         if (this.emulatorInstance.pause) this.emulatorInstance.pause()
         if (this.emulatorInstance.destroy) this.emulatorInstance.destroy()
         if (this.emulatorInstance.exit) this.emulatorInstance.exit()
-      } catch (error) {
-        console.error('Error stopping emulator:', error)
+      } catch (err) {
+        error('Error stopping emulator:', err)
       }
       this.emulatorInstance = null
     }
 
-    // DECISIVE CLEANUP: Kill the globals that cause the "classList" error in their loop
+    // Stop internal loops
     if (window.EJS_player) {
       try {
-        // Stop their internal loops if possible
         if (window.EJS_player.stop) window.EJS_player.stop();
         window.EJS_player = null;
       } catch (e) {}
@@ -478,7 +495,7 @@ class GBAEmulator {
 
     // Remove the emulator div completely
     if (this.emulatorDiv) {
-      console.log('Removing specific emulator div');
+      log('Removing specific emulator div');
       // Remove all child elements first
       while (this.emulatorDiv.firstChild) {
         try {
@@ -499,8 +516,6 @@ class GBAEmulator {
     if (this.canvas) {
       this.canvas.style.display = 'block'
     }
-
-    // console.log('Emulator destroyed completely')
   }
 }
 

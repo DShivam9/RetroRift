@@ -18,6 +18,23 @@ import '../styles/components.css'
 import './PlayerPage.css'
 import { getCachedROM, setCachedROM, deleteCachedROM } from '../lib/rom-cache'
 
+// Safe production logging utility to prevent console noise / info leakage
+const log = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.log(...args);
+  }
+};
+const warn = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.warn(...args);
+  }
+};
+const error = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.error(...args);
+  }
+};
+
 /**
  * Returns a tailored color palette matching a physical retro cartridge shell
  * based on the game's title and console type to harmonize with the box art.
@@ -391,12 +408,12 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           if (consoleType === 'GBC' || consoleType === 'GB') minSize = 100000
 
           if (cachedData.byteLength >= minSize) {
-            console.log(`[Player] Using cached ROM data (${cachedData.byteLength} bytes)`)
+            log(`[Player] Using cached ROM data (${cachedData.byteLength} bytes)`)
             setRomData(cachedData)
             setLoading(false)
             return
           } else {
-            console.warn(`[Player] Cached ROM is truncated (${cachedData.byteLength} bytes). Purging and re-downloading...`)
+            warn(`[Player] Cached ROM is truncated (${cachedData.byteLength} bytes). Purging and re-downloading...`)
             // Continue to download
           }
         }
@@ -413,7 +430,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             return
           }
         } catch (e) {
-          console.warn('[Player] Local ROM fetch failed')
+          warn('[Player] Local ROM fetch failed')
         }
       }
 
@@ -432,7 +449,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         try {
           const cleanUrl = decodeURIComponent(currentGame.externalUrl)
           const proxyUrl = proxy.fn(cleanUrl)
-          console.log(`[Player] Attempting ${proxy.name} fetch (${proxy.type})...`)
+          log(`[Player] Attempting ${proxy.name} fetch (${proxy.type})...`)
           
           const controller = new AbortController()
           // 10 MINUTE TIMEOUT: Archive.org is heavily throttled for NDS files.
@@ -447,7 +464,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           if (response.ok) {
             let data;
             if (proxy.type === 'json') {
-              console.log('[Player] Proxy returned metadata, decoding base64...');
+              log('[Player] Proxy returned metadata, decoding base64...');
               const json = await response.json()
               if (!json.contents) throw new Error('Proxy returned empty contents')
               
@@ -479,7 +496,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 }
               }
               if (!foundEOCD) {
-                console.warn(`[Player] ${proxy.name} data is truncated (${size} bytes). Trying next...`)
+                warn(`[Player] ${proxy.name} data is truncated (${size} bytes). Trying next...`)
                 continue
               }
             }
@@ -490,16 +507,16 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             if (consoleType === 'GBA') minSize = 2000000
             
             if (size < minSize) {
-              console.warn(`[Player] ${proxy.name} payload too small (${size} bytes). Trying next...`)
+              warn(`[Player] ${proxy.name} payload too small (${size} bytes). Trying next...`)
               continue
             }
 
-            console.log(`[Player] ✅ ${proxy.name} Success: ${size} bytes received.`)
+            log(`[Player] ✅ ${proxy.name} Success: ${size} bytes received.`)
             setRomData(data)
             
             try {
               await setCachedROM(currentGame.id, data)
-              console.log('[Player] ROM cached locally.')
+              log('[Player] ROM cached locally.')
             } catch (cacheErr) {}
             
             success = true
@@ -507,10 +524,10 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             break
           } else {
             clearTimeout(timeoutId)
-            console.warn(`[Player] ${proxy.name} HTTP Error: ${response.status}`)
+            warn(`[Player] ${proxy.name} HTTP Error: ${response.status}`)
           }
         } catch (err) {
-          console.warn(`[Player] ${proxy.name} failed: ${err.message}`)
+          warn(`[Player] ${proxy.name} failed: ${err.message}`)
           lastError = err
         }
       }
@@ -524,7 +541,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         return
       }
     } catch (err) {
-      console.error('[Player] loadROM fatal error:', err)
+      error('[Player] loadROM fatal error:', err)
       setError('An unexpected error occurred while loading the game.')
       setLoading(false)
     }
@@ -533,17 +550,17 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   // Trigger ROM load on mount or game change
   useEffect(() => {
     if (currentGame.id) {
-      console.log(`[Player] Game active: ${currentGame.title} (${currentGame.id})`)
+      log(`[Player] Game active: ${currentGame.title} (${currentGame.id})`)
       
       if (isMobile) {
-        console.log('[Player] Mobile device detected. Skipping heavy WASM engine initialization.')
+        log('[Player] Mobile device detected. Skipping heavy WASM engine initialization.')
         setLoading(false)
         return
       }
 
       // CRITICAL: Clean up existing emulator before switching games
       if (emulatorRef.current) {
-        console.log('[Player] Destroying stale emulator instance...')
+        log('[Player] Destroying stale emulator instance...')
         emulatorRef.current.destroy()
         emulatorRef.current = null
       }
@@ -610,8 +627,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           if (rawConsole === 'SEGACD') system = 'genesis_plus_gx'
           if (rawConsole === 'NDS') system = 'melonds'
           if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'mgba'
-
-          console.log(`[Player] Initializing emulator with system: ${system} (for console: ${rawConsole})`)
+           log(`[Player] Initializing emulator with system: ${system} (for console: ${rawConsole})`)
           
           // Small delay to ensure canvas is fully ready/sized in the layout
           await new Promise(resolve => setTimeout(resolve, 100))
@@ -624,7 +640,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           // Track engine start with a timeout for feedback only
           const startTimeout = setTimeout(() => {
             if (isComponentMounted.current && !isEngineReady) {
-              console.warn('[Player] Engine initialization is taking longer than expected...')
+              warn('[Player] Engine initialization is taking longer than expected...')
               // We don't force it anymore; the polling in gba-emulator will eventually trigger onStart
             }
           }, 20000) 
@@ -632,7 +648,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           const loadSuccess = await emulatorRef.current.loadROM(romData, () => {
             clearTimeout(startTimeout)
             if (isComponentMounted.current && !isEngineReady) {
-              console.log('[Player] Engine active! Dismissing loader.')
+              log('[Player] Engine active! Dismissing loader.')
               setIsEngineReady(true)
               setLoading(false)
             }
@@ -640,23 +656,24 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           
           if (loadSuccess) {
             emulatorRef.current.start()
-            console.log('[Player] Emulator initialization call completed successfully')
+            log('[Player] Emulator initialization call completed successfully')
           } else {
-            console.error('[Player] Emulator loadROM returned false');
+            error('[Player] Emulator loadROM returned false');
             setError('The game engine failed to initialize the ROM data. This could be due to a corrupted file or CDN bottleneck.');
             setLoading(false);
             
             // AUTO-PURGE: If load failed, the ROM data might be bad. Purge it so next try is clean.
             try {
               await deleteCachedROM(currentGame.id);
-              console.warn(`[Player] ROM cache purged for ${currentGame.id} due to load failure.`);
+              warn(`[Player] ROM cache purged for ${currentGame.id} due to load failure.`);
             } catch (e) {}
           }
         } catch (err) {
-          console.error('[Player] Emulator init error:', err)
+          error('[Player] Emulator init error:', err)
           setError('Failed to start emulator. Please refresh and try again.')
           isInitializingRef.current = false
         }
+
       }
       initEmulator()
     }
@@ -738,15 +755,15 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             }
             setSaveMessage('Synced to cloud! ☁️')
           } catch (err) {
-            console.error('[SaveFlow] ❌ Cloud sync failed:', err.message)
+            error('[SaveFlow] ❌ Cloud sync failed:', err.message)
             setSaveMessage(err.message.includes('1MB') ? 'Saved locally (too large)' : 'Saved locally (failed)')
           }
         } else {
           setSaveMessage('Saved locally')
         }
         setTimeout(() => setSaveMessage(''), 4000)
-      } catch (error) {
-        console.error('[SaveFlow] ❌ Save error:', error)
+      } catch (errorDetails) {
+        error('[SaveFlow] ❌ Save error:', errorDetails)
         setSaveMessage('Save failed — try again')
         setTimeout(() => setSaveMessage(''), 4000)
       } finally {
@@ -775,7 +792,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         !(stateToLoad instanceof Uint8Array) && 
         !(stateToLoad instanceof ArrayBuffer) &&
         stateToLoad.constructor?.name === 'Object') {
-      console.warn('[LoadFlow] ⚠️ Detected corrupted local save data, forcing cloud fetch.')
+      warn('[LoadFlow] ⚠️ Detected corrupted local save data, forcing cloud fetch.')
       stateToLoad = null
     }
 
@@ -800,7 +817,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           await new Promise(resolve => setTimeout(resolve, 150))
         }
       } catch (err) {
-        console.error('Cloud download failed:', err)
+        error('Cloud download failed:', err)
         setSaveMessage(err.message === 'Cloud download timed out' ? 'Connection timed out' : 'Failed to fetch cloud save')
         setDownloadingSave(null)
         setTimeout(() => setSaveMessage(''), 3000)
@@ -833,7 +850,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       // Final breather for UI responsiveness
       await new Promise(resolve => setTimeout(resolve, 100))
       
-      console.log('[LoadFlow] Injecting state into emulator engine...')
+      log('[LoadFlow] Injecting state into emulator engine...')
       const loaded = await emulatorRef.current.loadState(stateToLoad)
       if (loaded) {
         setSaveMessage(`Successfully Loaded: ${save.name}`)
@@ -842,7 +859,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       }
       setTimeout(() => setSaveMessage(''), 3000)
     } catch (err) {
-      console.error('Load state error:', err)
+      error('Load state error:', err)
       setSaveMessage('Error: Save file corrupted')
       setTimeout(() => setSaveMessage(''), 3000)
     }
@@ -894,7 +911,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           }
           setSaveMessage('Save overwritten! ☁️')
         } catch (err) {
-          console.error('Cloud overwrite failed:', err)
+          error('Cloud overwrite failed:', err)
           if (err.message.includes('1MB')) {
             setSaveMessage('Overwritten locally (save too large for cloud)')
           } else {
@@ -905,8 +922,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         setSaveMessage('Save overwritten locally')
       }
       setTimeout(() => setSaveMessage(''), 3000)
-    } catch (error) {
-      console.error('Overwrite error:', error)
+    } catch (errorDetails) {
+      error('Overwrite error:', errorDetails)
       setSaveMessage('Overwrite failed')
       setTimeout(() => setSaveMessage(''), 3000)
     } finally {
@@ -926,7 +943,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         await saveGameState(user.uid, currentGame.id, { slots: updatedSlots })
         await deleteSaveState(user.uid, currentGame.id, saveId)
       } catch (err) {
-        console.error('Cloud delete sync failed:', err)
+        error('Cloud delete sync failed:', err)
       }
     }
   }
@@ -960,7 +977,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       setLoading(true);
       setError(null);
       await deleteCachedROM(currentGame.id);
-      console.log(`[Player] Manual cache purge triggered for ${currentGame.id}`);
+      log(`[Player] Manual cache purge triggered for ${currentGame.id}`);
       loadROM();
     } catch (e) {
       loadROM();

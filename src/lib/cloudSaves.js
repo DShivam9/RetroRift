@@ -4,6 +4,23 @@ import { doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp, collection,
 import { db } from './firebase'
 import { sanitizeObject, sanitizeString, isValidUID, isWithinSizeLimit } from './inputSanitizer'
 
+// Safe production logging utility to prevent console noise / info leakage
+const log = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.log(...args);
+  }
+};
+const warn = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.warn(...args);
+  }
+};
+const error = (...args) => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.error(...args);
+  }
+};
+
 /**
  * Validate UID before any Firestore operation
  */
@@ -144,7 +161,7 @@ export async function uploadSaveState(uid, gameId, slotId, stateData) {
         })
         return true // Success indicator
     } catch (err) {
-        console.error('[CloudSave] ❌ Firestore binary upload FAILED:', err.code, err.message)
+        error('[CloudSave] ❌ Firestore binary upload FAILED:', err.code, err.message)
         throw err
     }
 }
@@ -165,7 +182,7 @@ export async function downloadSaveState(uid, gameId, slotId) {
         const uint8 = binData.toUint8Array ? binData.toUint8Array() : binData
         return uint8.buffer || uint8
     } catch (err) {
-        console.error('Download failed:', err)
+        error('Download failed:', err)
         throw err
     }
 }
@@ -179,7 +196,7 @@ export async function deleteSaveState(uid, gameId, slotId) {
     try {
         await deleteDoc(binaryRef)
     } catch (err) {
-        console.error('Firestore binary delete failed:', err)
+        error('Firestore binary delete failed:', err)
         throw err
     }
 }
@@ -189,7 +206,7 @@ export async function deleteSaveState(uid, gameId, slotId) {
  */
 export async function saveGameState(uid, gameId, saveData) {
     requireAuth(uid)
-    console.log('[CloudSave] saveGameState called (Firestore Binary Mode):', { uid, gameId, slotCount: saveData?.slots?.length })
+    log('[CloudSave] saveGameState called (Firestore Binary Mode):', { uid, gameId, slotCount: saveData?.slots?.length })
 
     // Process slots and handle binary uploads for NEW slots
     const processedSlots = await Promise.all((saveData.slots || []).map(async (slot) => {
@@ -200,9 +217,9 @@ export async function saveGameState(uid, gameId, saveData) {
             try {
                 await uploadSaveState(uid, gameId, slot.id, slot.stateData)
                 isSynced = true
-                console.log('[CloudSave] ✅ Slot', slot.id, 'uploaded to Firestore')
+                log('[CloudSave] ✅ Slot', slot.id, 'uploaded to Firestore')
             } catch (err) {
-                console.error(`[CloudSave] ❌ Failed to upload slot ${slot.id}:`, err.message)
+                error(`[CloudSave] ❌ Failed to upload slot ${slot.id}:`, err.message)
                 isSynced = false
             }
         }
@@ -230,7 +247,7 @@ export async function saveGameState(uid, gameId, saveData) {
     try {
         await setDoc(gameStateRef, cloudSafe)
     } catch (err) {
-        console.error('[CloudSave] ❌ Firestore metadata write FAILED:', err.code, err.message)
+        error('[CloudSave] ❌ Firestore metadata write FAILED:', err.code, err.message)
         throw err
     }
     return processedSlots
