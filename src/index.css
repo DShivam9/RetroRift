@@ -81,7 +81,7 @@ body.reduced-motion *::after {
     color: rgba(255,255,255,0.92);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: theme('fontFamily.mono');
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   /* Slightly imperfect container feel to avoid "too perfect" AI look */

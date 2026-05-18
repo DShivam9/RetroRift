@@ -19,6 +19,153 @@ import './PlayerPage.css'
 import { getCachedROM, setCachedROM, deleteCachedROM } from '../lib/rom-cache'
 
 /**
+ * Returns a tailored color palette matching a physical retro cartridge shell
+ * based on the game's title and console type to harmonize with the box art.
+ */
+const getCartridgeColor = (title = '', consoleType = '') => {
+  const t = title.toLowerCase();
+  
+  // Dynamic custom color mapping for famous/popular games
+  if (t.includes('blue')) {
+    return {
+      primary: '#1d4ed8', // Sapphire blue
+      border: '#1e40af',
+      brandText: '#0f172a',
+      led: '#60a5fa',
+      stickerBg: 'rgba(29, 78, 216, 0.08)'
+    };
+  }
+  if (t.includes('red') || t.includes('fire')) {
+    return {
+      primary: '#dc2626', // FireRed red
+      border: '#991b1b',
+      brandText: '#120000',
+      led: '#fca5a5',
+      stickerBg: 'rgba(220, 38, 38, 0.08)'
+    };
+  }
+  if (t.includes('emerald') || t.includes('green') || t.includes('leaf')) {
+    return {
+      primary: '#059669', // Emerald green
+      border: '#047857',
+      brandText: '#022c22',
+      led: '#34d399',
+      stickerBg: 'rgba(5, 150, 105, 0.08)'
+    };
+  }
+  if (t.includes('yellow')) {
+    return {
+      primary: '#d97706', // Yellow/Gold plastic
+      border: '#b45309',
+      brandText: '#1c1917',
+      led: '#fbbf24',
+      stickerBg: 'rgba(217, 119, 6, 0.08)'
+    };
+  }
+  if (t.includes('gold') || t.includes('zelda') || t.includes('minish')) {
+    return {
+      primary: '#b45309', // Classic Zelda gold cartridge plastic!
+      border: '#78350f',
+      brandText: '#2d1500',
+      led: '#facc15',
+      stickerBg: 'rgba(180, 83, 9, 0.08)'
+    };
+  }
+  if (t.includes('silver')) {
+    return {
+      primary: '#6b7280', // Metallic silver shell
+      border: '#4b5563',
+      brandText: '#111827',
+      led: '#9ca3af',
+      stickerBg: 'rgba(107, 114, 128, 0.08)'
+    };
+  }
+  if (t.includes('ruby')) {
+    return {
+      primary: '#be123c', // Translucent ruby red
+      border: '#9f1239',
+      brandText: '#120000',
+      led: '#fda4af',
+      stickerBg: 'rgba(190, 18, 60, 0.08)'
+    };
+  }
+  if (t.includes('sapphire')) {
+    return {
+      primary: '#1d4ed8', // Translucent sapphire blue
+      border: '#1e40af',
+      brandText: '#0f172a',
+      led: '#60a5fa',
+      stickerBg: 'rgba(29, 78, 216, 0.08)'
+    };
+  }
+  if (t.includes('mario') || t.includes('kart') || t.includes('circuit')) {
+    return {
+      primary: '#b91c1c', // Mario red
+      border: '#7f1d1d',
+      brandText: '#120000',
+      led: '#fca5a5',
+      stickerBg: 'rgba(185, 28, 28, 0.08)'
+    };
+  }
+  if (t.includes('crash') || t.includes('bandicoot')) {
+    return {
+      primary: '#ea580c', // Crash orange shell
+      border: '#9a3412',
+      brandText: '#1c1917',
+      led: '#ff7849',
+      stickerBg: 'rgba(234, 88, 12, 0.08)'
+    };
+  }
+  if (t.includes('spyro') || t.includes('purple')) {
+    return {
+      primary: '#7c3aed', // Spyro purple shell
+      border: '#5b21b6',
+      brandText: '#1e1b4b',
+      led: '#a78bfa',
+      stickerBg: 'rgba(124, 58, 237, 0.08)'
+    };
+  }
+  if (t.includes('kirby')) {
+    return {
+      primary: '#db2777', // Kirby pink shell
+      border: '#9d174d',
+      brandText: '#120000',
+      led: '#fbcfe8',
+      stickerBg: 'rgba(219, 39, 119, 0.08)'
+    };
+  }
+
+  // Console specific defaults:
+  if (consoleType === 'GBA') {
+    return {
+      primary: '#1e1b4b', // GBA translucent violet
+      border: '#31108f',
+      brandText: '#090520',
+      led: '#a78bfa',
+      stickerBg: 'rgba(30, 27, 75, 0.08)'
+    };
+  }
+  if (consoleType === 'GBC') {
+    return {
+      primary: '#374151', // GBC clear-smoke black
+      border: '#1f2937',
+      brandText: '#030712',
+      led: '#9ca3af',
+      stickerBg: 'rgba(55, 65, 81, 0.08)'
+    };
+  }
+
+  // Default retro cartridge grey:
+  return {
+    primary: '#4b5563',
+    border: '#374151',
+    brandText: '#111827',
+    led: '#9ca3af',
+    stickerBg: 'rgba(75, 85, 99, 0.08)'
+  };
+};
+
+/**
  * PlayerPage - Enhanced Emulator Page
  * Game details now come directly from the auto-generated catalog (games.js)
  */
@@ -1057,14 +1204,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 {!isAuthenticated ? (
                   <div className="player-saves-empty">
                     <LogIn size={20} />
-                    <p>Authentication required to sync chronologies across the cluster.</p>
+                    <p>Sign in to sync your game saves across devices.</p>
                   </div>
                 ) : saveSlots.length === 0 ? (
                   <div className="player-saves-empty">
                     <div className="empty-icon-circle">
                       <HardDrive size={20} />
                     </div>
-                    <p>No save manifests detected. Begin your journey to initialize a new state.</p>
+                    <p>No cloud saves found. Start playing to create your first save slot!</p>
                   </div>
                 ) : (
                   <div className="player-save-slots">
@@ -1139,31 +1286,56 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
         {/* Sidebar */}
         <aside className="player-sidebar">
-          {/* Game Cover */}
-          <div className="player-cover">
-            <div className="player-cover__image">
-              <img
-                src={currentGame.thumbnail || '/thumbnails/default-cover.svg'}
-                alt={currentGame.title}
-                className="player-cover__img"
-                onError={(e) => { e.target.src = '/thumbnails/default-cover.svg' }}
-              />
-            </div>
-            <div className="player-cover__info">
-              <div className="player-cover__row">
-                <Calendar size={14} />
-                <span>Release: {currentGame.year}</span>
+          {/* Game Cover styled as a beautiful retro physical cartridge */}
+          {(() => {
+            const cartColors = getCartridgeColor(currentGame.title, currentGame.console);
+            return (
+              <div 
+                className="player-cover player-cartridge"
+                style={{
+                  '--cart-primary': cartColors.primary,
+                  '--cart-border': cartColors.border,
+                  '--cart-brand-text': cartColors.brandText,
+                  '--cart-led': cartColors.led,
+                  '--cart-sticker-bg': cartColors.stickerBg
+                }}
+              >
+                {/* The molded top grip header of a Game Boy cartridge */}
+                <div className="player-cartridge__top-grip">
+                  <span className="player-cartridge__brand-text">GAME BOY</span>
+                  <div className="player-cartridge__screw-hole" />
+                </div>
+
+                {/* Recessed tray with the cartridge label sticker */}
+                <div className="player-cartridge__recessed-tray">
+                  <div className="player-cover__image">
+                    <img
+                      src={currentGame.thumbnail || '/thumbnails/default-cover.svg'}
+                      alt={currentGame.title}
+                      className="player-cover__img"
+                      onError={(e) => { e.target.src = '/thumbnails/default-cover.svg' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Bottom molded tray containing the cartridge metadata specs */}
+                <div className="player-cover__info">
+                  <div className="player-cover__row">
+                    <Calendar size={14} />
+                    <span>Release: {currentGame.year}</span>
+                  </div>
+                  <div className="player-cover__row">
+                    <MapPin size={14} />
+                    <span>Region: {details.region}</span>
+                  </div>
+                  <div className="player-cover__row">
+                    <Gamepad2 size={14} />
+                    <span>Platform: {currentGame.console}</span>
+                  </div>
+                </div>
               </div>
-              <div className="player-cover__row">
-                <MapPin size={14} />
-                <span>Region: {details.region}</span>
-              </div>
-              <div className="player-cover__row">
-                <Gamepad2 size={14} />
-                <span>Platform: {currentGame.console}</span>
-              </div>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Similar Games */}
           {similarGames.length > 0 && (

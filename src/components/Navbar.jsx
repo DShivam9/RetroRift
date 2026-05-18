@@ -31,9 +31,37 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
   }, [user?.photoURL])
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    let currentScrolled = false
+    
+    const handleScroll = (e) => {
+      // If the scroll event comes from a popup, tooltip or drawer (not main layout), ignore
+      if (e && e.target && e.target.classList && e.target.classList.contains('nav-drawer')) {
+        return
+      }
+
+      const target = (e && e.target) ? e.target : document
+      let scrollPos = 0
+      
+      if (target === document || target === window || target === document.documentElement || target === document.body) {
+        scrollPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+      } else if (target && typeof target.scrollTop === 'number') {
+        scrollPos = target.scrollTop
+      }
+      
+      const isScrolled = scrollPos > 20
+      if (isScrolled !== currentScrolled) {
+        currentScrolled = isScrolled
+        setScrolled(isScrolled)
+      }
+    }
+    
+    // Use capture phase (true) so we capture scroll events that do not bubble from nested scrolling containers
+    window.addEventListener('scroll', handleScroll, true)
+    
+    // Run once on load to capture initial scroll status
+    handleScroll()
+    
+    return () => window.removeEventListener('scroll', handleScroll, true)
   }, [])
 
   const navItems = [
@@ -110,81 +138,180 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
 
   return (
     <>
-      {/* Trigger Area */}
-      <div className={`nav-trigger-wrap ${scrolled ? 'nav-trigger-wrap--scrolled' : ''}`}>
-        <button className="nav-brand" onClick={() => navigate('home')}>
-          <span className="nav-brand__text" data-text="RETRO">RETRO</span>
-          <span className="nav-brand__accent" data-text="RIFT">RIFT</span>
-        </button>
-
-        <div className="nav-actions">
-          {/* Search Bar - hidden on profile page */}
-          {currentPage !== 'profile' && (
-            <div className="nav-search" ref={searchRef}>
-              <Search className="nav-search__icon" size={18} />
-              <input
-                type="text"
-                className="nav-search__input"
-                placeholder="Search games..."
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                onFocus={() => searchQuery && setShowResults(true)}
-              />
-              {showResults && searchResults.length > 0 && (
-                <div className="nav-search__results">
-                  {searchResults.map(game => (
-                    <button
-                      key={game.id}
-                      className="nav-search__result"
-                      onClick={() => handleSelectGame(game)}
-                    >
-                      <div className="nav-search__result-visual">
-                        <img src={game.thumbnail} alt="" className="nav-search__result-thumb" />
-                      </div>
-                      <div className="nav-search__result-info">
-                        <span className="nav-search__result-title">{game.title}</span>
-                        <span className="nav-search__result-meta">{game.console} • {game.year}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {isAuthenticated ? (
-            <button
-              className="nav-icon-btn nav-icon-btn--avatar"
-              onClick={() => navigate('profile')}
-              aria-label="Profile"
-            >
-              {navPhoto ? (
-                <img src={navPhoto} alt="" className="nav-avatar-img" />
-              ) : (
-                <User className="nav-icon-btn__svg" />
-              )}
-            </button>
-          ) : (
-            <button
-              className="nav-icon-btn nav-icon-btn--login"
-              onClick={() => navigate('login')}
-              aria-label="Sign In"
-            >
-              <LogIn className="nav-icon-btn__svg" />
-            </button>
-          )}
-
-          <button
-            className={`nav-trigger ${isOpen ? 'nav-trigger--hidden' : ''}`}
-            onClick={() => setIsOpen(true)}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <span className="nav-trigger__label">MENU</span>
-            <div className="nav-trigger__box">
-              <Menu className="nav-trigger__icon" />
-            </div>
+      {/* 1. Full Top Navbar - Slides out of view when scrolled */}
+      <header className={`nav-full-header ${scrolled ? 'nav-full-header--hidden' : ''}`}>
+        <div className="nav-container-full">
+          <button className="nav-brand" onClick={() => navigate('home')}>
+            <span className="nav-brand__text" data-text="RETRO">RETRO</span>
+            <span className="nav-brand__accent" data-text="RIFT">RIFT</span>
           </button>
+
+          <div className="nav-actions">
+            {/* Search Bar - hidden on profile page */}
+            {currentPage !== 'profile' && (
+              <div className="nav-search" ref={searchRef}>
+                <Search className="nav-search__icon" size={18} />
+                <input
+                  type="text"
+                  className="nav-search__input"
+                  placeholder="Search games..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  onFocus={() => searchQuery && setShowResults(true)}
+                />
+                {showResults && searchResults.length > 0 && (
+                  <div className="nav-search__results">
+                    {searchResults.map(game => (
+                      <button
+                        key={game.id}
+                        className="nav-search__result"
+                        onClick={() => handleSelectGame(game)}
+                      >
+                        <div className="nav-search__result-visual">
+                          <img src={game.thumbnail} alt="" className="nav-search__result-thumb" />
+                        </div>
+                        <div className="nav-search__result-info">
+                          <span className="nav-search__result-title">{game.title}</span>
+                          <span className="nav-search__result-meta">{game.console} • {game.year}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {isAuthenticated ? (
+              <button
+                className="nav-icon-btn nav-icon-btn--avatar"
+                onClick={() => navigate('profile')}
+                aria-label="Profile"
+              >
+                {navPhoto ? (
+                  <img src={navPhoto} alt="" className="nav-avatar-img" />
+                ) : (
+                  <User className="nav-icon-btn__svg" />
+                )}
+              </button>
+            ) : (
+              <button
+                className="nav-icon-btn nav-icon-btn--login"
+                onClick={() => navigate('login')}
+                aria-label="Sign In"
+              >
+                <LogIn className="nav-icon-btn__svg" />
+              </button>
+            )}
+
+            <button
+              className={`nav-trigger ${isOpen ? 'nav-trigger--hidden' : ''}`}
+              onClick={() => setIsOpen(true)}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <span className="nav-trigger__label">MENU</span>
+              <div className="nav-trigger__box">
+                <Menu className="nav-trigger__icon" />
+              </div>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* 2. Floating Micro HUD Console Badge - Fades/scales in when scrolled */}
+      <div className={`nav-hud-trigger-wrap ${scrolled ? 'nav-hud-trigger-wrap--visible' : ''}`}>
+        <div className="nav-hud-pill">
+          {/* Recessed Case Screws (Teenage Engineering style) */}
+          <div className="hud-pill-screw hud-pill-screw--tr" />
+          <div className="hud-pill-screw hud-pill-screw--br" />
+
+          {/* Pulsing Gamepad Icon */}
+          <div className="nav-hud-pill-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="nav-hud-logo-svg">
+              <rect x="5" y="3" width="14" height="18" rx="2" strokeWidth="2.2" className="hud-logo-body" />
+              <rect x="8" y="5" width="8" height="6" rx="0.5" strokeWidth="1.5" className="hud-logo-screen" />
+              {/* D-Pad */}
+              <path d="M8.5 14h3M10 12.5v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="hud-logo-dpad" />
+              {/* Buttons */}
+              <circle cx="15.5" cy="13.5" r="1.2" fill="currentColor" stroke="none" className="hud-logo-btn-a" />
+              <circle cx="14" cy="15.2" r="1.2" fill="currentColor" stroke="none" className="hud-logo-btn-b" />
+              {/* Select / Start Pills */}
+              <line x1="8" y1="18.5" x2="10" y2="18.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="hud-logo-select" />
+              <line x1="11.5" y1="18.5" x2="13.5" y2="18.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="hud-logo-start" />
+            </svg>
+          </div>
+
+          {/* Expanded HUD Clusters */}
+          <div className="nav-hud-pill-content">
+            {/* Quick Links Cluster */}
+            <div className="nav-hud-pill-links">
+              <button 
+                onClick={() => navigate('home')} 
+                className={`nav-hud-pill-link ${currentPage === 'home' ? 'nav-hud-pill-link--active' : ''}`}
+                title="Home Base"
+              >
+                <Home size={16} />
+              </button>
+              <button 
+                onClick={() => navigate('library')} 
+                className={`nav-hud-pill-link ${currentPage === 'library' ? 'nav-hud-pill-link--active' : ''}`}
+                title="Game Library"
+              >
+                <Grid3X3 size={16} />
+              </button>
+              <button 
+                onClick={() => navigate('favorites')} 
+                className={`nav-hud-pill-link ${currentPage === 'favorites' ? 'nav-hud-pill-link--active' : ''}`}
+                title="Favorites"
+              >
+                <Heart size={16} />
+              </button>
+              <button 
+                onClick={() => navigate('profile')} 
+                className={`nav-hud-pill-link ${currentPage === 'profile' ? 'nav-hud-pill-link--active' : ''}`}
+                title="Profile"
+              >
+                <User size={16} />
+              </button>
+            </div>
+
+            {/* Separator */}
+            <div className="nav-hud-pill-divider" />
+
+            {/* Quick Actions Cluster */}
+            <div className="nav-hud-pill-actions">
+              {isAuthenticated ? (
+                <button
+                  className="nav-hud-pill-avatar-btn"
+                  onClick={() => navigate('profile')}
+                  title="Profile"
+                >
+                  {navPhoto ? (
+                    <img src={navPhoto} alt="" className="nav-hud-pill-avatar-img" />
+                  ) : (
+                    <User size={14} />
+                  )}
+                </button>
+              ) : (
+                <button
+                  className="nav-hud-pill-action-btn"
+                  onClick={() => navigate('login')}
+                  title="Sign In"
+                >
+                  <LogIn size={14} />
+                </button>
+              )}
+
+              {/* Menu Trigger */}
+              <button
+                className="nav-hud-pill-menu-btn"
+                onClick={() => setIsOpen(true)}
+                title="Menu"
+              >
+                <Menu size={16} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -193,6 +320,9 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
         <div className="nav-overlay__backdrop" onClick={() => setIsOpen(false)} />
 
         <div className="nav-drawer">
+          {/* Subtle Ambient Background Glow */}
+          <div className="nav-drawer__glow" />
+
           {/* Header & User Widget */}
           <div className="nav-drawer__header">
             <div className="nav-user-widget">
@@ -249,6 +379,32 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
               </button>
             ))}
           </nav>
+
+          {/* Quick Play Launcher using real database games */}
+          <div className="nav-drawer__quickplay">
+            <span className="quickplay-title">QUICK PLAY</span>
+            <div className="quickplay-list">
+              {games.slice(0, 3).map(game => (
+                <button
+                  key={game.id}
+                  className="quickplay-card"
+                  onClick={() => {
+                    setIsOpen(false);
+                    if (onPlayGame) onPlayGame(game);
+                  }}
+                >
+                  <div className="quickplay-card__visual">
+                    <img src={game.thumbnail} alt="" className="quickplay-card__thumb" />
+                  </div>
+                  <div className="quickplay-card__info">
+                    <span className="quickplay-card__name">{game.title}</span>
+                    <span className="quickplay-card__meta">{game.console} • {game.genre}</span>
+                  </div>
+                  <Zap size={10} className="quickplay-card__play-icon" />
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Decorative Spirit Container */}
           <div className="nav-drawer__footer">

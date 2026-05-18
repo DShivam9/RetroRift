@@ -574,10 +574,14 @@ function generateSitemap(scannedGames) {
     // we need to be careful with how search engines crawl.
     // For now, we list them as subpaths which React handles.
     for (const game of scannedGames) {
-        // Create a slug from the title
+        // Create a slug from the title - matches the robust slug normalization in the React frontend
         const slug = game.title.toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '')
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/pok-mon/g, 'pokemon')
+            .replace(/[^a-z0-9]/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '')
         
         xml += `  <url>
     <loc>${baseUrl}/play/${slug}</loc>

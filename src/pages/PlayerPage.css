@@ -1322,35 +1322,101 @@
 
 /* Game Cartridge Card */
 .player-cover {
-    background: linear-gradient(180deg, #27272a 0%, #18181b 100%);
-    border: 2px solid #3f3f46;
-    border-radius: 12px;
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Cartridge label notch */
-.player-cover::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 6px;
-    background: #52525b;
-    border-radius: 0 0 4px 4px;
+.player-cartridge {
+    background: linear-gradient(135deg, var(--cart-primary) 0%, rgba(0,0,0,0.2) 50%, var(--cart-primary) 100%);
+    border: 2px solid var(--cart-border);
+    border-radius: 18px 18px 12px 12px;
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.2, 1);
+    box-shadow: 
+        0 10px 24px rgba(0, 0, 0, 0.4), 
+        inset 0 2px 4px rgba(255, 255, 255, 0.15), 
+        inset 0 -4px 8px rgba(0, 0, 0, 0.35);
 }
 
-.player-cover__image {
-    aspect-ratio: 1;
-    background: linear-gradient(180deg, #1a1a1f 0%, #0d0d12 100%);
+/* Elegant, flat floating elevation on hover (no weird tilted skews) */
+.player-cartridge:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 22px 40px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(var(--cart-primary), 0.12),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Molded top grip header */
+.player-cartridge__top-grip {
+    height: 38px;
+    background: rgba(0, 0, 0, 0.16);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 2px solid #3f3f46;
+    position: relative;
+    box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.05);
+}
+
+/* Engraved/Embossed GAME BOY plastic text stamp - turns backlit glowing on hover! */
+.player-cartridge__brand-text {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: var(--cart-brand-text);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    text-shadow: 
+        -1px -1px 0 rgba(0, 0, 0, 0.75), 
+        1px 1px 0 rgba(255, 255, 255, 0.1);
+    opacity: 0.85;
+    transition: all 0.45s cubic-bezier(0.25, 1, 0.2, 1);
+}
+
+.player-cartridge:hover .player-cartridge__brand-text {
+    color: #fff;
+    text-shadow: 
+        0 0 8px var(--cart-led),
+        0 0 15px var(--cart-led);
+    opacity: 1;
+}
+
+/* Indented physical screw hole */
+.player-cartridge__screw-hole {
+    position: absolute;
+    right: 14px;
+    top: 13px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #0f0f13;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+/* Recessed tray holding the sticker label */
+.player-cartridge__recessed-tray {
+    padding: 12px 14px 2px 14px;
+    background: rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.player-cover__image {
+    aspect-ratio: 1.05;
+    background: var(--cart-sticker-bg);
+    border: 2px solid rgba(0, 0, 0, 0.45);
+    border-radius: 8px;
     position: relative;
     overflow: hidden;
+    box-shadow: 
+        0 4px 10px rgba(0, 0, 0, 0.35),
+        inset 0 0 10px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .player-cover__img {
@@ -1361,27 +1427,43 @@
     z-index: 1;
 }
 
+/* Bottom cartridge molded info tray */
 .player-cover__info {
-    padding: 16px;
+    padding: 18px 20px;
+    background: rgba(0, 0, 0, 0.18);
+    border-top: 2px solid rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     font-family: var(--font-mono);
     font-size: 0.8rem;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.02);
 }
 
 .player-cover__row {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #71717a;
+    color: #a1a1aa;
+    transition: color 0.3s ease;
+}
+
+.player-cartridge:hover .player-cover__row {
+    color: #e4e4e7;
 }
 
 .player-cover__row svg {
-    color: #4ade80;
+    color: var(--cart-led);
     width: 14px;
     height: 14px;
+    filter: drop-shadow(0 0 4px var(--cart-led));
+    transition: transform 0.3s ease;
 }
+
+.player-cartridge:hover .player-cover__row svg {
+    transform: scale(1.1);
+}
+
 
 /* Similar Games */
 .player-similar {

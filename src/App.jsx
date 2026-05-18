@@ -72,7 +72,10 @@ function AppContent() {
     const hash = window.location.hash.slice(1)
     if (hash) return { page: hash, game: null }
 
-    const path = window.location.pathname.slice(1)
+    let path = window.location.pathname.slice(1)
+    if (path.endsWith('/')) {
+      path = path.slice(0, -1)
+    }
     if (!path || path === '/') return { page: 'home', game: null }
 
     // Handle deep links: /play/pokemon-emerald
@@ -141,7 +144,11 @@ function AppContent() {
   // Handle browser back/forward
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname.slice(1) || 'home'
+      let path = window.location.pathname.slice(1)
+      if (path.endsWith('/')) {
+        path = path.slice(0, -1)
+      }
+      path = path || 'home'
       
       if (path.startsWith('play/')) {
         const slug = decodeURIComponent(path.replace('play/', ''))
