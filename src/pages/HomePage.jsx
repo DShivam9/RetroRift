@@ -366,9 +366,6 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
                     <div className="console-deck__col console-deck__col--left">
                       <div className="console-deck__header">
                         <span className="console-deck__tag">LEVEL PROGRESSION</span>
-                        <div className="console-deck__badge">
-                          <span>{xpStats.emoji} {xpStats.title}</span>
-                        </div>
                       </div>
                       
                       <div className="console-deck__level-row">
