@@ -37,7 +37,11 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
     
     const handleScroll = (e) => {
       // If the scroll event comes from a popup, tooltip or drawer (not main layout), ignore
-      if (e && e.target && e.target.classList && e.target.classList.contains('nav-drawer')) {
+      if (e && e.target && e.target.classList && (
+        e.target.classList.contains('nav-drawer') || 
+        e.target.classList.contains('custom-select__dropdown') ||
+        e.target.classList.contains('nav-search__results')
+      )) {
         return
       }
 

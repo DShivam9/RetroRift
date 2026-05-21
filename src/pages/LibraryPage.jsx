@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { Upload } from 'lucide-react'
 import ShinyText from '../components/ShinyText'
 import GameCard from '../components/GameCard'
+import CustomSelect from '../components/CustomSelect'
 import { games, getConsoles, getGenres, getEras, getEraFromYear } from '../data/games'
 import { useDebounce } from '../hooks/useDebounce'
 import '../styles/components.css'
@@ -31,6 +32,17 @@ export default function LibraryPage({
   // If we are on the favorites page, we default to 'FAVORITES' but might want to allow filtering favorites by console later?
   // For now, let's keep the logic consistent with the existing code.
   const consoles = isFavoritesPage ? ['FAVORITES'] : ['ALL', 'FAVORITES', ...getConsoles().filter(c => c !== 'ALL')]
+
+  // Memoize static filter options to avoid recalculating on every render (e.g. during search typing)
+  const genreOptions = useMemo(() => [
+    { value: 'ALL', label: 'All Genres' },
+    ...getGenres().map(genre => ({ value: genre, label: genre }))
+  ], [])
+
+  const eraOptions = useMemo(() => [
+    { value: 'ALL', label: 'All Eras' },
+    ...getEras().map(era => ({ value: era, label: era }))
+  ], [])
 
   // Filter and sort games
   const filteredGames = useMemo(() => {
@@ -125,34 +137,6 @@ export default function LibraryPage({
           </div>
 
           <div className="library__controls">
-            {/* Genre Filter */}
-            {!isFavoritesPage && (
-              <select
-                value={selectedGenre}
-                onChange={(e) => setSelectedGenre(e.target.value)}
-                className="library__sort"
-              >
-                <option value="ALL">All Genres</option>
-                {getGenres().map(genre => (
-                  <option key={genre} value={genre}>{genre}</option>
-                ))}
-              </select>
-            )}
-
-            {/* Era Filter */}
-            {!isFavoritesPage && (
-              <select
-                value={selectedEra}
-                onChange={(e) => setSelectedEra(e.target.value)}
-                className="library__sort"
-              >
-                <option value="ALL">All Eras</option>
-                {getEras().map(era => (
-                  <option key={era} value={era}>{era}</option>
-                ))}
-              </select>
-            )}
-
             {/* Search */}
             <div className="search-input">
               <input
@@ -172,17 +156,31 @@ export default function LibraryPage({
               )}
             </div>
 
+            {/* Genre Filter */}
+            <CustomSelect
+              value={selectedGenre}
+              onChange={setSelectedGenre}
+              options={genreOptions}
+            />
+
+            {/* Era Filter */}
+            <CustomSelect
+              value={selectedEra}
+              onChange={setSelectedEra}
+              options={eraOptions}
+            />
+
             {/* Sort */}
-            <select
+            <CustomSelect
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="library__sort"
-            >
-              <option value="title-asc">A → Z</option>
-              <option value="title-desc">Z → A</option>
-              <option value="year-desc">Newest</option>
-              <option value="year-asc">Oldest</option>
-            </select>
+              onChange={setSortBy}
+              options={[
+                { value: 'title-asc', label: 'A → Z' },
+                { value: 'title-desc', label: 'Z → A' },
+                { value: 'year-desc', label: 'Newest' },
+                { value: 'year-asc', label: 'Oldest' }
+              ]}
+            />
 
             {/* Bring Your Own ROM */}
             <button
