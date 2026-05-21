@@ -297,6 +297,16 @@ export function onFavoriteAdded(data, totalFavorites) {
     return d
 }
 
+/** Called when a daily quest is accepted */
+export function onQuestAccepted(data, questTitle, xpReward = 15) {
+    let d = data ? { ...getDefaultData(), ...data } : getDefaultData()
+    d = awardXP(d, xpReward, `🏆 Accepted: ${questTitle}`)
+    d.currentLevel = calcLevelFromXP(d.totalXP).level
+    d = checkAchievements(d)
+    saveXPData(d)
+    return d
+}
+
 /** Check and unlock achievements */
 function checkAchievements(data) {
     if (!data) return getDefaultData()

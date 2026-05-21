@@ -12,6 +12,8 @@ import ShinyText from '../components/ShinyText'
 import HoloCartridge from '../components/HoloCartridge'
 import VerticalGameTicker from '../components/VerticalGameTicker'
 import { motion, AnimatePresence } from 'framer-motion'
+import { loadXPData, getStats, timeAgo, onQuestAccepted } from '../lib/xpEngine'
+import { useAuth } from '../context/AuthContext'
 import './HomePage.css'
 
 /**
@@ -19,7 +21,7 @@ import './HomePage.css'
  */
 const GlitchText = ({ text, isChanging }) => {
   const [displayText, setDisplayText] = useState(text)
-  const chars = '!@#$%^&*()_+{}:"<>?|~`-=[]\\\';,./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const chars = '!@#$%^&*()_+{}:"<>?|~`-=[]\';,./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   
   useEffect(() => {
     if (isChanging) {
@@ -46,19 +48,71 @@ const GlitchText = ({ text, isChanging }) => {
 /**
  * HomePage - Clean retro gaming experience
  */
-export default function HomePage({ navigate, favorites, toggleFavorite, lastPlayed, onPlayGame }) {
+export default function HomePage({ navigate, favorites, toggleFavorite, lastPlayed, onPlayGame, xpData, setXpData }) {
   const featuredRef = useRef(null)
   const continueRef = useRef(null)
+  const { user, isAuthenticated } = useAuth()
 
   const [featuredVisible, setFeaturedVisible] = useState(false)
   const [continueVisible, setContinueVisible] = useState(false)
-  const [questAccepted, setQuestAccepted] = useState(false)
+  const [isQuestHovered, setIsQuestHovered] = useState(false)
+  
+  const [questAccepted, setQuestAccepted] = useState(() => {
+    try {
+      const key = user?.uid ? `quest_accepted_${user.uid}` : 'quest_accepted_guest'
+      return localStorage.getItem(key) === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  // Sync quest status when authenticated user switches
+  useEffect(() => {
+    try {
+      const key = user?.uid ? `quest_accepted_${user.uid}` : 'quest_accepted_guest'
+      setQuestAccepted(localStorage.getItem(key) === 'true')
+    } catch {
+      setQuestAccepted(false)
+    }
+  }, [user])
+
+  // Random Button Ticker
+  const [randomLabel, setRandomLabel] = useState('Random')
+  const [isRandomHovered, setIsRandomHovered] = useState(false)
+
+  // Music & Config Hovers
+  const [isMusicHovered, setIsMusicHovered] = useState(false)
+  const [isConfigHovered, setIsConfigHovered] = useState(false)
+
+  // Gamer Telemetry Stats
+  const [xpStats, setXpStats] = useState(null)
+
   // Load 12 games for a rich scrolling marquee
   const featuredGames = React.useMemo(() => getFeaturedGames(12), [])
   const [activeGame, setActiveGame] = useState(featuredGames[0] || null)
   const allGames = getAllGames()
   const toast = useToast()
   const [isChanging, setIsChanging] = useState(false)
+
+  useEffect(() => {
+    const currentXP = xpData || loadXPData()
+    const stats = getStats(currentXP)
+    setXpStats(stats)
+  }, [xpData, favorites])
+
+  useEffect(() => {
+    if (!isRandomHovered) {
+      setRandomLabel('Random')
+      return
+    }
+    const titles = ['SONIC', 'POKÉMON', 'ZELDA', 'MARIO', 'TETRIS', 'METROID', 'PAC-MAN']
+    let idx = 0
+    const interval = setInterval(() => {
+      setRandomLabel(titles[idx % titles.length])
+      idx++
+    }, 150)
+    return () => clearInterval(interval)
+  }, [isRandomHovered])
 
   useEffect(() => {
     setIsChanging(true)
@@ -96,6 +150,16 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
     if (questAccepted) return
     toast.success('QUEST STARTED: Beat Green Hill Zone Act 1 < 45s')
     setQuestAccepted(true)
+    try {
+      const key = user?.uid ? `quest_accepted_${user.uid}` : 'quest_accepted_guest'
+      localStorage.setItem(key, 'true')
+    } catch (e) {
+      console.warn(e)
+    }
+
+    if (setXpData) {
+      setXpData(prev => onQuestAccepted(prev, 'Daily Quest (Speedrun Act 1)', 15))
+    }
   }
 
   const handleRandomGame = () => {
@@ -215,10 +279,13 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
 
               {/* Right: Dashboard / Interactive Panel */}
               <div className="continue-right">
-                {/* Daily Challenge Card */}
-                <div className="dashboard-card dashboard-card--highlight">
-                  <div className="dashboard-card__icon-wrap">
-                    <Trophy className="dashboard-card__icon" />
+                <div 
+                  className="dashboard-card dashboard-card--highlight"
+                  onMouseEnter={() => setIsQuestHovered(true)}
+                  onMouseLeave={() => setIsQuestHovered(false)}
+                >
+                  <div className={`dashboard-card__icon-wrap ${isQuestHovered ? 'dashboard-card__icon-wrap--hovered' : ''}`}>
+                    <Trophy className={`dashboard-card__icon ${isQuestHovered ? 'dashboard-card__icon--gold' : ''}`} />
                   </div>
                   <div className="dashboard-card__content">
                     <span className="dashboard-card__label">DAILY QUEST</span>
@@ -237,34 +304,137 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
 
                 {/* Quick Actions Grid */}
                 <div className="quick-grid">
-                  <button className="quick-btn" onClick={handleRandomGame}>
+                  <button 
+                    className="quick-btn" 
+                    onClick={handleRandomGame}
+                    onMouseEnter={() => setIsRandomHovered(true)}
+                    onMouseLeave={() => setIsRandomHovered(false)}
+                  >
                     <div className="quick-btn__icon-box">
                       <Shuffle className="quick-btn__icon" />
                     </div>
-                    <span>Random</span>
+                    <span>{randomLabel}</span>
                   </button>
 
                   <button className="quick-btn" onClick={() => navigate('favorites')}>
-                    <div className="quick-btn__icon-box quick-btn__icon-box--pink">
+                    <div className="quick-btn__icon-box quick-btn__icon-box--pink" style={{ position: 'relative' }}>
                       <Heart className="quick-btn__icon" />
+                      <span className="sonar-ring" />
+                      <span className="sonar-ring sonar-ring--delay" />
                     </div>
                     <span>Favorites</span>
                   </button>
 
-                  <button className="quick-btn" onClick={handleMusicToggle}>
-                    <div className="quick-btn__icon-box quick-btn__icon-box--blue">
-                      <Music className="quick-btn__icon" />
+                  <button 
+                    className="quick-btn" 
+                    onClick={handleMusicToggle}
+                    onMouseEnter={() => setIsMusicHovered(true)}
+                    onMouseLeave={() => setIsMusicHovered(false)}
+                  >
+                    <div className="quick-btn__icon-box quick-btn__icon-box--blue" style={{ position: 'relative', overflow: 'hidden' }}>
+                      <Music className={`quick-btn__icon ${isMusicHovered ? 'quick-btn__icon--music-active' : ''}`} />
+                      {isMusicHovered && (
+                        <div className="eq-bars">
+                          <span className="eq-bar" />
+                          <span className="eq-bar" />
+                          <span className="eq-bar" />
+                          <span className="eq-bar" />
+                        </div>
+                      )}
                     </div>
                     <span>Music</span>
                   </button>
 
-                  <button className="quick-btn" onClick={() => navigate('profile')}>
+                  <button 
+                    className="quick-btn" 
+                    onClick={() => navigate('profile')}
+                    onMouseEnter={() => setIsConfigHovered(true)}
+                    onMouseLeave={() => setIsConfigHovered(false)}
+                  >
                     <div className="quick-btn__icon-box quick-btn__icon-box--gray">
-                      <Settings className="quick-btn__icon" />
+                      <Settings className={`quick-btn__icon ${isConfigHovered ? 'quick-btn__icon--spin' : ''}`} />
                     </div>
-                    <span>Config</span>
+                    <div className="quick-btn__label-container">
+                      <span>Config</span>
+                    </div>
                   </button>
                 </div>
+
+                {/* Gamer Progression & XP Telemetry HUD */}
+                {xpStats && (
+                  <div className="console-deck">
+                    <div className="console-deck__col console-deck__col--left">
+                      <div className="console-deck__header">
+                        <span className="console-deck__tag">LEVEL PROGRESSION</span>
+                        <div className="console-deck__badge">
+                          <span>{xpStats.emoji} {xpStats.title}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="console-deck__level-row">
+                        <span className="console-deck__level-val">LVL {xpStats.level}</span>
+                        <span className="console-deck__xp-val">{xpStats.xpInLevel} / {xpStats.xpNeeded} XP</span>
+                      </div>
+                      
+                      <div className="console-deck__progress-track">
+                        <div 
+                          className="console-deck__progress-fill" 
+                          style={{ width: `${xpStats.progress * 100}%` }}
+                        >
+                          <div className="console-deck__progress-energy" />
+                        </div>
+                      </div>
+                      
+                      <div className="console-deck__stats-grid">
+                        <div className="console-deck__stat-item">
+                          <span className="console-deck__stat-icon">⚡</span>
+                          <div className="console-deck__stat-info">
+                            <span className="console-deck__stat-label">STREAK</span>
+                            <span className="console-deck__stat-value">{xpStats.currentStreak} Days</span>
+                          </div>
+                        </div>
+                        <div className="console-deck__stat-item">
+                          <span className="console-deck__stat-icon">🎮</span>
+                          <div className="console-deck__stat-info">
+                            <span className="console-deck__stat-label">PLAYED</span>
+                            <span className="console-deck__stat-value">{xpStats.gamesPlayed} Games</span>
+                          </div>
+                        </div>
+                        <div className="console-deck__stat-item">
+                          <span className="console-deck__stat-icon">🏆</span>
+                          <div className="console-deck__stat-info">
+                            <span className="console-deck__stat-label">BADGES</span>
+                            <span className="console-deck__stat-value">{xpStats.unlockedCount} / {xpStats.totalAchievements}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="console-deck__col console-deck__col--right">
+                      <div className="console-deck__header">
+                        <span className="console-deck__tag">XP TELEMETRY LOG</span>
+                      </div>
+                      
+                      <div className="console-deck__log-feed">
+                        {xpStats.xpLog && xpStats.xpLog.length > 0 ? (
+                          xpStats.xpLog.slice(0, 3).map((log, i) => (
+                             <div key={i} className="console-deck__log-item animate-fade-in">
+                               <span className="console-deck__log-xp">+{log.amount} XP</span>
+                               <span className="console-deck__log-reason">{log.reason}</span>
+                               <span className="console-deck__log-time">{timeAgo(log.timestamp)}</span>
+                             </div>
+                          ))
+                        ) : (
+                          <div className="console-deck__log-empty">
+                            <span className="console-deck__log-cursor">_</span>
+                            <p>SYSTEM BOOT COMPLETE.</p>
+                            <p>START PLAYING TO EARN XP & LOG TELEMETRY.</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

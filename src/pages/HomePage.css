@@ -377,7 +377,7 @@
     /* Align nicer with image */
 }
 
-/* Dashboard Card (Daily Quest) */
+/* Premium Holographic Daily Quest Card styling with light sweep shimmer on hover */
 .dashboard-card {
     display: flex;
     align-items: center;
@@ -388,29 +388,28 @@
     border-radius: 16px;
     transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     animation: dashboardFloat 4s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Trophy Sparkles Container */
+.dashboard-card__sparkles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
 }
 
 @keyframes dashboardFloat {
-
     0%,
     100% {
         transform: translateY(0);
     }
-
     50% {
         transform: translateY(-3px);
     }
-}
-
-.dashboard-card--highlight {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.02) 100%);
-    border-color: rgba(139, 92, 246, 0.25);
-}
-
-.dashboard-card:hover {
-    transform: translateY(-4px) scale(1.01);
-    border-color: #8b5cf6;
-    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2), inset 0 0 20px rgba(139, 92, 246, 0.05);
 }
 
 .dashboard-card--highlight {
@@ -419,14 +418,40 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+.dashboard-card--highlight::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 0%,
+        transparent 30%,
+        rgba(255, 255, 255, 0.04) 45%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.04) 55%,
+        transparent 70%,
+        transparent 100%
+    );
+    transform: translateX(-100%);
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.5s ease;
+}
+
 .dashboard-card:hover {
     transform: translateY(-4px) scale(1.02);
     border-color: #a855f7;
-    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25);
+    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25), inset 0 0 15px rgba(139, 92, 246, 0.05);
 }
 
-/* Shimmer effect for Quest Card */
-/* Shimmer effect removed as per user request */
+.dashboard-card--highlight:hover::after {
+    animation: shimmerSweep 1.5s ease-out infinite;
+}
+
+@keyframes shimmerSweep {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
 
 .dashboard-card__icon-wrap {
     width: 48px;
@@ -434,15 +459,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(139, 92, 246, 0.2);
+    background: rgba(139, 92, 246, 0.15);
     border-radius: 12px;
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dashboard-card__icon-wrap--hovered {
+    background: rgba(251, 191, 36, 0.2);
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.35);
 }
 
 .dashboard-card__icon {
     width: 24px;
     height: 24px;
     color: #8b5cf6;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dashboard-card__icon--gold {
+    color: #fbbf24;
+    transform: rotate(-10deg) scale(1.15);
 }
 
 .dashboard-card__content {
@@ -580,27 +617,445 @@
 }
 
 /* Individual Color Glows on Hover */
-.quick-btn:nth-child(1):hover {
-    border-color: #a855f7;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+.quick-grid .quick-btn:nth-child(1):hover {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.35);
 }
 
-/* Random - Purple */
-.quick-btn:nth-child(2):hover {
+.quick-grid .quick-btn:nth-child(2):hover {
     border-color: #ec4899;
-    box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.35);
 }
 
-/* Favorites - Pink */
-.quick-btn:nth-child(3):hover {
+.quick-grid .quick-btn:nth-child(3):hover {
     border-color: #3b82f6;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
 }
 
-/* Music - Blue */
-.quick-btn:nth-child(4):hover {
+.quick-grid .quick-btn:nth-child(4):hover {
     border-color: #9ca3af;
-    box-shadow: 0 0 20px rgba(156, 163, 175, 0.3);
+    box-shadow: 0 0 20px rgba(156, 163, 175, 0.35);
+}
+
+/* Sonar rings for Favorites button */
+.sonar-ring {
+    position: absolute;
+    inset: -2px;
+    border: 2px solid #ec4899;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.quick-grid .quick-btn:nth-child(2):hover .sonar-ring {
+    animation: sonarRipple 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.quick-grid .quick-btn:nth-child(2):hover .sonar-ring--delay {
+    animation-delay: 0.6s;
+}
+
+.quick-grid .quick-btn:nth-child(2):hover .quick-btn__icon-box--pink {
+    animation: heartbeat 0.8s ease-in-out infinite;
+}
+
+@keyframes sonarRipple {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    40% { transform: scale(1.05); }
+    55% { transform: scale(1.15); }
+}
+
+/* Equalizer Bars for Music hover */
+.eq-bars {
+    position: absolute;
+    bottom: 8px;
+    display: flex;
+    gap: 2px;
+    height: 14px;
+    align-items: flex-end;
+    pointer-events: none;
+}
+
+.eq-bar {
+    width: 2px;
+    height: 100%;
+    background: #3b82f6;
+    border-radius: 1px;
+    transform-origin: bottom;
+    animation: eqBounce 0.8s ease-in-out infinite alternate;
+}
+
+.eq-bar:nth-child(1) { animation-delay: 0.1s; animation-duration: 0.7s; }
+.eq-bar:nth-child(2) { animation-delay: 0.3s; animation-duration: 1.0s; }
+.eq-bar:nth-child(3) { animation-delay: 0.2s; animation-duration: 0.8s; }
+.eq-bar:nth-child(4) { animation-delay: 0.4s; animation-duration: 0.6s; }
+
+@keyframes eqBounce {
+    0% { transform: scaleY(0.15); }
+    100% { transform: scaleY(1); }
+}
+
+.quick-btn__icon--music-active {
+    opacity: 0.15 !important;
+}
+
+/* Config setting spin and sys OK subtext */
+.quick-btn__icon--spin {
+    animation: configSpin 3s linear infinite;
+}
+
+@keyframes configSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.quick-btn__label-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.quick-btn__sys-ok {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.55rem !important;
+    color: #10b981 !important;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    animation: sysBlink 1s step-end infinite;
+    margin-top: 2px;
+}
+
+@keyframes sysBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* ==========================================================================
+   GAMER PROGRESSION & XP TELEMETRY HUD
+   ========================================================================== */
+
+.console-deck {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 24px;
+    background: rgba(22, 22, 30, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    backdrop-filter: blur(16px);
+    transition: all 0.3s ease;
+    margin-top: 16px;
+}
+
+.console-deck:hover {
+    border-color: rgba(139, 92, 246, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.console-deck__col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.console-deck__col--left {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding-right: 24px;
+}
+
+.console-deck__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.console-deck__tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.1em;
+}
+
+.console-deck__badge {
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 100px;
+    padding: 2px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #c084fc;
+}
+
+.console-deck__level-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 8px;
+}
+
+.console-deck__level-val {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.02em;
+}
+
+.console-deck__xp-val {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+}
+
+.console-deck__progress-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.console-deck__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8b5cf6, #c084fc);
+    border-radius: 100px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+    transition: width 0.5s ease-out;
+}
+
+.console-deck__progress-energy {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%
+    );
+    animation: progressFlow 2s linear infinite;
+}
+
+@keyframes progressFlow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.console-deck__stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.console-deck__stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+}
+
+.console-deck__stat-icon {
+    font-size: 0.9rem;
+}
+
+.console-deck__stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.console-deck__stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 700;
+}
+
+.console-deck__stat-value {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Right Column (XP Telemetry Feed) */
+.console-deck__status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.console-deck__status-dot {
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: statusPulse 1.5s infinite alternate;
+}
+
+@keyframes statusPulse {
+    0% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+.console-deck__status-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.console-deck__status-dot--local {
+    background: #f59e0b;
+    box-shadow: 0 0 8px #f59e0b;
+}
+
+.console-deck__status-label--local {
+    color: #f59e0b;
+}
+
+.console-deck__auth-link {
+    background: none;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #8b5cf6;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    transition: color 0.2s ease;
+    text-decoration: underline;
+}
+
+.console-deck__auth-link:hover {
+    color: #c084fc;
+}
+
+.console-deck__log-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.console-deck__log-item {
+    display: grid;
+    grid-template-columns: 52px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border-left: 3px solid #8b5cf6;
+    transition: background 0.2s ease;
+}
+
+.console-deck__log-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.console-deck__log-xp {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #c084fc;
+}
+
+.console-deck__log-reason {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.console-deck__log-time {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.console-deck__log-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    height: 100%;
+}
+
+.console-deck__log-cursor {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    color: #8b5cf6;
+    animation: cursorBlink 1s step-end infinite;
+    margin-bottom: 8px;
+}
+
+.console-deck__log-empty p {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 2px 0;
+    letter-spacing: 0.05em;
+}
+
+/* Fade in animation for log items */
+.animate-fade-in {
+    animation: logFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes logFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive console-deck */
+@media (max-width: 768px) {
+    .console-deck {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .console-deck__col--left {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-right: 0;
+        padding-bottom: 20px;
+    }
 }
 
 /* Config - Gray */
