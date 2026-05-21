@@ -125,13 +125,16 @@ export default function Footer({ navigate }) {
                   </button>
                </div>
             </div>
-            <button 
-              onClick={(e) => { e.preventDefault(); toast.info('Support link being updated for India! Stay tuned.'); }}
+            <a 
+              href="https://ko-fi.com/YOUR_USERNAME_HERE"
+              onClick={(e) => { if(e.currentTarget.getAttribute('href').includes('YOUR_USERNAME_HERE')) { e.preventDefault(); toast.info('Please update the Ko-fi link with your username!'); } }}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-3 px-6 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all text-sm shadow-xl"
             >
               <Coffee size={18} />
               SUPPORT PROJECT
-            </button>
+            </a>
           </div>
 
         </div>
