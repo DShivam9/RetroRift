@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react'
 import { Upload } from 'lucide-react'
 import ShinyText from '../components/ShinyText'
 import GameCard from '../components/GameCard'
-import { games, getConsoles } from '../data/games'
+import { games, getConsoles, getGenres, getEras, getEraFromYear } from '../data/games'
+import { useDebounce } from '../hooks/useDebounce'
 import '../styles/components.css'
 import './LibraryPage.css'
 
@@ -19,7 +20,10 @@ export default function LibraryPage({
   defaultFilter = 'ALL'
 }) {
   const [selectedConsole, setSelectedConsole] = useState(defaultFilter)
+  const [selectedGenre, setSelectedGenre] = useState('ALL')
+  const [selectedEra, setSelectedEra] = useState('ALL')
   const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query, 300)
   const [sortBy, setSortBy] = useState('title-asc')
 
   const isFavoritesPage = defaultFilter === 'FAVORITES'
@@ -39,10 +43,31 @@ export default function LibraryPage({
       result = result.filter(g => g.console === selectedConsole)
     }
 
+    // Genre filter
+    if (selectedGenre !== 'ALL') {
+      result = result.filter(g => g.genre === selectedGenre)
+    }
+
+    // Era filter
+    if (selectedEra !== 'ALL') {
+      result = result.filter(g => getEraFromYear(g.year) === selectedEra)
+    }
+
     // Search filter
-    if (query.trim()) {
-      const q = query.toLowerCase()
-      result = result.filter(g => g.title.toLowerCase().includes(q))
+    if (debouncedQuery.trim()) {
+      const normalize = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      const term = normalize(debouncedQuery).replace(/\s+/g, '');
+      const chars = term.split('');
+      const regexStr = chars.map(c => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*');
+      const sequenceRegex = new RegExp(regexStr, 'i');
+
+      result = result.filter(g => {
+        const normTitle = normalize(g.title);
+        const titleClean = normTitle.replace(/\s+/g, '');
+        return sequenceRegex.test(normTitle) || 
+               sequenceRegex.test(titleClean) || 
+               g.console.toLowerCase().includes(term);
+      })
     }
 
     // Sort
@@ -56,7 +81,7 @@ export default function LibraryPage({
     })
 
     return result
-  }, [selectedConsole, query, sortBy, favorites])
+  }, [selectedConsole, selectedGenre, selectedEra, debouncedQuery, sortBy, favorites])
 
   const handleBrowseLibrary = () => {
     navigate('library')
@@ -100,6 +125,34 @@ export default function LibraryPage({
           </div>
 
           <div className="library__controls">
+            {/* Genre Filter */}
+            {!isFavoritesPage && (
+              <select
+                value={selectedGenre}
+                onChange={(e) => setSelectedGenre(e.target.value)}
+                className="library__sort"
+              >
+                <option value="ALL">All Genres</option>
+                {getGenres().map(genre => (
+                  <option key={genre} value={genre}>{genre}</option>
+                ))}
+              </select>
+            )}
+
+            {/* Era Filter */}
+            {!isFavoritesPage && (
+              <select
+                value={selectedEra}
+                onChange={(e) => setSelectedEra(e.target.value)}
+                className="library__sort"
+              >
+                <option value="ALL">All Eras</option>
+                {getEras().map(era => (
+                  <option key={era} value={era}>{era}</option>
+                ))}
+              </select>
+            )}
+
             {/* Search */}
             <div className="search-input">
               <input

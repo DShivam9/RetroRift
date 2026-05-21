@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Home, Grid3X3, Heart, User, X, Menu, Zap, Trophy, Search, LogIn, LogOut } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { games } from '../data/games'
+import { useDebounce } from '../hooks/useDebounce'
 import './Navbar.css'
 
 /**
@@ -12,6 +13,7 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const debouncedQuery = useDebounce(searchQuery, 300)
   const [searchResults, setSearchResults] = useState([])
   const [showResults, setShowResults] = useState(false)
   const searchRef = React.useRef(null)
@@ -87,14 +89,13 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
   }
 
-  // Search logic - Hyper-forgiving fuzzy search with accent normalization
-  const handleSearch = (query) => {
-    setSearchQuery(query)
-    if (query.trim().length > 0) {
+  // Debounced search logic - Hyper-forgiving fuzzy search with accent normalization
+  useEffect(() => {
+    if (debouncedQuery.trim().length > 0) {
       // Normalization helper: strips accents (Pokémon -> Pokemon)
       const normalize = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
       
-      const term = normalize(query).replace(/\s+/g, '')
+      const term = normalize(debouncedQuery).replace(/\s+/g, '')
       
       // Sequence matching: "pkm" -> "p.*k.*m" matches "Pokemon"
       const chars = term.split('')
@@ -117,7 +118,7 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
       setSearchResults([])
       setShowResults(false)
     }
-  }
+  }, [debouncedQuery])
 
   const handleSelectGame = (game) => {
     setSearchQuery('')
@@ -156,7 +157,7 @@ export default function Navbar({ currentPage, navigate, onPlayGame }) {
                   className="nav-search__input"
                   placeholder="Search games..."
                   value={searchQuery}
-                  onChange={(e) => handleSearch(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => searchQuery && setShowResults(true)}
                 />
                 {showResults && searchResults.length > 0 && (

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Search, X, Gamepad2, Clock } from 'lucide-react'
 import { games } from '../data/games'
+import { useDebounce } from '../hooks/useDebounce'
 import './SearchModal.css'
 
 export default function SearchModal({ isOpen, onClose, navigate, onPlayGame }) {
     const [query, setQuery] = useState('')
+    const debouncedQuery = useDebounce(query, 300)
     const [results, setResults] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(0)
     const inputRef = useRef(null)
@@ -21,7 +23,7 @@ export default function SearchModal({ isOpen, onClose, navigate, onPlayGame }) {
 
     // Search logic with ultra-forgiving fuzzy support
     useEffect(() => {
-        const term = query.toLowerCase().trim();
+        const term = debouncedQuery.toLowerCase().trim();
         if (!term) {
             setResults([])
             return
@@ -49,7 +51,7 @@ export default function SearchModal({ isOpen, onClose, navigate, onPlayGame }) {
 
         setResults(filtered)
         setSelectedIndex(0)
-    }, [query])
+    }, [debouncedQuery])
 
     // Keyboard navigation
     const handleKeyDown = useCallback((e) => {

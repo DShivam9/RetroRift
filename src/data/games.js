@@ -570,4 +570,19 @@ export function getGenres() {
   return [...new Set(games.map(g => g.genre).filter(Boolean))]
 }
 
+/** Get era from year */
+export function getEraFromYear(year) {
+  if (!year) return 'Unknown';
+  if (year < 1990) return '80s';
+  if (year < 2000) return '90s';
+  if (year < 2010) return '2000s';
+  return '2010s+';
+}
+
+/** Get unique eras available */
+export function getEras() {
+  const eras = games.map(g => getEraFromYear(g.year)).filter(Boolean);
+  return [...new Set(eras)].sort();
+}
+
 export default games
