@@ -194,7 +194,17 @@ export function loadXPData() {
         const raw = localStorage.getItem('xpData')
         if (raw) {
             const parsed = JSON.parse(raw)
-            return { ...getDefaultData(), ...parsed }
+            const merged = { ...getDefaultData(), ...parsed }
+            
+            // Auto-heal inflated counts from previous versions
+            if (merged.playedGameIds) {
+                merged.gamesPlayed = merged.playedGameIds.length
+            }
+            if (merged.playedConsoles) {
+                merged.consolesPlayed = merged.playedConsoles.length
+            }
+            
+            return merged
         }
     } catch (e) {
         console.warn('Failed to load XP data:', e)
@@ -258,7 +268,9 @@ export function onGamePlayed(data, game) {
         d.lastPlayDate = today
     }
 
-    d = awardXP(d, XP_VALUES.PLAY_GAME, `🎮 Played ${game.title}`)
+    // Prevent XP farming: XP is now only awarded based on actual playtime via onPlayTimeRecorded
+    // d = awardXP(d, XP_VALUES.PLAY_GAME, `🎮 Played ${game.title}`)
+    
     d.currentLevel = calcLevelFromXP(d.totalXP).level
     d = checkAchievements(d)
 
@@ -339,14 +351,24 @@ export function getStats(data) {
     const unlockedCount = Object.keys(data.unlockedAchievements || {}).length
     const totalAchievements = ACHIEVEMENTS.length
 
+    // Evaluate if streak is currently valid or broken
+    let displayStreak = data.currentStreak || 0;
+    if (data.lastPlayDate) {
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        if (data.lastPlayDate !== today && data.lastPlayDate !== yesterday) {
+            displayStreak = 0;
+        }
+    }
+
     return {
         ...levelInfo,
         ...titleInfo,
-        gamesPlayed: data.gamesPlayed || 0,
+        gamesPlayed: data.playedGameIds ? data.playedGameIds.length : (data.gamesPlayed || 0),
         totalFavorites: data.totalFavorites || 0,
         totalPlaytimeMin: data.totalPlaytimeMin || 0,
         consolesPlayed: data.consolesPlayed || 0,
-        currentStreak: data.currentStreak || 0,
+        currentStreak: displayStreak,
         bestStreak: data.bestStreak || 0,
         sessionGames: data.sessionGames || 0,
         unlockedCount,

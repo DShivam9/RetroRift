@@ -841,23 +841,29 @@
     position: relative;
     box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
     transition: width 0.5s ease-out;
+    overflow: hidden;
 }
 
 .console-deck__progress-energy {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        transparent 100%
+    background-image: linear-gradient(
+        -45deg, 
+        rgba(255, 255, 255, 0.2) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        rgba(255, 255, 255, 0.2) 50%, 
+        rgba(255, 255, 255, 0.2) 75%, 
+        transparent 75%, 
+        transparent
     );
-    animation: progressFlow 2s linear infinite;
+    background-size: 20px 20px;
+    animation: progressStripes 1s linear infinite;
 }
 
-@keyframes progressFlow {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+@keyframes progressStripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 0; }
 }
 
 .console-deck__stats-grid {
