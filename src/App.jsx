@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, lazy } from 'react'
+import React, { useState, useEffect, useRef, Suspense, lazy, useCallback } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnimatedBackground from './components/AnimatedBackground'
@@ -285,9 +285,8 @@ function AppContent() {
   }, [favorites, lastPlayed, xpData, customization, isAuthenticated, user?.uid])
 
   // Navigation with clean transition
-  // Navigation with clean transition
   const lastNavRef = useRef(null)
-  const navigate = (page) => {
+  const navigate = useCallback((page) => {
     if (page === currentPage && lastNavRef.current === page) return
     lastNavRef.current = page
 
@@ -300,10 +299,10 @@ function AppContent() {
     setCurrentPage(targetPage)
     setPageKey(prev => prev + 1)
     window.scrollTo({ top: 0, behavior: 'instant' })
-  }
+  }, [currentPage])
 
   // Play game handler
-  const onPlayGame = (gameData) => {
+  const onPlayGame = useCallback((gameData) => {
     // Prevent redundant navigation if already on the player page with this game
     if (currentPage === 'player' && currentGame?.id === gameData.id) {
       console.log('[App] Already playing this game, skipping redundant init')
@@ -346,13 +345,13 @@ function AppContent() {
     const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/pok-mon/g, 'pokemon').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
     const slug = normalize(game.title)
     navigate(`play/${slug}`)
-  }
+  }, [currentPage, currentGame?.id, navigate])
 
   // Use toast for notifications
   const toast = useToast()
 
   // Toggle favorite with toast notification
-  const toggleFavorite = (gameId) => {
+  const toggleFavorite = useCallback((gameId) => {
     const isAdding = !favorites.includes(gameId)
     setFavorites(prev =>
       prev.includes(gameId)
@@ -368,7 +367,7 @@ function AppContent() {
     } else {
       toast.info('Removed from favorites')
     }
-  }
+  }, [favorites, toast])
 
   // Page props
   const pageProps = {

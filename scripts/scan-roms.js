@@ -435,14 +435,15 @@ export function getGamesByConsole(consoleName) {
 
 /** Get featured games (for homepage) */
 export function getFeaturedGames(limit = 8) {
-  // Prioritize games with badges, then by rating
-  const featured = [...games]
-    .sort((a, b) => {
-      const aScore = (a.badge === 'featured' ? 100 : a.badge === 'popular' ? 50 : 0) + (a.rating || 0) * 10
-      const bScore = (b.badge === 'featured' ? 100 : b.badge === 'popular' ? 50 : 0) + (b.rating || 0) * 10
-      return bScore - aScore
-    })
-  return featured.slice(0, limit)
+  // Add random noise to each game's score so it shuffles games of similar tier
+  const scoredGames = games.map(g => {
+    const baseScore = (g.badge === 'featured' ? 100 : g.badge === 'popular' ? 50 : 0) + (g.rating || 0) * 10;
+    const randomNoise = Math.random() * 30; // 30 points of randomness to mix up the order
+    return { game: g, score: baseScore + randomNoise };
+  });
+
+  scoredGames.sort((a, b) => b.score - a.score);
+  return scoredGames.slice(0, limit).map(item => item.game);
 }
 
 /** Get unique consoles */
@@ -499,6 +500,22 @@ export function getEraFromYear(year) {
 export function getEras() {
   const eras = games.map(g => getEraFromYear(g.year)).filter(Boolean);
   return [...new Set(eras)].sort();
+}
+
+
+/** Get console era */
+export function getConsoleEra(consoleName) {
+  const map = {
+    'NES': '8-bit',
+    'GB': '8-bit',
+    'GBC': '8-bit',
+    'SNES': '16-bit',
+    'GEN': '16-bit',
+    'GBA': '32-bit',
+    'NDS': '64-bit',
+    'N64': '64-bit'
+  };
+  return map[consoleName] || 'Unknown';
 }
 
 export default games

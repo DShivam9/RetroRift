@@ -1,1604 +1,1891 @@
 {
-    "Pokémon Blue": {
-        "description": "The foundation of the Pokémon phenomenon. Journey through the Kanto region as you collect 8 Gym Badges, defeat the Elite Four, and thwart the criminal Team Rocket. This classic RPG features 151 original species to catch and train, offering deep turn-based strategic combat and a vast world to explore.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GB",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Blue%20Version%20%28USA%2C%20Europe%29%20%28SGB%20Enhanced%29.zip",
-        "year": 1998,
-        "difficulty": "Medium",
-        "playtime": "20-30 hours",
-        "rating": 4.8,
-        "features": [
-            "151 Original Pokémon",
-            "Gym Badges",
-            "Elite Four",
-            "Trade Evolutions"
-        ]
-    },
-    "Pokémon Crystal": {
-        "description": "The definitive Johto experience. This expanded sequel to Gold and Silver introduces animated sprites, the Battle Tower, and a brand-new storyline centered on the legendary Suicune. Explore two full regions (Johto and Kanto), conquer 16 Gyms, and face the ultimate challenge atop Mt. Silver.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GBC",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Crystal%20Version%20%28USA%2C%20Europe%29%20%28Rev%201%29.zip",
-        "year": 2001,
-        "difficulty": "Medium",
-        "playtime": "30-50 hours",
-        "rating": 4.9,
-        "badge": "featured",
-        "features": [
-            "Animated Sprites",
-            "Battle Tower",
-            "Play as Girl",
-            "Suicune Storyline"
-        ]
-    },
-    "Pokémon Diamond": {
-        "description": "Enter the 4th generation in the vast Sinnoh region. Introducing 107 new species and the physical/special move split, this NDS milestone tasks you with stopping Team Galactic's plan to rewrite the universe using the power of Dialga, the master of time. Featuring the Pokétch and underground exploration.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "NDS",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Diamond%20Version%20%28USA%29%20%28Rev%205%29.zip",
-        "year": 2006,
-        "difficulty": "Medium",
-        "playtime": "30-45 hours",
-        "rating": 4.5,
-        "features": [
-            "107 New Pokémon",
-            "Underground",
-            "GTS Trading",
-            "Day/Night Cycle"
-        ]
-    },
-    "Pokémon HeartGold": {
-        "description": "A high-fidelity remake of the Johto classic. HeartGold features updated graphics, following Pokémon, and the massive post-game Kanto region. Battle 16 Gym Leaders, capture the legendary Ho-Oh, and experience a journey that spans two entire continents with refined NDS mechanics.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "NDS",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20HeartGold%20Version%20%28USA%29.zip",
-        "year": 2009,
-        "difficulty": "Medium",
-        "playtime": "40-60 hours",
-        "rating": 4.9,
-        "badge": "featured",
-        "features": [
-            "Pokéwalker",
-            "Following Pokémon",
-            "Two Regions",
-            "Battle Frontier"
-        ]
-    },
-    "Pokémon Leaf Green": {
-        "description": "Return to Kanto in this vibrant GBA remake of the original Green version. Featuring updated graphics and the brand-new Sevii Islands post-game, you'll embark on a quest to catch 151 species and defeat Team Rocket in the definitive version of the journey that started it all.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GBA",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Leaf%20Green%20Version.zip",
-        "year": 2004,
-        "difficulty": "Medium",
-        "playtime": "25-40 hours",
-        "rating": 4.7,
-        "features": [
-            "Sevii Islands",
-            "Wireless Adapter",
-            "151+ Pokémon",
-            "Kanto Nostalgia"
-        ]
-    },
-    "Pokémon Pearl": {
-        "description": "Explore the Sinnoh region and counter Team Galactic's plan to rewrite the universe. Diamond and Pearl introduced the global trade system and the physical/special split, changing Pokémon combat forever. Capture the legendary Palkia, master of space, in this 4th generation landmark.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "NDS",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Pearl%20Version%20%28USA%29%20%28Rev%205%29.zip",
-        "year": 2006,
-        "difficulty": "Medium",
-        "playtime": "30-45 hours",
-        "rating": 4.5,
-        "features": [
-            "Palkia",
-            "Wi-Fi Battles",
-            "Pokétch",
-            "Contests"
-        ]
-    },
-    "Pokémon SoulSilver": {
-        "description": "The quintessential Johto remake. Journey across two full regions with your favorite Pokémon following you in the overworld. Encounter the legendary Lugia, defeat Team Rocket's remnants, and challenge Red in the ultimate battle atop Mt. Silver in this NDS masterpiece.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "NDS",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20SoulSilver%20Version%20%28USA%29.zip",
-        "year": 2009,
-        "difficulty": "Medium",
-        "playtime": "40-60 hours",
-        "rating": 4.9,
-        "features": [
-            "Pokéwalker",
-            "Following Pokémon",
-            "Two Regions",
-            "Battle Frontier"
-        ]
-    },
-    "Pokémon Yellow": {
-        "description": "The special edition that brought the anime to life. Start your journey with a loyal Pikachu that follows you on screen, encounter Jessie and James of Team Rocket, and collect all three original starters in this nostalgic trip through the Kanto region.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GBC",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Yellow%20Version%20-%20Special%20Pikachu%20Edition%20%28USA%2C%20Europe%29%20%28GBC%2CSGB%20Enhanced%29.zip",
-        "year": 1999,
-        "difficulty": "Medium",
-        "playtime": "20-30 hours",
-        "rating": 4.9,
-        "features": [
-            "Pikachu Follows You",
-            "Anime-inspired Story",
-            "All 3 Starters",
-            "Jessie and James"
-        ]
-    },
-    "Mario Kart: Super Circuit": {
-        "description": "Master the first portable entry in the Mario Kart series. Drift across 40 treacherous tracks—including 20 classic circuits from the original SNES masterpiece—as you battle for the gold in the high-stakes Grand Prix mode.",
-        "genre": "Racing",
-        "developer": "Intelligent Systems",
-        "year": 2001,
-        "difficulty": "Easy-Medium",
-        "playtime": "10-20 hours",
-        "rating": 4.5,
-        "badge": "popular",
-        "features": [
-            "40 Tracks",
-            "8 Characters",
-            "Grand Prix Mode",
-            "Link Cable Multiplayer"
-        ]
-    },
-    "Pac-Man": {
-        "description": "Experience the timeless arcade legend that revolutionized the industry. Navigate the neon maze, consume power pellets to turn the tide against the relentless ghosts, and chase the legendary high score in this quintessential gaming masterpiece.",
-        "genre": "Arcade",
-        "developer": "Namco",
-        "year": 1984,
-        "difficulty": "Easy",
-        "playtime": "Endless",
-        "rating": 4.6,
-        "features": [
-            "Classic Gameplay",
-            "Power Pellets",
-            "4 Ghost Types",
-            "High Score Chase"
-        ]
-    },
-    "Sonic 3D Blast": {
-        "description": "Guide Sonic through isometric 3D environments to rescue the innocent Flickies from Dr. Robotnik's mechanical clutches. Harness the power of the Chaos Emeralds and navigate seven unique zones to restore peace to Flicky Island.",
-        "genre": "Platformer",
-        "developer": "Traveller's Tales",
-        "year": 1996,
-        "difficulty": "Medium",
-        "playtime": "5-8 hours",
-        "rating": 3.8,
-        "badge": "new",
-        "features": [
-            "Isometric View",
-            "7 Zones",
-            "Chaos Emeralds",
-            "Special Stages"
-        ]
-    },
-    "Pokémon Emerald": {
-        "description": "The definitive Hoenn experience. Emerald combines the best of Ruby and Sapphire, adding a brand-new storyline featuring Rayquaza and the massive Battle Frontier. Conquer two rival teams, Magma and Aqua, and experience animated sprites in this GBA masterpiece.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GBA",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Emerald.zip",
-        "year": 2004,
-        "difficulty": "Medium-Hard",
-        "playtime": "40-60 hours",
-        "rating": 4.9,
-        "badge": "featured",
-        "features": [
-            "Battle Frontier",
-            "Both Teams",
-            "Rayquaza Story",
-            "Animated Sprites"
-        ]
-    },
-    "Pokémon FireRed": {
-        "description": "Return to Kanto in this high-fidelity GBA remake of the original Red version. Featuring updated graphics and the brand-new Sevii Islands post-game, you'll embark on a quest to catch 151 species and defeat Team Rocket in the definitive version of the journey that started it all.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GBA",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20FireRed.zip",
-        "year": 2004,
-        "difficulty": "Medium",
-        "playtime": "25-40 hours",
-        "rating": 4.8,
-        "badge": "popular",
-        "features": [
-            "151 Original Pokémon",
-            "Wireless Trading",
-            "Post-game Content",
-            "New Islands"
-        ]
-    },
-    "Pokémon Platinum": {
-        "description": "The ultimate Sinnoh adventure. Platinum expands upon Diamond and Pearl with the mysterious Distortion World and the legendary Giratina. Featuring the Battle Frontier, updated character designs, and a faster engine, it is widely considered the best way to experience Gen 4.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "NDS",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Platinum.zip",
-        "year": 2008,
-        "difficulty": "Medium",
-        "playtime": "35-50 hours",
-        "rating": 4.8,
-        "badge": "new",
-        "features": [
-            "Distortion World",
-            "Battle Frontier",
-            "Wi-Fi Plaza",
-            "Giratina Origin"
-        ]
-    },
-    "Pokémon Ruby": {
-        "description": "Set in the tropical Hoenn region, Ruby introduces 135 new species and the era of double battles. Thwart Team Magma's plan to expand the world's landmass by awakening the continental deity Groudon. Explore volcanoes, build secret bases, and compete in Pokémon Contests.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GBA",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Ruby.zip",
-        "year": 2002,
-        "difficulty": "Medium",
-        "playtime": "30-45 hours",
-        "rating": 4.7,
-        "features": [
-            "135 New Pokémon",
-            "Double Battles",
-            "Contests",
-            "Secret Bases"
-        ]
-    },
-    "Pokémon Sapphire": {
-        "description": "Adventure through Hoenn as Team Aqua attempts to flood the world by awakening the oceanic deity Kyogre. Sapphire features 135 new Pokémon, weather-based combat, and the introduction of abilities. Dive deep beneath the waves to uncover secrets in this GBA classic.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "console": "GBA",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Sapphire.zip",
-        "year": 2002,
-        "difficulty": "Medium",
-        "playtime": "30-45 hours",
-        "rating": 4.7,
-        "features": [
-            "135 New Pokémon",
-            "Diving Mechanic",
-            "Contests",
-            "Team Aqua Story"
-        ]
-    },
-    "Pokemon Ultra Violet": {
-        "description": "The ultimate FireRed expansion for completionists. This comprehensive hack opens the world, allowing you to catch every single Pokémon from the first three generations in a single journey, featuring new areas and refined shiny hunting mechanics.",
-        "genre": "RPG",
-        "developer": "Hack (Lockstin)",
-        "console": "GBA",
-        "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20Ultra%20Violet.zip",
-        "year": 2013,
-        "difficulty": "Medium",
-        "playtime": "40-60 hours",
-        "rating": 4.9,
-        "badge": "new",
-        "features": [
-            "All 386 Pokémon",
-            "New Areas",
-            "Shiny Hunting",
-            "National Dex"
-        ]
-    },
-    "Super Mario Bros": {
-        "description": "The game that saved the industry. Embark on a legendary quest through the Mushroom Kingdom to rescue Princess Peach from the clutches of Bowser. Master the physics of the run-and-jump that defined the platforming genre for decades.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 1985,
-        "difficulty": "Medium",
-        "playtime": "2-5 hours",
-        "rating": 4.9,
-        "badge": "featured",
-        "features": [
-            "8 Worlds",
-            "Power-ups",
-            "Warp Zones",
-            "Iconic Soundtrack"
-        ]
-    },
-    "Super Mario Bros 2": {
-        "description": "Pick from four characters, each with unique abilities, and adventure through the dreamland of Subcon.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 1988,
-        "difficulty": "Medium",
-        "playtime": "3-6 hours",
-        "rating": 4.3,
-        "features": [
-            "4 Playable Characters",
-            "Unique Mechanics",
-            "7 Worlds",
-            "Boss Battles"
-        ]
-    },
-    "Super Mario Bros 3": {
-        "description": "Join Mario and Luigi in the greatest NES adventure ever told. Harness the power of the Tanooki suit and Frog suit to conquer eight unique kingdoms, defeat the Koopalings, and save Princess Peach from Bowser's massive airship fleet.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 1988,
-        "difficulty": "Medium-Hard",
-        "playtime": "5-10 hours",
-        "rating": 4.9,
-        "badge": "featured",
-        "features": [
-            "8 Worlds",
-            "World Map",
-            "Power Suits",
-            "Mini-games"
-        ]
-    },
-    "Legend of Zelda": {
-        "description": "Embark on an open-world quest as Link to collect the Triforce pieces and rescue Princess Zelda from Ganon.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 1986,
-        "difficulty": "Hard",
-        "playtime": "10-15 hours",
-        "rating": 4.8,
-        "features": [
-            "Open World",
-            "Dungeons",
-            "Item Collection",
-            "Second Quest"
-        ]
-    },
-    "Zelda II - The Adventure of Link": {
-        "description": "Venture into the shadowed lands of Hyrule in this unique side-scrolling odyssey. As Link must awaken the sleeping Princess Zelda, you'll master sword arts, cast powerful spells, and explore a vast overworld in a journey that blends platforming action with deep RPG growth.",
-        "genre": "Action-RPG",
-        "developer": "Nintendo",
-        "year": 1987,
-        "difficulty": "Very Hard",
-        "playtime": "10-20 hours",
-        "rating": 4,
-        "features": [
-            "Side-Scrolling Combat",
-            "XP System",
-            "Magic Spells",
-            "Towns & NPCs"
-        ]
-    },
-    "Mega Man": {
-        "description": "Infiltrate the high-tech fortresses of six rogue Robot Masters as the Blue Bomber. In this foundational action-platformer, you must steal their unique abilities to confront the mad scientist Dr. Wily and restore peace to a world on the brink of robotic uprising.",
-        "genre": "Action-Platformer",
-        "developer": "Capcom",
-        "year": 1987,
-        "difficulty": "Hard",
-        "playtime": "3-5 hours",
-        "rating": 4.3,
-        "features": [
-            "6 Robot Masters",
-            "Weapon Copy",
-            "Non-linear Stages",
-            "Challenging Boss Fights"
-        ]
-    },
-    "Mega Man 2": {
-        "description": "The definitive legend of the Blue Bomber. Battle through eight iconic Robot Masters, navigate treacherous platforming gauntlets, and experience the quintessential action-platformer featuring an unforgettable soundtrack and the ultimate confrontation with Dr. Wily.",
-        "genre": "Action-Platformer",
-        "developer": "Capcom",
-        "year": 1988,
-        "difficulty": "Hard",
-        "playtime": "3-5 hours",
-        "rating": 4.8,
-        "badge": "popular",
-        "features": [
-            "8 Robot Masters",
-            "E-Tanks",
-            "Password System",
-            "Legendary Soundtrack"
-        ]
-    },
-    "Contra": {
-        "description": "The ultimate test of survival in the face of an alien invasion. Grab the legendary Spread Gun and blast through jungle hideouts and mechanical fortresses with a friend in this pulse-pounding run-and-gun masterpiece that defined the genre.",
-        "genre": "Run and Gun",
-        "developer": "Konami",
-        "year": 1988,
-        "difficulty": "Very Hard",
-        "playtime": "1-2 hours",
-        "rating": 4.7,
-        "badge": "popular",
-        "features": [
-            "2-Player Co-op",
-            "Spread Gun",
-            "8 Stages",
-            "Konami Code"
-        ]
-    },
-    "Castlevania": {
-        "description": "Whip your way through the gothic halls of Dracula's castle as the legendary Simon Belmont. In this action-platforming classic, you'll face nightmare creatures of the night, master sub-weapons, and confront the Prince of Darkness himself to end his reign of terror.",
-        "genre": "Action-Platformer",
-        "developer": "Konami",
-        "year": 1986,
-        "difficulty": "Hard",
-        "playtime": "2-4 hours",
-        "rating": 4.6,
-        "features": [
-            "6 Stages",
-            "Sub-Weapons",
-            "Boss Battles",
-            "Gothic Horror"
-        ]
-    },
-    "Castlevania III - Draculas Curse": {
-        "description": "Play as Trevor Belmont and recruit allies to storm Dracula's castle in this branching-path masterpiece.",
-        "genre": "Action-Platformer",
-        "developer": "Konami",
-        "year": 1989,
-        "difficulty": "Very Hard",
-        "playtime": "3-5 hours",
-        "rating": 4.7,
-        "features": [
-            "4 Playable Characters",
-            "Branching Paths",
-            "Multiple Endings",
-            "Grant & Alucard"
-        ]
-    },
-    "Metroid": {
-        "description": "Explore the claustrophobic, alien depths of planet Zebes as the bounty hunter Samus Aran. Discover powerful upgrades, navigate a non-linear labyrinth, and uncover the dark secrets of the Space Pirates in the genre-defining adventure that started it all.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 1986,
-        "difficulty": "Hard",
-        "playtime": "5-8 hours",
-        "rating": 4.5,
-        "features": [
-            "Open Exploration",
-            "Power-ups",
-            "Hidden Areas",
-            "Multiple Endings"
-        ]
-    },
-    "Kirby's Adventure": {
-        "description": "Inhale the power of your enemies in this vibrant NES masterpiece. Journey across Dream Land as the adorable pink puffball Kirby, mastering dozens of copy abilities to defeat King Dedede and the mysterious Meta Knight to restore the Star Rod.",
-        "genre": "Platformer",
-        "developer": "HAL Laboratory",
-        "year": 1993,
-        "difficulty": "Easy",
-        "playtime": "4-6 hours",
-        "rating": 4.6,
-        "features": [
-            "Copy Abilities",
-            "7 Worlds",
-            "Mini-Games",
-            "Meta Knight"
-        ]
-    },
-    "Donkey Kong": {
-        "description": "The game that introduced Mario! Climb ladders and dodge barrels to rescue Pauline from the giant ape.",
-        "genre": "Arcade",
-        "developer": "Nintendo",
-        "year": 1981,
-        "difficulty": "Medium",
-        "playtime": "Endless",
-        "rating": 4.4,
-        "features": [
-            "4 Stages",
-            "High Score",
-            "Hammer Power-up",
-            "Arcade Classic"
-        ]
-    },
-    "Double Dragon": {
-        "description": "Fight through the streets to rescue your girlfriend in this legendary side-scrolling beat 'em up.",
-        "genre": "Beat 'em Up",
-        "developer": "Technos Japan",
-        "year": 1988,
-        "difficulty": "Medium-Hard",
-        "playtime": "1-2 hours",
-        "rating": 4.3,
-        "features": [
-            "Co-op Mode",
-            "Martial Arts",
-            "Weapon Pickups",
-            "4 Stages"
-        ]
-    },
-    "Tetris": {
-        "description": "The most addictive puzzle game ever created. Stack falling blocks, clear lines, chase the high score.",
-        "genre": "Puzzle",
-        "developer": "Nintendo",
-        "year": 1989,
-        "difficulty": "Easy to Learn, Hard to Master",
-        "playtime": "Endless",
-        "rating": 4.9,
-        "badge": "popular",
-        "features": [
-            "Endless Mode",
-            "Increasing Speed",
-            "Score Attack",
-            "Simple Controls"
-        ]
-    },
-    "Dr. Mario": {
-        "description": "Match colored capsules to eliminate viruses in this addictive puzzle game starring Dr. Mario.",
-        "genre": "Puzzle",
-        "developer": "Nintendo",
-        "year": 1990,
-        "difficulty": "Medium",
-        "playtime": "Endless",
-        "rating": 4.4,
-        "features": [
-            "Virus Elimination",
-            "2-Player VS",
-            "Speed Levels",
-            "Catchy Music"
-        ]
-    },
-    "Excitebike": {
-        "description": "Design custom tracks and race your motorbike over ramps and obstacles in this fast-paced racer.",
-        "genre": "Racing",
-        "developer": "Nintendo",
-        "year": 1984,
-        "difficulty": "Easy-Medium",
-        "playtime": "2-4 hours",
-        "rating": 4.2,
-        "features": [
-            "Track Editor",
-            "Turbo Boost",
-            "Overheating Mechanic",
-            "Time Trials"
-        ]
-    },
-    "Duck Hunt": {
-        "description": "Grab your Zapper and shoot ducks out of the sky while a mischievous dog laughs at your misses.",
-        "genre": "Shooter",
-        "developer": "Nintendo",
-        "year": 1984,
-        "difficulty": "Easy",
-        "playtime": "Endless",
-        "rating": 4,
-        "features": [
-            "Light Gun",
-            "3 Game Modes",
-            "Increasing Difficulty",
-            "Iconic Dog"
-        ]
-    },
-    "Ninja Gaiden": {
-        "description": "Experience the brutal path of the ninja as Ryu Hayabusa. Slash through hordes of enemies across cinematic acts, master wall-climbing and deadly Ninpo arts, and uncover the truth behind your father's disappearance in this punishingly difficult action classic.",
-        "genre": "Action-Platformer",
-        "developer": "Tecmo",
-        "year": 1988,
-        "difficulty": "Very Hard",
-        "playtime": "2-4 hours",
-        "rating": 4.5,
-        "features": [
-            "Cinematic Cutscenes",
-            "Wall Climbing",
-            "Ninpo Arts",
-            "6 Acts"
-        ]
-    },
-    "Punch-Out!!": {
-        "description": "Step into the squared circle as the underdog Little Mac. Navigate the high-stakes world of professional boxing, decoding the unique patterns of 13 eccentric fighters to earn your shot at the ultimate heavyweight challenge: the legendary Mike Tyson.",
-        "genre": "Sports",
-        "developer": "Nintendo",
-        "year": 1987,
-        "difficulty": "Hard",
-        "playtime": "3-5 hours",
-        "rating": 4.7,
-        "badge": "popular",
-        "features": [
-            "Pattern-Based Combat",
-            "13 Boxers",
-            "Star Punch",
-            "Mike Tyson Fight"
-        ]
-    },
-    "Galaga": {
-        "description": "Defend Earth against waves of alien insects in this legendary space shooter sequel to Galaxian.",
-        "genre": "Shoot 'em Up",
-        "developer": "Namco",
-        "year": 1988,
-        "difficulty": "Medium-Hard",
-        "playtime": "Endless",
-        "rating": 4.6,
-        "features": [
-            "Dual Fighter",
-            "Challenging Stages",
-            "Enemy Formations",
-            "High Score Chase"
-        ]
-    },
-    "Battletoads": {
-        "description": "The notoriously difficult beat 'em up featuring the Battletoads. Smash enemies and survive the Turbo Tunnel.",
-        "genre": "Beat 'em Up",
-        "developer": "Rare",
-        "year": 1991,
-        "difficulty": "Extremely Hard",
-        "playtime": "2-4 hours",
-        "rating": 4.3,
-        "features": [
-            "2-Player Co-op",
-            "Varied Gameplay",
-            "Turbo Tunnel",
-            "Impressive Graphics"
-        ]
-    },
-    "Ice Climber": {
-        "description": "Climb ice-covered mountains with Popo and Nana, smashing blocks and dodging enemies along the way.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 1985,
-        "difficulty": "Medium",
-        "playtime": "2-3 hours",
-        "rating": 3.8,
-        "features": [
-            "2-Player Co-op",
-            "32 Mountains",
-            "Bonus Stages",
-            "Vegetable Collecting"
-        ]
-    },
-    "Balloon Fight": {
-        "description": "Float through the skies and pop enemy balloons in this charming arcade action game inspired by Joust.",
-        "genre": "Arcade",
-        "developer": "Nintendo",
-        "year": 1985,
-        "difficulty": "Easy-Medium",
-        "playtime": "1-2 hours",
-        "rating": 4.1,
-        "features": [
-            "Balloon Trip Mode",
-            "2-Player",
-            "Fish Hazard",
-            "Simple Controls"
-        ]
-    },
-    "Super Mario World": {
-        "description": "The SNES masterpiece that redefined platforming. Join Mario and his new companion Yoshi as they explore 96 secret exits across Dinosaur Land, mastering the Cape Feather and uncovering the mysteries of the Star Road to rescue Princess Peach.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 1990,
-        "difficulty": "Medium",
-        "playtime": "8-15 hours",
-        "rating": 4.9,
-        "badge": "featured",
-        "features": [
-            "96 Exits",
-            "Yoshi",
-            "Cape Feather",
-            "Star Road"
-        ]
-    },
-    "Legend of Zelda - A Link to the Past": {
-        "description": "Hyrule's greatest top-down epic awaits. Traverse between the Light and Dark Worlds to solve ancient puzzles, conquer 12 daunting dungeons, and reclaim the Master Sword to defeat the dark wizard Agahnim and the demon king Ganon.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 1991,
-        "difficulty": "Medium",
-        "playtime": "15-25 hours",
-        "rating": 4.9,
-        "badge": "featured",
-        "features": [
-            "Dual Worlds",
-            "12 Dungeons",
-            "Master Sword",
-            "Heart Pieces"
-        ]
-    },
-    "Super Metroid": {
-        "description": "The gold standard of atmospheric exploration. Return to planet Zebes as Samus Aran to recover the last Metroid hatchling. Navigate a hauntingly beautiful world, master advanced movement techniques, and face the towering horrors of the Space Pirate leaders.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 1994,
-        "difficulty": "Medium-Hard",
-        "playtime": "6-10 hours",
-        "rating": 5,
-        "badge": "featured",
-        "features": [
-            "Non-linear Exploration",
-            "Sequence Breaking",
-            "Atmospheric Design",
-            "Speed Running"
-        ]
-    },
-    "Chrono Trigger": {
-        "description": "A time-traveling odyssey across the ages to prevent a global apocalypse. Join a diverse cast of heroes from the prehistoric past to the distant future, mastering dual and triple tech combos in a legendary RPG featuring 13 unique endings and a score for the ages.",
-        "genre": "RPG",
-        "developer": "Square",
-        "year": 1995,
-        "difficulty": "Medium",
-        "playtime": "20-35 hours",
-        "rating": 5,
-        "badge": "featured",
-        "features": [
-            "Time Travel",
-            "13 Endings",
-            "Dual/Triple Techs",
-            "New Game+"
-        ]
-    },
-    "Final Fantasy VI": {
-        "description": "An epic tale of magic, industrialization, and rebellion against a tyrannical empire. Follow 14 unique heroes as they face the chaotic nihilism of the villain Kefka across a world destined for ruin in one of the most emotional JRPGs ever told.",
-        "genre": "RPG",
-        "developer": "Square",
-        "year": 1994,
-        "difficulty": "Medium",
-        "playtime": "35-50 hours",
-        "rating": 4.9,
-        "features": [
-            "14 Characters",
-            "Esper System",
-            "Opera Scene",
-            "World of Ruin"
-        ]
-    },
-    "Donkey Kong Country": {
-        "description": "Swing through lush pre-rendered jungles and treacherous minecarts in this visual powerhouse. Join DK and Diddy Kong as they reclaim their banana hoard from King K. Rool, mastering animal buddies and uncovering secret rooms across a vibrant island.",
-        "genre": "Platformer",
-        "developer": "Rare",
-        "year": 1994,
-        "difficulty": "Medium",
-        "playtime": "6-10 hours",
-        "rating": 4.7,
-        "badge": "popular",
-        "features": [
-            "Pre-rendered 3D Graphics",
-            "2-Player Tag Team",
-            "Animal Buddies",
-            "Secret Rooms"
-        ]
-    },
-    "Donkey Kong Country 2": {
-        "description": "Diddy and Dixie Kong set out to rescue DK from Kaptain K. Rool in this critically acclaimed sequel.",
-        "genre": "Platformer",
-        "developer": "Rare",
-        "year": 1995,
-        "difficulty": "Medium-Hard",
-        "playtime": "8-12 hours",
-        "rating": 4.8,
-        "features": [
-            "Dixie's Hair Spin",
-            "Lost World",
-            "DK Coins",
-            "Animal Friends"
-        ]
-    },
-    "Super Mario Kart": {
-        "description": "The original kart racer that started it all. Battle your friends and race for the gold on iconic SNES tracks.",
-        "genre": "Racing",
-        "developer": "Nintendo",
-        "year": 1992,
-        "difficulty": "Easy-Medium",
-        "playtime": "10-20 hours",
-        "rating": 4.6,
-        "badge": "popular",
-        "features": [
-            "Mode 7 Graphics",
-            "8 Characters",
-            "Battle Mode",
-            "20 Tracks"
-        ]
-    },
-    "Street Fighter II Turbo": {
-        "description": "The world-renowned fighting phenomenon at its peak. Choose from 12 legendary warriors, master complex special moves, and engage in high-speed, technical combat to prove yourself as the ultimate champion in the definitive home version.",
-        "genre": "Fighting",
-        "developer": "Capcom",
-        "year": 1993,
-        "difficulty": "Medium-Hard",
-        "playtime": "Endless",
-        "rating": 4.7,
-        "features": [
-            "12 Fighters",
-            "Special Moves",
-            "Turbo Speed",
-            "2-Player VS"
-        ]
-    },
-    "EarthBound": {
-        "description": "A quirky, modern-day JRPG odyssey that captures the heart of 1990s Americana. Join Ness and his friends as they use baseball bats and psychic powers to save the world from an intergalactic threat in a journey filled with unique humor and surreal charm.",
-        "genre": "RPG",
-        "developer": "HAL Laboratory",
-        "year": 1994,
-        "difficulty": "Medium",
-        "playtime": "25-40 hours",
-        "rating": 4.8,
-        "features": [
-            "Modern Setting",
-            "Rolling HP Meter",
-            "Unique Humor",
-            "Cult Classic"
-        ]
-    },
-    "Mega Man X": {
-        "description": "The evolution of the Blue Bomber. As X, you must hunt down Sigma's rogue Mavericks, wall-jumping and dashing through high-octane stages while collecting armor upgrades to prevent a catastrophic robot war.",
-        "genre": "Action-Platformer",
-        "developer": "Capcom",
-        "year": 1993,
-        "difficulty": "Medium-Hard",
-        "playtime": "4-6 hours",
-        "rating": 4.8,
-        "badge": "popular",
-        "features": [
-            "Wall Jumping",
-            "Dash",
-            "Armor Upgrades",
-            "Hadouken"
-        ]
-    },
-    "Secret of Mana": {
-        "description": "Hack, slash, and cast magic in this real-time action RPG with 3-player co-op support.",
-        "genre": "Action-RPG",
-        "developer": "Square",
-        "year": 1993,
-        "difficulty": "Medium",
-        "playtime": "20-30 hours",
-        "rating": 4.5,
-        "features": [
-            "3-Player Co-op",
-            "Ring Menu",
-            "Magic System",
-            "Open World"
-        ]
-    },
-    "F-Zero": {
-        "description": "Blaze through futuristic racetracks at blistering speeds in this Mode 7 racing pioneer.",
-        "genre": "Racing",
-        "developer": "Nintendo",
-        "year": 1990,
-        "difficulty": "Hard",
-        "playtime": "5-10 hours",
-        "rating": 4.4,
-        "features": [
-            "Mode 7 Speed",
-            "4 Vehicles",
-            "15 Tracks",
-            "Knight League"
-        ]
-    },
-    "Star Fox": {
-        "description": "Pilot the Arwing through Lylat System and defeat Andross in this groundbreaking Super FX 3D shooter.",
-        "genre": "Rail Shooter",
-        "developer": "Nintendo/Argonaut",
-        "year": 1993,
-        "difficulty": "Medium-Hard",
-        "playtime": "2-4 hours",
-        "rating": 4.3,
-        "features": [
-            "Super FX Chip",
-            "3 Routes",
-            "Barrel Roll",
-            "Team Star Fox"
-        ]
-    },
-    "Yoshi's Island": {
-        "description": "Guide baby Mario on Yoshi's back through beautifully hand-drawn worlds in this creative platformer.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 1995,
-        "difficulty": "Medium",
-        "playtime": "10-15 hours",
-        "rating": 4.8,
-        "features": [
-            "Egg Throwing",
-            "Transformations",
-            "Hand-drawn Art",
-            "Baby Mario"
-        ]
-    },
-    "Contra III - The Alien Wars": {
-        "description": "The most intense run-and-gun shooter on SNES. Blast aliens with dual-wielded weapons and ride missiles.",
-        "genre": "Run and Gun",
-        "developer": "Konami",
-        "year": 1992,
-        "difficulty": "Very Hard",
-        "playtime": "1-3 hours",
-        "rating": 4.6,
-        "features": [
-            "Dual Weapons",
-            "Top-down Stages",
-            "Mode 7 Effects",
-            "2-Player Co-op"
-        ]
-    },
-    "Super Castlevania IV": {
-        "description": "Simon Belmont returns with an 8-directional whip in this atmospheric SNES reimagining of the original.",
-        "genre": "Action-Platformer",
-        "developer": "Konami",
-        "year": 1991,
-        "difficulty": "Hard",
-        "playtime": "3-5 hours",
-        "rating": 4.6,
-        "features": [
-            "8-Way Whip",
-            "Mode 7 Effects",
-            "11 Stages",
-            "Orchestral Soundtrack"
-        ]
-    },
-    "ActRaiser": {
-        "description": "A unique blend of action-platforming and city-building simulation where you play as a deity.",
-        "genre": "Action/Simulation",
-        "developer": "Quintet",
-        "year": 1990,
-        "difficulty": "Medium",
-        "playtime": "6-8 hours",
-        "rating": 4.4,
-        "features": [
-            "Genre Hybrid",
-            "City Building",
-            "Side-Scrolling Action",
-            "God Simulation"
-        ]
-    },
-    "Breath of Fire": {
-        "description": "A young dragon warrior named Ryu must unite heroes to defeat the Dark Dragon Clan in this classic JRPG.",
-        "genre": "RPG",
-        "developer": "Capcom",
-        "year": 1993,
-        "difficulty": "Medium",
-        "playtime": "25-35 hours",
-        "rating": 4.2,
-        "features": [
-            "Dragon Transformations",
-            "Fishing Mini-game",
-            "Day/Night System",
-            "8 Party Members"
-        ]
-    },
-    "Breath of Fire II": {
-        "description": "Build a town, recruit allies, and uncover a church conspiracy in this deeper sequel to Breath of Fire.",
-        "genre": "RPG",
-        "developer": "Capcom",
-        "year": 1994,
-        "difficulty": "Medium-Hard",
-        "playtime": "35-50 hours",
-        "rating": 4.3,
-        "features": [
-            "Town Building",
-            "Shamanism",
-            "Dragon Transformations",
-            "Dark Story"
-        ]
-    },
-    "Metroid Fusion": {
-        "description": "Samus Aran becomes the prey as the terrifying X Parasite and its SA-X doppleganger hunt her through a derelict research station. Experience a tense, horror-infused chapter of the Metroid saga where survival depends on regaining your lost abilities.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 2002,
-        "difficulty": "Medium-Hard",
-        "playtime": "5-8 hours",
-        "rating": 4.7,
-        "features": [
-            "SA-X Chases",
-            "Absorption System",
-            "Story Focus",
-            "Tense Atmosphere"
-        ]
-    },
-    "Metroid - Zero Mission": {
-        "description": "A stunning reimagining of the original Metroid with new areas, Zero Suit Samus, and modern gameplay.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 2004,
-        "difficulty": "Medium",
-        "playtime": "4-6 hours",
-        "rating": 4.8,
-        "features": [
-            "Remake",
-            "Zero Suit Sequence",
-            "New Areas",
-            "Speed Running"
-        ]
-    },
-    "Advance Wars": {
-        "description": "Command armies in this addictive turn-based strategy game. Outsmart enemy COs in tactical battlefield combat.",
-        "genre": "Strategy",
-        "developer": "Intelligent Systems",
-        "year": 2001,
-        "difficulty": "Medium-Hard",
-        "playtime": "20-40 hours",
-        "rating": 4.8,
-        "badge": "popular",
-        "features": [
-            "Campaign Mode",
-            "CO Powers",
-            "Map Editor",
-            "VS Mode"
-        ]
-    },
-    "Advance Wars 2": {
-        "description": "Black Hole strikes back with new COs and dual-strike powers in this superb strategy sequel.",
-        "genre": "Strategy",
-        "developer": "Intelligent Systems",
-        "year": 2003,
-        "difficulty": "Hard",
-        "playtime": "30-50 hours",
-        "rating": 4.7,
-        "features": [
-            "New COs",
-            "Neotanks",
-            "Hard Campaign",
-            "Multiplayer"
-        ]
-    },
-    "Fire Emblem": {
-        "description": "The first Fire Emblem localized for the West. Lead Eliwood, Lyn, and Hector in tactical RPG battles.",
-        "genre": "Tactical RPG",
-        "developer": "Intelligent Systems",
-        "year": 2003,
-        "difficulty": "Hard",
-        "playtime": "25-40 hours",
-        "rating": 4.6,
-        "features": [
-            "Permadeath",
-            "Support System",
-            "3 Lords",
-            "Weapon Triangle"
-        ]
-    },
-    "Fire Emblem - The Sacred Stones": {
-        "description": "Twin siblings Eirika and Ephraim fight to save their kingdom in this accessible yet deep tactical RPG.",
-        "genre": "Tactical RPG",
-        "developer": "Intelligent Systems",
-        "year": 2004,
-        "difficulty": "Medium-Hard",
-        "playtime": "20-35 hours",
-        "rating": 4.5,
-        "features": [
-            "Branching Promotions",
-            "World Map",
-            "Creature Campaign",
-            "Twin Lords"
-        ]
-    },
-    "Golden Sun": {
-        "description": "Unleash the ancient power of Alchemy in this stunning handheld RPG. Harness elemental Psynergy to solve environmental puzzles, recruit mysterious Djinn to augment your party, and embark on an epic quest to prevent the release of a world-shattering force.",
-        "genre": "RPG",
-        "developer": "Camelot",
-        "year": 2001,
-        "difficulty": "Medium",
-        "playtime": "20-30 hours",
-        "rating": 4.7,
-        "features": [
-            "Psynergy Puzzles",
-            "Djinn System",
-            "Summons",
-            "Beautiful Pixel Art"
-        ]
-    },
-    "Golden Sun - The Lost Age": {
-        "description": "Continue the journey from Felix's perspective and discover the truth about Alchemy in this epic sequel.",
-        "genre": "RPG",
-        "developer": "Camelot",
-        "year": 2002,
-        "difficulty": "Medium-Hard",
-        "playtime": "30-45 hours",
-        "rating": 4.7,
-        "features": [
-            "Ship Exploration",
-            "72 Djinn",
-            "Data Transfer",
-            "Extended Story"
-        ]
-    },
-    "Castlevania - Aria of Sorrow": {
-        "description": "Soma Cruz discovers his dark destiny within the solar eclipse. In this Metroidvania masterpiece, you must harvest the souls of your enemies to gain their powers, navigating a beautifully gothic castle to uncover the truth about the reincarnation of Dracula.",
-        "genre": "Action-RPG",
-        "developer": "Konami",
-        "year": 2003,
-        "difficulty": "Medium",
-        "playtime": "6-10 hours",
-        "rating": 4.8,
-        "badge": "popular",
-        "features": [
-            "Soul System",
-            "Tactical Souls",
-            "Multiple Endings",
-            "Best GBA Castlevania"
-        ]
-    },
-    "Castlevania - Circle of the Moon": {
-        "description": "Nathan Graves fights through Dracula's castle using the DSS card system in this dark Castlevania entry.",
-        "genre": "Action-RPG",
-        "developer": "Konami",
-        "year": 2001,
-        "difficulty": "Hard",
-        "playtime": "8-12 hours",
-        "rating": 4.3,
-        "features": [
-            "DSS Card System",
-            "Magic Combos",
-            "Dark Atmosphere",
-            "Multiple Modes"
-        ]
-    },
-    "Final Fantasy Tactics Advance": {
-        "description": "Enter the magical world of Ivalice and build your clan in this deep tactical RPG with over 300 missions.",
-        "genre": "Tactical RPG",
-        "developer": "Square Enix",
-        "year": 2003,
-        "difficulty": "Medium",
-        "playtime": "40-60 hours",
-        "rating": 4.5,
-        "features": [
-            "Job System",
-            "Judge Laws",
-            "300+ Missions",
-            "Clan Building"
-        ]
-    },
-    "Kirby - Nightmare in Dream Land": {
-        "description": "A gorgeous GBA remake of Kirby's Adventure with enhanced visuals, new mini-games, and multiplayer.",
-        "genre": "Platformer",
-        "developer": "HAL Laboratory",
-        "year": 2002,
-        "difficulty": "Easy",
-        "playtime": "3-5 hours",
-        "rating": 4.4,
-        "features": [
-            "Copy Abilities",
-            "Meta Knightmare",
-            "Multiplayer",
-            "Mini-games"
-        ]
-    },
-    "Sonic Advance": {
-        "description": "The blue blur returns to his roots in this high-speed GBA platformer. Race across original zones as Sonic, Tails, Knuckles, or Amy, each with unique traversal abilities, and restore the balance of the world by collecting the elusive Chaos Emeralds.",
-        "genre": "Platformer",
-        "developer": "Dimps",
-        "year": 2001,
-        "difficulty": "Easy-Medium",
-        "playtime": "3-5 hours",
-        "rating": 4.2,
-        "features": [
-            "4 Characters",
-            "Chao Garden",
-            "Tiny Chao Garden",
-            "Special Stages"
-        ]
-    },
-    "Sonic Advance 2": {
-        "description": "The fastest entry in the series pushes speed to its limit. Master the new boost mechanics and aerial tricks across seven vibrant zones, and rescue the newcomer Cream the Rabbit from Dr. Eggman's clutches in this high-octane sequel.",
-        "genre": "Platformer",
-        "developer": "Dimps",
-        "year": 2002,
-        "difficulty": "Medium",
-        "playtime": "4-6 hours",
-        "rating": 4.1,
-        "features": [
-            "Boost Mode",
-            "Aerial Tricks",
-            "Cream the Rabbit",
-            "Boss Runs"
-        ]
-    },
-    "Wario Land 4": {
-        "description": "Wario ventures into a mysterious golden pyramid in search of unimaginable wealth. In this highly inventive platformer, you must master Wario's unique transformations, smash through environmental puzzles, and beat the clock in heart-pounding timed escapes.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 2001,
-        "difficulty": "Medium",
-        "playtime": "5-8 hours",
-        "rating": 4.5,
-        "features": [
-            "Wario Transformations",
-            "Timed Escapes",
-            "Treasure Hunting",
-            "CD Collectibles"
-        ]
-    },
-    "Mario & Luigi - Superstar Saga": {
-        "description": "Mario and Luigi embark on a hilarious journey to the neighboring Beanbean Kingdom to reclaim Princess Peach's voice. Master the unique 'Bros. Action' commands and timed button combos in this critically acclaimed RPG that blends strategy with comedic storytelling.",
-        "genre": "Action-RPG",
-        "developer": "AlphaDream",
-        "year": 2003,
-        "difficulty": "Medium",
-        "playtime": "15-25 hours",
-        "rating": 4.6,
-        "features": [
-            "Bros. Attacks",
-            "Action Commands",
-            "Hilarious Writing",
-            "Beanbean Kingdom"
-        ]
-    },
-    "Harvest Moon - Friends of Mineral Town": {
-        "description": "Inherit your grandfather's farm and breathe new life into the charming community of Mineral Town. From raising livestock and cultivating crops to forging lifelong relationships, this quintessential life simulation offers a peaceful escape into the world of agriculture and romance.",
-        "genre": "Simulation",
-        "developer": "Marvelous",
-        "year": 2003,
-        "difficulty": "Easy",
-        "playtime": "50-100+ hours",
-        "rating": 4.5,
-        "features": [
-            "Farming",
-            "Romance",
-            "Festivals",
-            "Animal Husbandry"
-        ]
-    },
-    "Mega Man Zero": {
-        "description": "Awaken 100 years after the X wars in a dystopian future where Reploids are persecuted. As the legendary Zero, you must wield your Z-Saber with precision, master the Cyber Elf system, and lead the Resistance against a tyrannical regime in this punishingly difficult action classic.",
-        "genre": "Action-Platformer",
-        "developer": "Inti Creates",
-        "year": 2002,
-        "difficulty": "Very Hard",
-        "playtime": "4-6 hours",
-        "rating": 4.4,
-        "features": [
-            "Ranking System",
-            "Cyber Elves",
-            "Z-Saber",
-            "Dark Story"
-        ]
-    },
-    "Mega Man Battle Network": {
-        "description": "Jack into a digital world where the internet is the ultimate battlefield. In this innovative blend of RPG and real-time grid combat, you'll partner with MegaMan.EXE to delete viruses, collect powerful Battle Chips, and stop the cyber-terrorist organization WWW.",
-        "genre": "Action-RPG",
-        "developer": "Capcom",
-        "year": 2001,
-        "difficulty": "Medium",
-        "playtime": "15-20 hours",
-        "rating": 4.3,
-        "features": [
-            "Battle Chips",
-            "Grid Combat",
-            "Net Navis",
-            "Virus Busting"
-        ]
-    },
-    "Legend of Zelda - The Minish Cap": {
-        "description": "Explore a vibrant Hyrule from a tiny new perspective. Guided by the talking hat Ezlo, Link must shrink to the size of the Minish to navigate a dual-sized world, forge the sacred Picori Blade, and stop the dark sorcerer Vaati from obtaining the Light Force.",
-        "genre": "Action-Adventure",
-        "developer": "Capcom/Flagship",
-        "year": 2004,
-        "difficulty": "Medium",
-        "playtime": "12-18 hours",
-        "rating": 4.7,
-        "features": [
-            "Minish Size",
-            "Kinstone Fusions",
-            "Ezlo Hat",
-            "Beautiful Art"
-        ]
-    },
-    "Tactics Ogre - The Knight of Lodis": {
-        "description": "Command a brigade of knights in a deeply political tale of honor and betrayal. As Alphonse, your decisions will shape the fate of the Ovis region across branching paths, deep character customization, and strategic grid-based combat in this tactical JRPG gem.",
-        "genre": "Tactical RPG",
-        "developer": "Quest",
-        "year": 2001,
-        "difficulty": "Hard",
-        "playtime": "30-50 hours",
-        "rating": 4.4,
-        "features": [
-            "Branching Story",
-            "Class System",
-            "Emblems",
-            "Multiple Endings"
-        ]
-    },
-    "Pokemon Black": {
-        "description": "Discover the Unova region with 156 all-new Pokémon and face the philosophical challenge of Team Plasma.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "year": 2010,
-        "difficulty": "Medium",
-        "playtime": "30-45 hours",
-        "rating": 4.6,
-        "features": [
-            "156 New Pokémon",
-            "Seasons",
-            "C-Gear",
-            "Dream World"
-        ]
-    },
-    "Pokemon White": {
-        "description": "Unova awaits with a fresh roster of Pokémon and a story that questions the ethics of Pokémon battles.",
-        "genre": "RPG",
-        "developer": "Game Freak",
-        "year": 2010,
-        "difficulty": "Medium",
-        "playtime": "30-45 hours",
-        "rating": 4.6,
-        "features": [
-            "White Forest",
-            "Triple Battles",
-            "Rotation Battles",
-            "Musical"
-        ]
-    },
-    "New Super Mario Bros": {
-        "description": "Mario returns to 2D in this modern take on classic platforming, with Mega Mushrooms and new power-ups.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 2006,
-        "difficulty": "Easy-Medium",
-        "playtime": "8-12 hours",
-        "rating": 4.5,
-        "badge": "popular",
-        "features": [
-            "Mega Mushroom",
-            "Mini Mushroom",
-            "Blue Shell",
-            "8 Worlds"
-        ]
-    },
-    "Mario Kart DS": {
-        "description": "The ultimate portable racer hits the track with dual-screen action. Compete across 32 tracks—including iconic retro circuits—master the precision of drifting, and battle through the unique Mission Mode in this quintessential Mario Kart experience.",
-        "genre": "Racing",
-        "developer": "Nintendo",
-        "year": 2005,
-        "difficulty": "Easy-Medium",
-        "playtime": "15-30 hours",
-        "rating": 4.7,
-        "badge": "popular",
-        "features": [
-            "32 Tracks",
-            "Online Play",
-            "Mission Mode",
-            "Retro Cups"
-        ]
-    },
-    "Zelda - Phantom Hourglass": {
-        "description": "Set sail after Wind Waker, using the DS touchscreen to solve puzzles and fight enemies in this nautical adventure.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 2007,
-        "difficulty": "Medium",
-        "playtime": "15-20 hours",
-        "rating": 4.3,
-        "features": [
-            "Touch Controls",
-            "Sailing",
-            "Temple of the Ocean King",
-            "Map Drawing"
-        ]
-    },
-    "Zelda - Spirit Tracks": {
-        "description": "Ride the Spirit Train across Hyrule and team up with Zelda's spirit to explore dungeons in this DS sequel.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 2009,
-        "difficulty": "Medium",
-        "playtime": "15-20 hours",
-        "rating": 4.2,
-        "features": [
-            "Train Travel",
-            "Phantom Zelda",
-            "Flute Controls",
-            "Tower of Spirits"
-        ]
-    },
-    "Castlevania - Dawn of Sorrow": {
-        "description": "Soma Cruz returns to a mysterious cult's base to prevent the resurrection of a new Dark Lord. Harness the Tactical Soul system on the DS dual screens, using the Magic Seal system to banish powerful bosses and uncovering multiple endings in this beautifully gothic masterpiece.",
-        "genre": "Action-RPG",
-        "developer": "Konami",
-        "year": 2005,
-        "difficulty": "Medium",
-        "playtime": "8-12 hours",
-        "rating": 4.6,
-        "features": [
-            "Tactical Souls",
-            "Magic Seal System",
-            "Dual Screen",
-            "Multiple Endings"
-        ]
-    },
-    "Professor Layton and the Curious Village": {
-        "description": "Step into the village of St. Mystere and solve the mystery of the Golden Apple. Join the gentlemanly Professor Layton and his apprentice Luke as you unravel a web of secrets through over 130 brain-teasing puzzles and beautiful animated cutscenes.",
-        "genre": "Puzzle-Adventure",
-        "developer": "Level-5",
-        "year": 2007,
-        "difficulty": "Medium-Hard",
-        "playtime": "10-15 hours",
-        "rating": 4.6,
-        "features": [
-            "130+ Puzzles",
-            "Animated Cutscenes",
-            "Mystery Story",
-            "Hint Coins"
-        ]
-    },
-    "Chrono Trigger DS": {
-        "description": "The definitive version of the greatest RPG ever, with new dungeons, endings, and touchscreen controls.",
-        "genre": "RPG",
-        "developer": "Square Enix",
-        "year": 2008,
-        "difficulty": "Medium",
-        "playtime": "25-40 hours",
-        "rating": 5,
-        "badge": "featured",
-        "features": [
-            "Extra Dungeons",
-            "Arena Mode",
-            "Touch Controls",
-            "15 Endings"
-        ]
-    },
-    "The World Ends with You": {
-        "description": "Survive the Reaper's Game in a stylish, neon-lit Shibuya. Master dual-screen psychic combat using collectible pins, influence fashion trends to gain advantages, and uncover a deep, character-driven story in one of the most unique and artistic JRPGs ever created.",
-        "genre": "Action-RPG",
-        "developer": "Square Enix",
-        "year": 2007,
-        "difficulty": "Medium-Hard",
-        "playtime": "20-30 hours",
-        "rating": 4.7,
-        "features": [
-            "Dual Screen Combat",
-            "Pin System",
-            "Fashion Trends",
-            "Shibuya Setting"
-        ]
-    },
-    "Dragon Quest IX": {
-        "description": "Embark on a massive, customizable journey as a fallen guardian. Create your own hero and party members, master deep class systems, and explore a vast world filled with hidden treasure maps and ancient legends in this multiplayer-ready JRPG epic.",
-        "genre": "RPG",
-        "developer": "Level-5",
-        "year": 2010,
-        "difficulty": "Medium",
-        "playtime": "40-100+ hours",
-        "rating": 4.5,
-        "features": [
-            "Character Creator",
-            "4-Player Co-op",
-            "Treasure Maps",
-            "Alchemy"
-        ]
-    },
-    "Kirby Super Star Ultra": {
-        "description": "Eight legendary Kirby adventures in one massive package. From the high-stakes 'Great Cave Offensive' to the epic 'Meta Knightmare Ultra,' experience the definitive version of the SNES classic with new modes, 3D cinematics, and refined gameplay.",
-        "genre": "Platformer",
-        "developer": "HAL Laboratory",
-        "year": 2008,
-        "difficulty": "Easy-Medium",
-        "playtime": "8-12 hours",
-        "rating": 4.6,
-        "features": [
-            "8 Sub-games",
-            "Helper System",
-            "The Arena",
-            "Meta Knightmare Ultra"
-        ]
-    },
-    "Ace Attorney - Phoenix Wright": {
-        "description": "OBJECTION! Enter the high-stakes world of the courtroom as the rookie defense attorney Phoenix Wright. Investigate crime scenes, cross-examine eccentric witnesses, and present decisive evidence to uncover the truth and secure a 'Not Guilty' verdict for your clients.",
-        "genre": "Visual Novel",
-        "developer": "Capcom",
-        "year": 2005,
-        "difficulty": "Medium",
-        "playtime": "15-20 hours",
-        "rating": 4.7,
-        "badge": "popular",
-        "features": [
-            "Cross-Examination",
-            "Evidence System",
-            "5 Cases",
-            "Dramatic Story"
-        ]
-    },
-    "Mega Man ZX": {
-        "description": "Transform between multiple Biometal forms in this exploration-heavy Mega Man action game.",
-        "genre": "Action-Platformer",
-        "developer": "Inti Creates",
-        "year": 2006,
-        "difficulty": "Hard",
-        "playtime": "6-10 hours",
-        "rating": 4.2,
-        "features": [
-            "Biometal System",
-            "Model X/ZX",
-            "Open World Map",
-            "Side Quests"
-        ]
-    },
-    "Animal Crossing - Wild World": {
-        "description": "Build your dream village, catch bugs, fish, and decorate your home in this beloved life simulation.",
-        "genre": "Life Simulation",
-        "developer": "Nintendo",
-        "year": 2005,
-        "difficulty": "Easy",
-        "playtime": "100+ hours",
-        "rating": 4.4,
-        "features": [
-            "Real-time Clock",
-            "WiFi Visiting",
-            "Museum",
-            "Holiday Events"
-        ]
-    },
-    "Sonic Advance 3": {
-        "description": "The ultimate high-speed tag-team adventure. Partner Sonic with Tails, Knuckles, Amy, or Cream to combine unique abilities and zip through nine vibrant zones to stop Dr. Eggman from shattering the world using the power of the Chaos Emeralds.",
-        "genre": "Platformer",
-        "developer": "Dimps",
-        "year": 2004,
-        "difficulty": "Medium",
-        "playtime": "5-8 hours",
-        "rating": 4.4,
-        "features": [
-            "Tag System",
-            "Zone Hubs",
-            "Chao Mini-games",
-            "Special Stages"
-        ]
-    },
-    "1190 - Super Mario Advance 4 - Super Mario Bros 3": {
-        "description": "The ultimate version of Super Mario Bros 3 with updated graphics, sound, and exclusive e-Reader levels.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 2003,
-        "difficulty": "Medium-Hard",
-        "playtime": "5-10 hours",
-        "rating": 4.9,
-        "badge": "popular",
-        "features": [
-            "Updated Visuals",
-            "e-Reader Levels",
-            "Voice Acting",
-            "Classic SMB3 Gameplay"
-        ]
-    },
-    "Classic NES Series - Super Mario Bros": {
-        "description": "The original NES masterpiece, perfectly preserved for the Game Boy Advance. Experience the legend anywhere.",
-        "genre": "Platformer",
-        "developer": "Nintendo",
-        "year": 2004,
-        "difficulty": "Medium",
-        "playtime": "2-5 hours",
-        "rating": 4.8,
-        "features": [
-            "Perfect Port",
-            "Wireless Adapter Support",
-            "Classic Gameplay",
-            "High Score Saving"
-        ]
-    },
-    "Crash Bandicoot: Purple": {
-        "description": "The ultimate crossover event! Crash Bandicoot and Spyro the Dragon join forces to stop the combined threat of Dr. Neo Cortex and Ripto. Master a variety of unique minigames and collectible cards in this innovative portal-jumping adventure.",
-        "genre": "Action",
-        "developer": "Vicarious Visions",
-        "year": 2004,
-        "difficulty": "Easy-Medium",
-        "playtime": "5-8 hours",
-        "rating": 3.9,
-        "features": [
-            "Spyro Crossover",
-            "Mini-games",
-            "Card Collection",
-            "Multiplayer"
-        ]
-    },
-    "GTA: Chinatown Wars": {
-        "description": "Navigate the gritty underworld of Liberty City as Huang Lee, the son of a murdered Triad boss. In this tale of crime and betrayal, you must reclaim your family's stolen heirloom sword while surviving a violent power struggle across the neon-lit criminal landscape.",
-        "genre": "Action",
-        "developer": "Rockstar Leeds",
-        "year": 2009,
-        "difficulty": "Medium-Hard",
-        "playtime": "15-25 hours",
-        "rating": 4.8,
-        "badge": "popular",
-        "features": [
-            "Top-down View",
-            "Touch Screen Crimes",
-            "Drug Dealing Mechanic",
-            "Liberty City"
-        ]
-    },
-    "The Legend of Zelda: Phantom Hourglass": {
-        "description": "Set sail on the SS Linebeck in a direct sequel to The Wind Waker. Rescue Tetra from a spectral Ghost Ship, explore uncharted islands in the Realm of the Ocean King, and use the titular Phantom Hourglass to navigate deadly temples and solve puzzles with the DS touchscreen.",
-        "genre": "Action-Adventure",
-        "developer": "Nintendo",
-        "year": 2007,
-        "difficulty": "Medium",
-        "playtime": "15-20 hours",
-        "rating": 4.3,
-        "features": [
-            "Touch Controls",
-            "Sailing",
-            "Temple of the Ocean King",
-            "Map Drawing"
-        ]
-    }
+  "Pokémon Blue": {
+    "description": "The foundation of the Pokémon phenomenon. Journey through the Kanto region as you collect 8 Gym Badges, defeat the Elite Four, and thwart the criminal Team Rocket. This classic RPG features 151 original species to catch and train, offering deep turn-based strategic combat and a vast world to explore.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GB",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - Blue Version (USA, Europe) (SGB Enhanced).zip",
+    "year": 1998,
+    "difficulty": "Medium",
+    "playtime": "20-30 hours",
+    "rating": 4.8,
+    "features": [
+      "151 Original Pokémon",
+      "Gym Badges",
+      "Elite Four",
+      "Trade Evolutions"
+    ],
+    "virtual": true
+  },
+  "Pokémon Crystal": {
+    "description": "The definitive Johto experience. This expanded sequel to Gold and Silver introduces animated sprites, the Battle Tower, and a brand-new storyline centered on the legendary Suicune. Explore two full regions (Johto and Kanto), conquer 16 Gyms, and face the ultimate challenge atop Mt. Silver.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GBC",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - Crystal Version (USA, Europe) (Rev 1).zip",
+    "year": 2001,
+    "difficulty": "Medium",
+    "playtime": "30-50 hours",
+    "rating": 4.9,
+    "badge": "featured",
+    "features": [
+      "Animated Sprites",
+      "Battle Tower",
+      "Play as Girl",
+      "Suicune Storyline"
+    ],
+    "virtual": true
+  },
+  "Pokémon Diamond": {
+    "description": "Enter the 4th generation in the vast Sinnoh region. Introducing 107 new species and the physical/special move split, this NDS milestone tasks you with stopping Team Galactic's plan to rewrite the universe using the power of Dialga, the master of time. Featuring the Pokétch and underground exploration.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - Diamond Version (USA) (Rev 5).zip",
+    "year": 2006,
+    "difficulty": "Medium",
+    "playtime": "30-45 hours",
+    "rating": 4.5,
+    "features": [
+      "107 New Pokémon",
+      "Underground",
+      "GTS Trading",
+      "Day/Night Cycle"
+    ],
+    "virtual": true
+  },
+  "Pokémon HeartGold": {
+    "description": "A high-fidelity remake of the Johto classic. HeartGold features updated graphics, following Pokémon, and the massive post-game Kanto region. Battle 16 Gym Leaders, capture the legendary Ho-Oh, and experience a journey that spans two entire continents with refined NDS mechanics.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - HeartGold Version (USA).zip",
+    "year": 2009,
+    "difficulty": "Medium",
+    "playtime": "40-60 hours",
+    "rating": 4.9,
+    "badge": "featured",
+    "features": [
+      "Pokéwalker",
+      "Following Pokémon",
+      "Two Regions",
+      "Battle Frontier"
+    ],
+    "virtual": true
+  },
+  "Pokémon Leaf Green": {
+    "description": "Return to Kanto in this vibrant GBA remake of the original Green version. Featuring updated graphics and the brand-new Sevii Islands post-game, you'll embark on a quest to catch 151 species and defeat Team Rocket in the definitive version of the journey that started it all.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - Leaf Green Version.zip",
+    "year": 2004,
+    "difficulty": "Medium",
+    "playtime": "25-40 hours",
+    "rating": 4.7,
+    "features": [
+      "Sevii Islands",
+      "Wireless Adapter",
+      "151+ Pokémon",
+      "Kanto Nostalgia"
+    ],
+    "virtual": true
+  },
+  "Pokémon Pearl": {
+    "description": "Explore the Sinnoh region and counter Team Galactic's plan to rewrite the universe. Diamond and Pearl introduced the global trade system and the physical/special split, changing Pokémon combat forever. Capture the legendary Palkia, master of space, in this 4th generation landmark.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - Pearl Version (USA) (Rev 5).zip",
+    "year": 2006,
+    "difficulty": "Medium",
+    "playtime": "30-45 hours",
+    "rating": 4.5,
+    "features": [
+      "Palkia",
+      "Wi-Fi Battles",
+      "Pokétch",
+      "Contests"
+    ],
+    "virtual": true
+  },
+  "Pokémon SoulSilver": {
+    "description": "The quintessential Johto remake. Journey across two full regions with your favorite Pokémon following you in the overworld. Encounter the legendary Lugia, defeat Team Rocket's remnants, and challenge Red in the ultimate battle atop Mt. Silver in this NDS masterpiece.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - SoulSilver Version (USA).zip",
+    "year": 2009,
+    "difficulty": "Medium",
+    "playtime": "40-60 hours",
+    "rating": 4.9,
+    "features": [
+      "Pokéwalker",
+      "Following Pokémon",
+      "Two Regions",
+      "Battle Frontier"
+    ],
+    "virtual": true
+  },
+  "Pokémon Yellow": {
+    "description": "The special edition that brought the anime to life. Start your journey with a loyal Pikachu that follows you on screen, encounter Jessie and James of Team Rocket, and collect all three original starters in this nostalgic trip through the Kanto region.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GBC",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon%20-%20Yellow%20Version%20-%20Special%20Pikachu%20Edition%20%28USA%2C%20Europe%29%20%28GBC%2CSGB%20Enhanced%29.zip",
+    "year": 1999,
+    "difficulty": "Medium",
+    "playtime": "20-30 hours",
+    "rating": 4.9,
+    "features": [
+      "Pikachu Follows You",
+      "Anime-inspired Story",
+      "All 3 Starters",
+      "Jessie and James"
+    ]
+  },
+  "Mario Kart: Super Circuit": {
+    "description": "Master the first portable entry in the Mario Kart series. Drift across 40 treacherous tracks—including 20 classic circuits from the original SNES masterpiece—as you battle for the gold in the high-stakes Grand Prix mode.",
+    "genre": "Racing",
+    "developer": "Intelligent Systems",
+    "year": 2001,
+    "difficulty": "Easy-Medium",
+    "playtime": "10-20 hours",
+    "rating": 4.5,
+    "badge": "popular",
+    "features": [
+      "40 Tracks",
+      "8 Characters",
+      "Grand Prix Mode",
+      "Link Cable Multiplayer"
+    ]
+  },
+  "Pac-Man": {
+    "description": "Experience the timeless arcade legend that revolutionized the industry. Navigate the neon maze, consume power pellets to turn the tide against the relentless ghosts, and chase the legendary high score in this quintessential gaming masterpiece.",
+    "genre": "Arcade",
+    "developer": "Namco",
+    "year": 1984,
+    "difficulty": "Easy",
+    "playtime": "Endless",
+    "rating": 4.6,
+    "features": [
+      "Classic Gameplay",
+      "Power Pellets",
+      "4 Ghost Types",
+      "High Score Chase"
+    ]
+  },
+  "Sonic 3D Blast": {
+    "description": "Guide Sonic through isometric 3D environments to rescue the innocent Flickies from Dr. Robotnik's mechanical clutches. Harness the power of the Chaos Emeralds and navigate seven unique zones to restore peace to Flicky Island.",
+    "genre": "Platformer",
+    "developer": "Traveller's Tales",
+    "year": 1996,
+    "difficulty": "Medium",
+    "playtime": "5-8 hours",
+    "rating": 3.8,
+    "badge": "new",
+    "features": [
+      "Isometric View",
+      "7 Zones",
+      "Chaos Emeralds",
+      "Special Stages"
+    ]
+  },
+  "Pokémon Emerald": {
+    "description": "The definitive Hoenn experience. Emerald combines the best of Ruby and Sapphire, adding a brand-new storyline featuring Rayquaza and the massive Battle Frontier. Conquer two rival teams, Magma and Aqua, and experience animated sprites in this GBA masterpiece.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon Emerald.zip",
+    "year": 2004,
+    "difficulty": "Medium-Hard",
+    "playtime": "40-60 hours",
+    "rating": 4.9,
+    "badge": "featured",
+    "features": [
+      "Battle Frontier",
+      "Both Teams",
+      "Rayquaza Story",
+      "Animated Sprites"
+    ],
+    "virtual": true
+  },
+  "Pokémon FireRed": {
+    "description": "Return to Kanto in this high-fidelity GBA remake of the original Red version. Featuring updated graphics and the brand-new Sevii Islands post-game, you'll embark on a quest to catch 151 species and defeat Team Rocket in the definitive version of the journey that started it all.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon FireRed.zip",
+    "year": 2004,
+    "difficulty": "Medium",
+    "playtime": "25-40 hours",
+    "rating": 4.8,
+    "badge": "popular",
+    "features": [
+      "151 Original Pokémon",
+      "Wireless Trading",
+      "Post-game Content",
+      "New Islands"
+    ],
+    "virtual": true
+  },
+  "Pokémon Platinum": {
+    "description": "The ultimate Sinnoh adventure. Platinum expands upon Diamond and Pearl with the mysterious Distortion World and the legendary Giratina. Featuring the Battle Frontier, updated character designs, and a faster engine, it is widely considered the best way to experience Gen 4.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon Platinum.zip",
+    "year": 2008,
+    "difficulty": "Medium",
+    "playtime": "35-50 hours",
+    "rating": 4.8,
+    "badge": "new",
+    "features": [
+      "Distortion World",
+      "Battle Frontier",
+      "Wi-Fi Plaza",
+      "Giratina Origin"
+    ],
+    "virtual": true
+  },
+  "Pokémon Ruby": {
+    "description": "Set in the tropical Hoenn region, Ruby introduces 135 new species and the era of double battles. Thwart Team Magma's plan to expand the world's landmass by awakening the continental deity Groudon. Explore volcanoes, build secret bases, and compete in Pokémon Contests.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon Ruby.zip",
+    "year": 2002,
+    "difficulty": "Medium",
+    "playtime": "30-45 hours",
+    "rating": 4.7,
+    "features": [
+      "135 New Pokémon",
+      "Double Battles",
+      "Contests",
+      "Secret Bases"
+    ],
+    "virtual": true
+  },
+  "Pokémon Sapphire": {
+    "description": "Adventure through Hoenn as Team Aqua attempts to flood the world by awakening the oceanic deity Kyogre. Sapphire features 135 new Pokémon, weather-based combat, and the introduction of abilities. Dive deep beneath the waves to uncover secrets in this GBA classic.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon Sapphire.zip",
+    "year": 2002,
+    "difficulty": "Medium",
+    "playtime": "30-45 hours",
+    "rating": 4.7,
+    "features": [
+      "135 New Pokémon",
+      "Diving Mechanic",
+      "Contests",
+      "Team Aqua Story"
+    ],
+    "virtual": true
+  },
+  "Pokemon Ultra Violet": {
+    "description": "The ultimate FireRed expansion for completionists. This comprehensive hack opens the world, allowing you to catch every single Pokémon from the first three generations in a single journey, featuring new areas and refined shiny hunting mechanics.",
+    "genre": "RPG",
+    "developer": "Hack (Lockstin)",
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon Ultra Violet.zip",
+    "year": 2013,
+    "difficulty": "Medium",
+    "playtime": "40-60 hours",
+    "rating": 4.9,
+    "badge": "new",
+    "features": [
+      "All 386 Pokémon",
+      "New Areas",
+      "Shiny Hunting",
+      "National Dex"
+    ]
+  },
+  "Super Mario Bros": {
+    "description": "The game that saved the industry. Embark on a legendary quest through the Mushroom Kingdom to rescue Princess Peach from the clutches of Bowser. Master the physics of the run-and-jump that defined the platforming genre for decades.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 1985,
+    "difficulty": "Medium",
+    "playtime": "2-5 hours",
+    "rating": 4.9,
+    "badge": "featured",
+    "features": [
+      "8 Worlds",
+      "Power-ups",
+      "Warp Zones",
+      "Iconic Soundtrack"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/New Super Mario Bros..zip",
+    "virtual": true
+  },
+  "Super Mario Bros 2": {
+    "description": "Pick from four characters, each with unique abilities, and adventure through the dreamland of Subcon.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 1988,
+    "difficulty": "Medium",
+    "playtime": "3-6 hours",
+    "rating": 4.3,
+    "features": [
+      "4 Playable Characters",
+      "Unique Mechanics",
+      "7 Worlds",
+      "Boss Battles"
+    ]
+  },
+  "Super Mario Bros 3": {
+    "description": "Join Mario and Luigi in the greatest NES adventure ever told. Harness the power of the Tanooki suit and Frog suit to conquer eight unique kingdoms, defeat the Koopalings, and save Princess Peach from Bowser's massive airship fleet.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 1988,
+    "difficulty": "Medium-Hard",
+    "playtime": "5-10 hours",
+    "rating": 4.9,
+    "badge": "featured",
+    "features": [
+      "8 Worlds",
+      "World Map",
+      "Power Suits",
+      "Mini-games"
+    ]
+  },
+  "Legend of Zelda": {
+    "description": "Embark on an open-world quest as Link to collect the Triforce pieces and rescue Princess Zelda from Ganon.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 1986,
+    "difficulty": "Hard",
+    "playtime": "10-15 hours",
+    "rating": 4.8,
+    "features": [
+      "Open World",
+      "Dungeons",
+      "Item Collection",
+      "Second Quest"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/4/41/Legend_of_zelda_cover_%28with_cartridge%29_gold.png"
+  },
+  "Zelda II - The Adventure of Link": {
+    "description": "Venture into the shadowed lands of Hyrule in this unique side-scrolling odyssey. As Link must awaken the sleeping Princess Zelda, you'll master sword arts, cast powerful spells, and explore a vast overworld in a journey that blends platforming action with deep RPG growth.",
+    "genre": "Action-RPG",
+    "developer": "Nintendo",
+    "year": 1987,
+    "difficulty": "Very Hard",
+    "playtime": "10-20 hours",
+    "rating": 4,
+    "features": [
+      "Side-Scrolling Combat",
+      "XP System",
+      "Magic Spells",
+      "Towns & NPCs"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/5/51/Zelda_II_The_Adventure_of_Link_box.jpg"
+  },
+  "Mega Man": {
+    "description": "Infiltrate the high-tech fortresses of six rogue Robot Masters as the Blue Bomber. In this foundational action-platformer, you must steal their unique abilities to confront the mad scientist Dr. Wily and restore peace to a world on the brink of robotic uprising.",
+    "genre": "Action-Platformer",
+    "developer": "Capcom",
+    "year": 1987,
+    "difficulty": "Hard",
+    "playtime": "3-5 hours",
+    "rating": 4.3,
+    "features": [
+      "6 Robot Masters",
+      "Weapon Copy",
+      "Non-linear Stages",
+      "Challenging Boss Fights"
+    ]
+  },
+  "Mega Man 2": {
+    "description": "The definitive legend of the Blue Bomber. Battle through eight iconic Robot Masters, navigate treacherous platforming gauntlets, and experience the quintessential action-platformer featuring an unforgettable soundtrack and the ultimate confrontation with Dr. Wily.",
+    "genre": "Action-Platformer",
+    "developer": "Capcom",
+    "year": 1988,
+    "difficulty": "Hard",
+    "playtime": "3-5 hours",
+    "rating": 4.8,
+    "badge": "popular",
+    "features": [
+      "8 Robot Masters",
+      "E-Tanks",
+      "Password System",
+      "Legendary Soundtrack"
+    ]
+  },
+  "Contra": {
+    "description": "The ultimate test of survival in the face of an alien invasion. Grab the legendary Spread Gun and blast through jungle hideouts and mechanical fortresses with a friend in this pulse-pounding run-and-gun masterpiece that defined the genre.",
+    "genre": "Run and Gun",
+    "developer": "Konami",
+    "year": 1988,
+    "difficulty": "Very Hard",
+    "playtime": "1-2 hours",
+    "rating": 4.7,
+    "badge": "popular",
+    "features": [
+      "2-Player Co-op",
+      "Spread Gun",
+      "8 Stages",
+      "Konami Code"
+    ]
+  },
+  "Castlevania": {
+    "description": "Whip your way through the gothic halls of Dracula's castle as the legendary Simon Belmont. In this action-platforming classic, you'll face nightmare creatures of the night, master sub-weapons, and confront the Prince of Darkness himself to end his reign of terror.",
+    "genre": "Action-Platformer",
+    "developer": "Konami",
+    "year": 1986,
+    "difficulty": "Hard",
+    "playtime": "2-4 hours",
+    "rating": 4.6,
+    "features": [
+      "6 Stages",
+      "Sub-Weapons",
+      "Boss Battles",
+      "Gothic Horror"
+    ]
+  },
+  "Castlevania III - Draculas Curse": {
+    "description": "Play as Trevor Belmont and recruit allies to storm Dracula's castle in this branching-path masterpiece.",
+    "genre": "Action-Platformer",
+    "developer": "Konami",
+    "year": 1989,
+    "difficulty": "Very Hard",
+    "playtime": "3-5 hours",
+    "rating": 4.7,
+    "features": [
+      "4 Playable Characters",
+      "Branching Paths",
+      "Multiple Endings",
+      "Grant & Alucard"
+    ]
+  },
+  "Metroid": {
+    "description": "Explore the claustrophobic, alien depths of planet Zebes as the bounty hunter Samus Aran. Discover powerful upgrades, navigate a non-linear labyrinth, and uncover the dark secrets of the Space Pirates in the genre-defining adventure that started it all.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 1986,
+    "difficulty": "Hard",
+    "playtime": "5-8 hours",
+    "rating": 4.5,
+    "features": [
+      "Open Exploration",
+      "Power-ups",
+      "Hidden Areas",
+      "Multiple Endings"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Metroid_ Zero Mission.zip",
+    "virtual": true,
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/5/5e/Metroid_boxart.jpg"
+  },
+  "Kirby's Adventure": {
+    "description": "Inhale the power of your enemies in this vibrant NES masterpiece. Journey across Dream Land as the adorable pink puffball Kirby, mastering dozens of copy abilities to defeat King Dedede and the mysterious Meta Knight to restore the Star Rod.",
+    "genre": "Platformer",
+    "developer": "HAL Laboratory",
+    "year": 1993,
+    "difficulty": "Easy",
+    "playtime": "4-6 hours",
+    "rating": 4.6,
+    "features": [
+      "Copy Abilities",
+      "7 Worlds",
+      "Mini-Games",
+      "Meta Knight"
+    ]
+  },
+  "Donkey Kong": {
+    "description": "The game that introduced Mario! Climb ladders and dodge barrels to rescue Pauline from the giant ape.",
+    "genre": "Arcade",
+    "developer": "Nintendo",
+    "year": 1981,
+    "difficulty": "Medium",
+    "playtime": "Endless",
+    "rating": 4.4,
+    "features": [
+      "4 Stages",
+      "High Score",
+      "Hammer Power-up",
+      "Arcade Classic"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Mario vs. Donkey Kong.zip",
+    "virtual": true,
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/1/14/Donkey_Kong_flier.jpg"
+  },
+  "Double Dragon": {
+    "description": "Fight through the streets to rescue your girlfriend in this legendary side-scrolling beat 'em up.",
+    "genre": "Beat 'em Up",
+    "developer": "Technos Japan",
+    "year": 1988,
+    "difficulty": "Medium-Hard",
+    "playtime": "1-2 hours",
+    "rating": 4.3,
+    "features": [
+      "Co-op Mode",
+      "Martial Arts",
+      "Weapon Pickups",
+      "4 Stages"
+    ]
+  },
+  "Tetris": {
+    "description": "The most addictive puzzle game ever created. Stack falling blocks, clear lines, chase the high score.",
+    "genre": "Puzzle",
+    "developer": "Nintendo",
+    "year": 1989,
+    "difficulty": "Easy to Learn, Hard to Master",
+    "playtime": "Endless",
+    "rating": 4.9,
+    "badge": "popular",
+    "features": [
+      "Endless Mode",
+      "Increasing Speed",
+      "Score Attack",
+      "Simple Controls"
+    ]
+  },
+  "Dr. Mario": {
+    "description": "Match colored capsules to eliminate viruses in this addictive puzzle game starring Dr. Mario.",
+    "genre": "Puzzle",
+    "developer": "Nintendo",
+    "year": 1990,
+    "difficulty": "Medium",
+    "playtime": "Endless",
+    "rating": 4.4,
+    "features": [
+      "Virus Elimination",
+      "2-Player VS",
+      "Speed Levels",
+      "Catchy Music"
+    ]
+  },
+  "Excitebike": {
+    "description": "Design custom tracks and race your motorbike over ramps and obstacles in this fast-paced racer.",
+    "genre": "Racing",
+    "developer": "Nintendo",
+    "year": 1984,
+    "difficulty": "Easy-Medium",
+    "playtime": "2-4 hours",
+    "rating": 4.2,
+    "features": [
+      "Track Editor",
+      "Turbo Boost",
+      "Overheating Mechanic",
+      "Time Trials"
+    ]
+  },
+  "Duck Hunt": {
+    "description": "Grab your Zapper and shoot ducks out of the sky while a mischievous dog laughs at your misses.",
+    "genre": "Shooter",
+    "developer": "Nintendo",
+    "year": 1984,
+    "difficulty": "Easy",
+    "playtime": "Endless",
+    "rating": 4,
+    "features": [
+      "Light Gun",
+      "3 Game Modes",
+      "Increasing Difficulty",
+      "Iconic Dog"
+    ]
+  },
+  "Ninja Gaiden": {
+    "description": "Experience the brutal path of the ninja as Ryu Hayabusa. Slash through hordes of enemies across cinematic acts, master wall-climbing and deadly Ninpo arts, and uncover the truth behind your father's disappearance in this punishingly difficult action classic.",
+    "genre": "Action-Platformer",
+    "developer": "Tecmo",
+    "year": 1988,
+    "difficulty": "Very Hard",
+    "playtime": "2-4 hours",
+    "rating": 4.5,
+    "features": [
+      "Cinematic Cutscenes",
+      "Wall Climbing",
+      "Ninpo Arts",
+      "6 Acts"
+    ]
+  },
+  "Punch-Out!!": {
+    "description": "Step into the squared circle as the underdog Little Mac. Navigate the high-stakes world of professional boxing, decoding the unique patterns of 13 eccentric fighters to earn your shot at the ultimate heavyweight challenge: the legendary Mike Tyson.",
+    "genre": "Sports",
+    "developer": "Nintendo",
+    "year": 1987,
+    "difficulty": "Hard",
+    "playtime": "3-5 hours",
+    "rating": 4.7,
+    "badge": "popular",
+    "features": [
+      "Pattern-Based Combat",
+      "13 Boxers",
+      "Star Punch",
+      "Mike Tyson Fight"
+    ]
+  },
+  "Galaga": {
+    "description": "Defend Earth against waves of alien insects in this legendary space shooter sequel to Galaxian.",
+    "genre": "Shoot 'em Up",
+    "developer": "Namco",
+    "year": 1988,
+    "difficulty": "Medium-Hard",
+    "playtime": "Endless",
+    "rating": 4.6,
+    "features": [
+      "Dual Fighter",
+      "Challenging Stages",
+      "Enemy Formations",
+      "High Score Chase"
+    ]
+  },
+  "Battletoads": {
+    "description": "The notoriously difficult beat 'em up featuring the Battletoads. Smash enemies and survive the Turbo Tunnel.",
+    "genre": "Beat 'em Up",
+    "developer": "Rare",
+    "year": 1991,
+    "difficulty": "Extremely Hard",
+    "playtime": "2-4 hours",
+    "rating": 4.3,
+    "features": [
+      "2-Player Co-op",
+      "Varied Gameplay",
+      "Turbo Tunnel",
+      "Impressive Graphics"
+    ]
+  },
+  "Ice Climber": {
+    "description": "Climb ice-covered mountains with Popo and Nana, smashing blocks and dodging enemies along the way.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 1985,
+    "difficulty": "Medium",
+    "playtime": "2-3 hours",
+    "rating": 3.8,
+    "features": [
+      "2-Player Co-op",
+      "32 Mountains",
+      "Bonus Stages",
+      "Vegetable Collecting"
+    ]
+  },
+  "Balloon Fight": {
+    "description": "Float through the skies and pop enemy balloons in this charming arcade action game inspired by Joust.",
+    "genre": "Arcade",
+    "developer": "Nintendo",
+    "year": 1985,
+    "difficulty": "Easy-Medium",
+    "playtime": "1-2 hours",
+    "rating": 4.1,
+    "features": [
+      "Balloon Trip Mode",
+      "2-Player",
+      "Fish Hazard",
+      "Simple Controls"
+    ]
+  },
+  "Super Mario World": {
+    "description": "The SNES masterpiece that redefined platforming. Join Mario and his new companion Yoshi as they explore 96 secret exits across Dinosaur Land, mastering the Cape Feather and uncovering the mysteries of the Star Road to rescue Princess Peach.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 1990,
+    "difficulty": "Medium",
+    "playtime": "8-15 hours",
+    "rating": 4.9,
+    "badge": "featured",
+    "features": [
+      "96 Exits",
+      "Yoshi",
+      "Cape Feather",
+      "Star Road"
+    ]
+  },
+  "Legend of Zelda - A Link to the Past": {
+    "description": "Hyrule's greatest top-down epic awaits. Traverse between the Light and Dark Worlds to solve ancient puzzles, conquer 12 daunting dungeons, and reclaim the Master Sword to defeat the dark wizard Agahnim and the demon king Ganon.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 1991,
+    "difficulty": "Medium",
+    "playtime": "15-25 hours",
+    "rating": 4.9,
+    "badge": "featured",
+    "features": [
+      "Dual Worlds",
+      "12 Dungeons",
+      "Master Sword",
+      "Heart Pieces"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Legend of Zelda, The - A Link to the Past & Four Swords (USA).zip",
+    "virtual": true,
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/2/21/The_Legend_of_Zelda_A_Link_to_the_Past_SNES_Game_Cover.jpg"
+  },
+  "Super Metroid": {
+    "description": "The gold standard of atmospheric exploration. Return to planet Zebes as Samus Aran to recover the last Metroid hatchling. Navigate a hauntingly beautiful world, master advanced movement techniques, and face the towering horrors of the Space Pirate leaders.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 1994,
+    "difficulty": "Medium-Hard",
+    "playtime": "6-10 hours",
+    "rating": 5,
+    "badge": "featured",
+    "features": [
+      "Non-linear Exploration",
+      "Sequence Breaking",
+      "Atmospheric Design",
+      "Speed Running"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/e/e4/Super_Metroid_box_art.jpg"
+  },
+  "Chrono Trigger": {
+    "description": "A time-traveling odyssey across the ages to prevent a global apocalypse. Join a diverse cast of heroes from the prehistoric past to the distant future, mastering dual and triple tech combos in a legendary RPG featuring 13 unique endings and a score for the ages.",
+    "genre": "RPG",
+    "developer": "Square",
+    "year": 1995,
+    "difficulty": "Medium",
+    "playtime": "20-35 hours",
+    "rating": 5,
+    "badge": "featured",
+    "features": [
+      "Time Travel",
+      "13 Endings",
+      "Dual/Triple Techs",
+      "New Game+"
+    ]
+  },
+  "Final Fantasy VI": {
+    "description": "An epic tale of magic, industrialization, and rebellion against a tyrannical empire. Follow 14 unique heroes as they face the chaotic nihilism of the villain Kefka across a world destined for ruin in one of the most emotional JRPGs ever told.",
+    "genre": "RPG",
+    "developer": "Square",
+    "year": 1994,
+    "difficulty": "Medium",
+    "playtime": "35-50 hours",
+    "rating": 4.9,
+    "features": [
+      "14 Characters",
+      "Esper System",
+      "Opera Scene",
+      "World of Ruin"
+    ]
+  },
+  "Donkey Kong Country": {
+    "description": "Swing through lush pre-rendered jungles and treacherous minecarts in this visual powerhouse. Join DK and Diddy Kong as they reclaim their banana hoard from King K. Rool, mastering animal buddies and uncovering secret rooms across a vibrant island.",
+    "genre": "Platformer",
+    "developer": "Rare",
+    "year": 1994,
+    "difficulty": "Medium",
+    "playtime": "6-10 hours",
+    "rating": 4.7,
+    "badge": "popular",
+    "features": [
+      "Pre-rendered 3D Graphics",
+      "2-Player Tag Team",
+      "Animal Buddies",
+      "Secret Rooms"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Donkey Kong Country.zip",
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/c/c5/Donkey_Kong_Country_SNES_Box_Art.jpg"
+  },
+  "Donkey Kong Country 2": {
+    "description": "Diddy and Dixie Kong set out to rescue DK from Kaptain K. Rool in this critically acclaimed sequel.",
+    "genre": "Platformer",
+    "developer": "Rare",
+    "year": 1995,
+    "difficulty": "Medium-Hard",
+    "playtime": "8-12 hours",
+    "rating": 4.8,
+    "features": [
+      "Dixie's Hair Spin",
+      "Lost World",
+      "DK Coins",
+      "Animal Friends"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/a/a4/Donkey_Kong_Country_2_SNES_Box_Art.jpg"
+  },
+  "Super Mario Kart": {
+    "description": "The original kart racer that started it all. Battle your friends and race for the gold on iconic SNES tracks.",
+    "genre": "Racing",
+    "developer": "Nintendo",
+    "year": 1992,
+    "difficulty": "Easy-Medium",
+    "playtime": "10-20 hours",
+    "rating": 4.6,
+    "badge": "popular",
+    "features": [
+      "Mode 7 Graphics",
+      "8 Characters",
+      "Battle Mode",
+      "20 Tracks"
+    ]
+  },
+  "Street Fighter II Turbo": {
+    "description": "The world-renowned fighting phenomenon at its peak. Choose from 12 legendary warriors, master complex special moves, and engage in high-speed, technical combat to prove yourself as the ultimate champion in the definitive home version.",
+    "genre": "Fighting",
+    "developer": "Capcom",
+    "year": 1993,
+    "difficulty": "Medium-Hard",
+    "playtime": "Endless",
+    "rating": 4.7,
+    "features": [
+      "12 Fighters",
+      "Special Moves",
+      "Turbo Speed",
+      "2-Player VS"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Super Street Fighter II Turbo - Revival (USA).zip",
+    "virtual": true,
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/b/ba/Street_Fighter_II_Turbo_Box_Art.jpg"
+  },
+  "EarthBound": {
+    "description": "A quirky, modern-day JRPG odyssey that captures the heart of 1990s Americana. Join Ness and his friends as they use baseball bats and psychic powers to save the world from an intergalactic threat in a journey filled with unique humor and surreal charm.",
+    "genre": "RPG",
+    "developer": "HAL Laboratory",
+    "year": 1994,
+    "difficulty": "Medium",
+    "playtime": "25-40 hours",
+    "rating": 4.8,
+    "features": [
+      "Modern Setting",
+      "Rolling HP Meter",
+      "Unique Humor",
+      "Cult Classic"
+    ]
+  },
+  "Mega Man X": {
+    "description": "The evolution of the Blue Bomber. As X, you must hunt down Sigma's rogue Mavericks, wall-jumping and dashing through high-octane stages while collecting armor upgrades to prevent a catastrophic robot war.",
+    "genre": "Action-Platformer",
+    "developer": "Capcom",
+    "year": 1993,
+    "difficulty": "Medium-Hard",
+    "playtime": "4-6 hours",
+    "rating": 4.8,
+    "badge": "popular",
+    "features": [
+      "Wall Jumping",
+      "Dash",
+      "Armor Upgrades",
+      "Hadouken"
+    ]
+  },
+  "Secret of Mana": {
+    "description": "Hack, slash, and cast magic in this real-time action RPG with 3-player co-op support.",
+    "genre": "Action-RPG",
+    "developer": "Square",
+    "year": 1993,
+    "difficulty": "Medium",
+    "playtime": "20-30 hours",
+    "rating": 4.5,
+    "features": [
+      "3-Player Co-op",
+      "Ring Menu",
+      "Magic System",
+      "Open World"
+    ]
+  },
+  "F-Zero": {
+    "description": "Blaze through futuristic racetracks at blistering speeds in this Mode 7 racing pioneer.",
+    "genre": "Racing",
+    "developer": "Nintendo",
+    "year": 1990,
+    "difficulty": "Hard",
+    "playtime": "5-10 hours",
+    "rating": 4.4,
+    "features": [
+      "Mode 7 Speed",
+      "4 Vehicles",
+      "15 Tracks",
+      "Knight League"
+    ]
+  },
+  "Star Fox": {
+    "description": "Pilot the Arwing through Lylat System and defeat Andross in this groundbreaking Super FX 3D shooter.",
+    "genre": "Rail Shooter",
+    "developer": "Nintendo/Argonaut",
+    "year": 1993,
+    "difficulty": "Medium-Hard",
+    "playtime": "2-4 hours",
+    "rating": 4.3,
+    "features": [
+      "Super FX Chip",
+      "3 Routes",
+      "Barrel Roll",
+      "Team Star Fox"
+    ]
+  },
+  "Yoshi's Island": {
+    "description": "Guide baby Mario on Yoshi's back through beautifully hand-drawn worlds in this creative platformer.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 1995,
+    "difficulty": "Medium",
+    "playtime": "10-15 hours",
+    "rating": 4.8,
+    "features": [
+      "Egg Throwing",
+      "Transformations",
+      "Hand-drawn Art",
+      "Baby Mario"
+    ]
+  },
+  "Contra III - The Alien Wars": {
+    "description": "The most intense run-and-gun shooter on SNES. Blast aliens with dual-wielded weapons and ride missiles.",
+    "genre": "Run and Gun",
+    "developer": "Konami",
+    "year": 1992,
+    "difficulty": "Very Hard",
+    "playtime": "1-3 hours",
+    "rating": 4.6,
+    "features": [
+      "Dual Weapons",
+      "Top-down Stages",
+      "Mode 7 Effects",
+      "2-Player Co-op"
+    ]
+  },
+  "Super Castlevania IV": {
+    "description": "Simon Belmont returns with an 8-directional whip in this atmospheric SNES reimagining of the original.",
+    "genre": "Action-Platformer",
+    "developer": "Konami",
+    "year": 1991,
+    "difficulty": "Hard",
+    "playtime": "3-5 hours",
+    "rating": 4.6,
+    "features": [
+      "8-Way Whip",
+      "Mode 7 Effects",
+      "11 Stages",
+      "Orchestral Soundtrack"
+    ]
+  },
+  "ActRaiser": {
+    "description": "A unique blend of action-platforming and city-building simulation where you play as a deity.",
+    "genre": "Action/Simulation",
+    "developer": "Quintet",
+    "year": 1990,
+    "difficulty": "Medium",
+    "playtime": "6-8 hours",
+    "rating": 4.4,
+    "features": [
+      "Genre Hybrid",
+      "City Building",
+      "Side-Scrolling Action",
+      "God Simulation"
+    ]
+  },
+  "Breath of Fire": {
+    "description": "A young dragon warrior named Ryu must unite heroes to defeat the Dark Dragon Clan in this classic JRPG.",
+    "genre": "RPG",
+    "developer": "Capcom",
+    "year": 1993,
+    "difficulty": "Medium",
+    "playtime": "25-35 hours",
+    "rating": 4.2,
+    "features": [
+      "Dragon Transformations",
+      "Fishing Mini-game",
+      "Day/Night System",
+      "8 Party Members"
+    ]
+  },
+  "Breath of Fire II": {
+    "description": "Build a town, recruit allies, and uncover a church conspiracy in this deeper sequel to Breath of Fire.",
+    "genre": "RPG",
+    "developer": "Capcom",
+    "year": 1994,
+    "difficulty": "Medium-Hard",
+    "playtime": "35-50 hours",
+    "rating": 4.3,
+    "features": [
+      "Town Building",
+      "Shamanism",
+      "Dragon Transformations",
+      "Dark Story"
+    ]
+  },
+  "Metroid Fusion": {
+    "description": "Samus Aran becomes the prey as the terrifying X Parasite and its SA-X doppleganger hunt her through a derelict research station. Experience a tense, horror-infused chapter of the Metroid saga where survival depends on regaining your lost abilities.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 2002,
+    "difficulty": "Medium-Hard",
+    "playtime": "5-8 hours",
+    "rating": 4.7,
+    "features": [
+      "SA-X Chases",
+      "Absorption System",
+      "Story Focus",
+      "Tense Atmosphere"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Metroid Fusion.zip",
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/1/1a/Metroid_Fusion_box.jpg"
+  },
+  "Metroid - Zero Mission": {
+    "description": "A stunning reimagining of the original Metroid with new areas, Zero Suit Samus, and modern gameplay.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 2004,
+    "difficulty": "Medium",
+    "playtime": "4-6 hours",
+    "rating": 4.8,
+    "features": [
+      "Remake",
+      "Zero Suit Sequence",
+      "New Areas",
+      "Speed Running"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/0/02/Metroid_Zero_Mission_box_art.jpg"
+  },
+  "Advance Wars": {
+    "description": "Command armies in this addictive turn-based strategy game. Outsmart enemy COs in tactical battlefield combat.",
+    "genre": "Strategy",
+    "developer": "Intelligent Systems",
+    "year": 2001,
+    "difficulty": "Medium-Hard",
+    "playtime": "20-40 hours",
+    "rating": 4.8,
+    "badge": "popular",
+    "features": [
+      "Campaign Mode",
+      "CO Powers",
+      "Map Editor",
+      "VS Mode"
+    ]
+  },
+  "Advance Wars 2": {
+    "description": "Black Hole strikes back with new COs and dual-strike powers in this superb strategy sequel.",
+    "genre": "Strategy",
+    "developer": "Intelligent Systems",
+    "year": 2003,
+    "difficulty": "Hard",
+    "playtime": "30-50 hours",
+    "rating": 4.7,
+    "features": [
+      "New COs",
+      "Neotanks",
+      "Hard Campaign",
+      "Multiplayer"
+    ]
+  },
+  "Fire Emblem": {
+    "description": "The first Fire Emblem localized for the West. Lead Eliwood, Lyn, and Hector in tactical RPG battles.",
+    "genre": "Tactical RPG",
+    "developer": "Intelligent Systems",
+    "year": 2003,
+    "difficulty": "Hard",
+    "playtime": "25-40 hours",
+    "rating": 4.6,
+    "features": [
+      "Permadeath",
+      "Support System",
+      "3 Lords",
+      "Weapon Triangle"
+    ]
+  },
+  "Fire Emblem - The Sacred Stones": {
+    "description": "Twin siblings Eirika and Ephraim fight to save their kingdom in this accessible yet deep tactical RPG.",
+    "genre": "Tactical RPG",
+    "developer": "Intelligent Systems",
+    "year": 2004,
+    "difficulty": "Medium-Hard",
+    "playtime": "20-35 hours",
+    "rating": 4.5,
+    "features": [
+      "Branching Promotions",
+      "World Map",
+      "Creature Campaign",
+      "Twin Lords"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Fire Emblem_ The Sacred Stones.zip",
+    "virtual": true
+  },
+  "Golden Sun": {
+    "description": "Unleash the ancient power of Alchemy in this stunning handheld RPG. Harness elemental Psynergy to solve environmental puzzles, recruit mysterious Djinn to augment your party, and embark on an epic quest to prevent the release of a world-shattering force.",
+    "genre": "RPG",
+    "developer": "Camelot",
+    "year": 2001,
+    "difficulty": "Medium",
+    "playtime": "20-30 hours",
+    "rating": 4.7,
+    "features": [
+      "Psynergy Puzzles",
+      "Djinn System",
+      "Summons",
+      "Beautiful Pixel Art"
+    ]
+  },
+  "Golden Sun - The Lost Age": {
+    "description": "Continue the journey from Felix's perspective and discover the truth about Alchemy in this epic sequel.",
+    "genre": "RPG",
+    "developer": "Camelot",
+    "year": 2002,
+    "difficulty": "Medium-Hard",
+    "playtime": "30-45 hours",
+    "rating": 4.7,
+    "features": [
+      "Ship Exploration",
+      "72 Djinn",
+      "Data Transfer",
+      "Extended Story"
+    ]
+  },
+  "Castlevania - Aria of Sorrow": {
+    "description": "Soma Cruz discovers his dark destiny within the solar eclipse. In this Metroidvania masterpiece, you must harvest the souls of your enemies to gain their powers, navigating a beautifully gothic castle to uncover the truth about the reincarnation of Dracula.",
+    "genre": "Action-RPG",
+    "developer": "Konami",
+    "year": 2003,
+    "difficulty": "Medium",
+    "playtime": "6-10 hours",
+    "rating": 4.8,
+    "badge": "popular",
+    "features": [
+      "Soul System",
+      "Tactical Souls",
+      "Multiple Endings",
+      "Best GBA Castlevania"
+    ]
+  },
+  "Castlevania - Circle of the Moon": {
+    "description": "Nathan Graves fights through Dracula's castle using the DSS card system in this dark Castlevania entry.",
+    "genre": "Action-RPG",
+    "developer": "Konami",
+    "year": 2001,
+    "difficulty": "Hard",
+    "playtime": "8-12 hours",
+    "rating": 4.3,
+    "features": [
+      "DSS Card System",
+      "Magic Combos",
+      "Dark Atmosphere",
+      "Multiple Modes"
+    ]
+  },
+  "Final Fantasy Tactics Advance": {
+    "description": "Enter the magical world of Ivalice and build your clan in this deep tactical RPG with over 300 missions.",
+    "genre": "Tactical RPG",
+    "developer": "Square Enix",
+    "year": 2003,
+    "difficulty": "Medium",
+    "playtime": "40-60 hours",
+    "rating": 4.5,
+    "features": [
+      "Job System",
+      "Judge Laws",
+      "300+ Missions",
+      "Clan Building"
+    ]
+  },
+  "Kirby - Nightmare in Dream Land": {
+    "description": "A gorgeous GBA remake of Kirby's Adventure with enhanced visuals, new mini-games, and multiplayer.",
+    "genre": "Platformer",
+    "developer": "HAL Laboratory",
+    "year": 2002,
+    "difficulty": "Easy",
+    "playtime": "3-5 hours",
+    "rating": 4.4,
+    "features": [
+      "Copy Abilities",
+      "Meta Knightmare",
+      "Multiplayer",
+      "Mini-games"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Kirby_ Nightmare in Dream Land.zip",
+    "virtual": true
+  },
+  "Sonic Advance": {
+    "description": "The blue blur returns to his roots in this high-speed GBA platformer. Race across original zones as Sonic, Tails, Knuckles, or Amy, each with unique traversal abilities, and restore the balance of the world by collecting the elusive Chaos Emeralds.",
+    "genre": "Platformer",
+    "developer": "Dimps",
+    "year": 2001,
+    "difficulty": "Easy-Medium",
+    "playtime": "3-5 hours",
+    "rating": 4.2,
+    "features": [
+      "4 Characters",
+      "Chao Garden",
+      "Tiny Chao Garden",
+      "Special Stages"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Sonic Advance (E)(Lightforce).zip"
+  },
+  "Sonic Advance 2": {
+    "description": "The fastest entry in the series pushes speed to its limit. Master the new boost mechanics and aerial tricks across seven vibrant zones, and rescue the newcomer Cream the Rabbit from Dr. Eggman's clutches in this high-octane sequel.",
+    "genre": "Platformer",
+    "developer": "Dimps",
+    "year": 2002,
+    "difficulty": "Medium",
+    "playtime": "4-6 hours",
+    "rating": 4.1,
+    "features": [
+      "Boost Mode",
+      "Aerial Tricks",
+      "Cream the Rabbit",
+      "Boss Runs"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Sonic Advance 2.zip"
+  },
+  "Wario Land 4": {
+    "description": "Wario ventures into a mysterious golden pyramid in search of unimaginable wealth. In this highly inventive platformer, you must master Wario's unique transformations, smash through environmental puzzles, and beat the clock in heart-pounding timed escapes.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 2001,
+    "difficulty": "Medium",
+    "playtime": "5-8 hours",
+    "rating": 4.5,
+    "features": [
+      "Wario Transformations",
+      "Timed Escapes",
+      "Treasure Hunting",
+      "CD Collectibles"
+    ]
+  },
+  "Mario & Luigi - Superstar Saga": {
+    "description": "Mario and Luigi embark on a hilarious journey to the neighboring Beanbean Kingdom to reclaim Princess Peach's voice. Master the unique 'Bros. Action' commands and timed button combos in this critically acclaimed RPG that blends strategy with comedic storytelling.",
+    "genre": "Action-RPG",
+    "developer": "AlphaDream",
+    "year": 2003,
+    "difficulty": "Medium",
+    "playtime": "15-25 hours",
+    "rating": 4.6,
+    "features": [
+      "Bros. Attacks",
+      "Action Commands",
+      "Hilarious Writing",
+      "Beanbean Kingdom"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Mario & Luigi_ Superstar Saga.zip",
+    "virtual": true
+  },
+  "Harvest Moon - Friends of Mineral Town": {
+    "description": "Inherit your grandfather's farm and breathe new life into the charming community of Mineral Town. From raising livestock and cultivating crops to forging lifelong relationships, this quintessential life simulation offers a peaceful escape into the world of agriculture and romance.",
+    "genre": "Simulation",
+    "developer": "Marvelous",
+    "year": 2003,
+    "difficulty": "Easy",
+    "playtime": "50-100+ hours",
+    "rating": 4.5,
+    "features": [
+      "Farming",
+      "Romance",
+      "Festivals",
+      "Animal Husbandry"
+    ]
+  },
+  "Mega Man Zero": {
+    "description": "Awaken 100 years after the X wars in a dystopian future where Reploids are persecuted. As the legendary Zero, you must wield your Z-Saber with precision, master the Cyber Elf system, and lead the Resistance against a tyrannical regime in this punishingly difficult action classic.",
+    "genre": "Action-Platformer",
+    "developer": "Inti Creates",
+    "year": 2002,
+    "difficulty": "Very Hard",
+    "playtime": "4-6 hours",
+    "rating": 4.4,
+    "features": [
+      "Ranking System",
+      "Cyber Elves",
+      "Z-Saber",
+      "Dark Story"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Mega Man Zero.zip"
+  },
+  "Mega Man Battle Network": {
+    "description": "Jack into a digital world where the internet is the ultimate battlefield. In this innovative blend of RPG and real-time grid combat, you'll partner with MegaMan.EXE to delete viruses, collect powerful Battle Chips, and stop the cyber-terrorist organization WWW.",
+    "genre": "Action-RPG",
+    "developer": "Capcom",
+    "year": 2001,
+    "difficulty": "Medium",
+    "playtime": "15-20 hours",
+    "rating": 4.3,
+    "features": [
+      "Battle Chips",
+      "Grid Combat",
+      "Net Navis",
+      "Virus Busting"
+    ]
+  },
+  "Legend of Zelda - The Minish Cap": {
+    "description": "Explore a vibrant Hyrule from a tiny new perspective. Guided by the talking hat Ezlo, Link must shrink to the size of the Minish to navigate a dual-sized world, forge the sacred Picori Blade, and stop the dark sorcerer Vaati from obtaining the Light Force.",
+    "genre": "Action-Adventure",
+    "developer": "Capcom/Flagship",
+    "year": 2004,
+    "difficulty": "Medium",
+    "playtime": "12-18 hours",
+    "rating": 4.7,
+    "features": [
+      "Minish Size",
+      "Kinstone Fusions",
+      "Ezlo Hat",
+      "Beautiful Art"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/a/a5/The_Legend_of_Zelda_The_Minish_Cap_Game_Cover.JPG"
+  },
+  "Tactics Ogre - The Knight of Lodis": {
+    "description": "Command a brigade of knights in a deeply political tale of honor and betrayal. As Alphonse, your decisions will shape the fate of the Ovis region across branching paths, deep character customization, and strategic grid-based combat in this tactical JRPG gem.",
+    "genre": "Tactical RPG",
+    "developer": "Quest",
+    "year": 2001,
+    "difficulty": "Hard",
+    "playtime": "30-50 hours",
+    "rating": 4.4,
+    "features": [
+      "Branching Story",
+      "Class System",
+      "Emblems",
+      "Multiple Endings"
+    ]
+  },
+  "Pokemon Black": {
+    "description": "Discover the Unova region with 156 all-new Pokémon and face the philosophical challenge of Team Plasma.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "year": 2010,
+    "difficulty": "Medium",
+    "playtime": "30-45 hours",
+    "rating": 4.6,
+    "features": [
+      "156 New Pokémon",
+      "Seasons",
+      "C-Gear",
+      "Dream World"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon_ Black Version.zip",
+    "virtual": true,
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/5/52/Pok%C3%A9mon_Black_Box_Art.png"
+  },
+  "Pokemon White": {
+    "description": "Unova awaits with a fresh roster of Pokémon and a story that questions the ethics of Pokémon battles.",
+    "genre": "RPG",
+    "developer": "Game Freak",
+    "year": 2010,
+    "difficulty": "Medium",
+    "playtime": "30-45 hours",
+    "rating": 4.6,
+    "features": [
+      "White Forest",
+      "Triple Battles",
+      "Rotation Battles",
+      "Musical"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon_ White Version.zip",
+    "virtual": true,
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/8/87/Pok%C3%A9mon_White_Box_Art.png"
+  },
+  "New Super Mario Bros": {
+    "description": "Mario returns to 2D in this modern take on classic platforming, with Mega Mushrooms and new power-ups.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 2006,
+    "difficulty": "Easy-Medium",
+    "playtime": "8-12 hours",
+    "rating": 4.5,
+    "badge": "popular",
+    "features": [
+      "Mega Mushroom",
+      "Mini Mushroom",
+      "Blue Shell",
+      "8 Worlds"
+    ]
+  },
+  "Mario Kart DS": {
+    "description": "The ultimate portable racer hits the track with dual-screen action. Compete across 32 tracks—including iconic retro circuits—master the precision of drifting, and battle through the unique Mission Mode in this quintessential Mario Kart experience.",
+    "genre": "Racing",
+    "developer": "Nintendo",
+    "year": 2005,
+    "difficulty": "Easy-Medium",
+    "playtime": "15-30 hours",
+    "rating": 4.7,
+    "badge": "popular",
+    "features": [
+      "32 Tracks",
+      "Online Play",
+      "Mission Mode",
+      "Retro Cups"
+    ]
+  },
+  "Zelda - Phantom Hourglass": {
+    "description": "Set sail after Wind Waker, using the DS touchscreen to solve puzzles and fight enemies in this nautical adventure.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 2007,
+    "difficulty": "Medium",
+    "playtime": "15-20 hours",
+    "rating": 4.3,
+    "features": [
+      "Touch Controls",
+      "Sailing",
+      "Temple of the Ocean King",
+      "Map Drawing"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/2/25/The_Legend_of_Zelda_Phantom_Hourglass.jpg"
+  },
+  "Zelda - Spirit Tracks": {
+    "description": "Ride the Spirit Train across Hyrule and team up with Zelda's spirit to explore dungeons in this DS sequel.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 2009,
+    "difficulty": "Medium",
+    "playtime": "15-20 hours",
+    "rating": 4.2,
+    "features": [
+      "Train Travel",
+      "Phantom Zelda",
+      "Flute Controls",
+      "Tower of Spirits"
+    ],
+    "externalUrl": "https://archive.org/download/Retrorift/Legend of Zelda, The_ Spirit Tracks.zip",
+    "virtual": true,
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/b/b5/The_Legend_of_Zelda_Spirit_Tracks.jpg"
+  },
+  "Castlevania - Dawn of Sorrow": {
+    "description": "Soma Cruz returns to a mysterious cult's base to prevent the resurrection of a new Dark Lord. Harness the Tactical Soul system on the DS dual screens, using the Magic Seal system to banish powerful bosses and uncovering multiple endings in this beautifully gothic masterpiece.",
+    "genre": "Action-RPG",
+    "developer": "Konami",
+    "year": 2005,
+    "difficulty": "Medium",
+    "playtime": "8-12 hours",
+    "rating": 4.6,
+    "features": [
+      "Tactical Souls",
+      "Magic Seal System",
+      "Dual Screen",
+      "Multiple Endings"
+    ]
+  },
+  "Professor Layton and the Curious Village": {
+    "description": "Step into the village of St. Mystere and solve the mystery of the Golden Apple. Join the gentlemanly Professor Layton and his apprentice Luke as you unravel a web of secrets through over 130 brain-teasing puzzles and beautiful animated cutscenes.",
+    "genre": "Puzzle-Adventure",
+    "developer": "Level-5",
+    "year": 2007,
+    "difficulty": "Medium-Hard",
+    "playtime": "10-15 hours",
+    "rating": 4.6,
+    "features": [
+      "130+ Puzzles",
+      "Animated Cutscenes",
+      "Mystery Story",
+      "Hint Coins"
+    ]
+  },
+  "Chrono Trigger DS": {
+    "description": "The definitive version of the greatest RPG ever, with new dungeons, endings, and touchscreen controls.",
+    "genre": "RPG",
+    "developer": "Square Enix",
+    "year": 2008,
+    "difficulty": "Medium",
+    "playtime": "25-40 hours",
+    "rating": 5,
+    "badge": "featured",
+    "features": [
+      "Extra Dungeons",
+      "Arena Mode",
+      "Touch Controls",
+      "15 Endings"
+    ]
+  },
+  "The World Ends with You": {
+    "description": "Survive the Reaper's Game in a stylish, neon-lit Shibuya. Master dual-screen psychic combat using collectible pins, influence fashion trends to gain advantages, and uncover a deep, character-driven story in one of the most unique and artistic JRPGs ever created.",
+    "genre": "Action-RPG",
+    "developer": "Square Enix",
+    "year": 2007,
+    "difficulty": "Medium-Hard",
+    "playtime": "20-30 hours",
+    "rating": 4.7,
+    "features": [
+      "Dual Screen Combat",
+      "Pin System",
+      "Fashion Trends",
+      "Shibuya Setting"
+    ]
+  },
+  "Dragon Quest IX": {
+    "description": "Embark on a massive, customizable journey as a fallen guardian. Create your own hero and party members, master deep class systems, and explore a vast world filled with hidden treasure maps and ancient legends in this multiplayer-ready JRPG epic.",
+    "genre": "RPG",
+    "developer": "Level-5",
+    "year": 2010,
+    "difficulty": "Medium",
+    "playtime": "40-100+ hours",
+    "rating": 4.5,
+    "features": [
+      "Character Creator",
+      "4-Player Co-op",
+      "Treasure Maps",
+      "Alchemy"
+    ]
+  },
+  "Kirby Super Star Ultra": {
+    "description": "Eight legendary Kirby adventures in one massive package. From the high-stakes 'Great Cave Offensive' to the epic 'Meta Knightmare Ultra,' experience the definitive version of the SNES classic with new modes, 3D cinematics, and refined gameplay.",
+    "genre": "Platformer",
+    "developer": "HAL Laboratory",
+    "year": 2008,
+    "difficulty": "Easy-Medium",
+    "playtime": "8-12 hours",
+    "rating": 4.6,
+    "features": [
+      "8 Sub-games",
+      "Helper System",
+      "The Arena",
+      "Meta Knightmare Ultra"
+    ]
+  },
+  "Ace Attorney - Phoenix Wright": {
+    "description": "OBJECTION! Enter the high-stakes world of the courtroom as the rookie defense attorney Phoenix Wright. Investigate crime scenes, cross-examine eccentric witnesses, and present decisive evidence to uncover the truth and secure a 'Not Guilty' verdict for your clients.",
+    "genre": "Visual Novel",
+    "developer": "Capcom",
+    "year": 2005,
+    "difficulty": "Medium",
+    "playtime": "15-20 hours",
+    "rating": 4.7,
+    "badge": "popular",
+    "features": [
+      "Cross-Examination",
+      "Evidence System",
+      "5 Cases",
+      "Dramatic Story"
+    ]
+  },
+  "Mega Man ZX": {
+    "description": "Transform between multiple Biometal forms in this exploration-heavy Mega Man action game.",
+    "genre": "Action-Platformer",
+    "developer": "Inti Creates",
+    "year": 2006,
+    "difficulty": "Hard",
+    "playtime": "6-10 hours",
+    "rating": 4.2,
+    "features": [
+      "Biometal System",
+      "Model X/ZX",
+      "Open World Map",
+      "Side Quests"
+    ]
+  },
+  "Animal Crossing - Wild World": {
+    "description": "Build your dream village, catch bugs, fish, and decorate your home in this beloved life simulation.",
+    "genre": "Life Simulation",
+    "developer": "Nintendo",
+    "year": 2005,
+    "difficulty": "Easy",
+    "playtime": "100+ hours",
+    "rating": 4.4,
+    "features": [
+      "Real-time Clock",
+      "WiFi Visiting",
+      "Museum",
+      "Holiday Events"
+    ]
+  },
+  "Sonic Advance 3": {
+    "description": "The ultimate high-speed tag-team adventure. Partner Sonic with Tails, Knuckles, Amy, or Cream to combine unique abilities and zip through nine vibrant zones to stop Dr. Eggman from shattering the world using the power of the Chaos Emeralds.",
+    "genre": "Platformer",
+    "developer": "Dimps",
+    "year": 2004,
+    "difficulty": "Medium",
+    "playtime": "5-8 hours",
+    "rating": 4.4,
+    "features": [
+      "Tag System",
+      "Zone Hubs",
+      "Chao Mini-games",
+      "Special Stages"
+    ]
+  },
+  "1190 - Super Mario Advance 4 - Super Mario Bros 3": {
+    "description": "The ultimate version of Super Mario Bros 3 with updated graphics, sound, and exclusive e-Reader levels.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 2003,
+    "difficulty": "Medium-Hard",
+    "playtime": "5-10 hours",
+    "rating": 4.9,
+    "badge": "popular",
+    "features": [
+      "Updated Visuals",
+      "e-Reader Levels",
+      "Voice Acting",
+      "Classic SMB3 Gameplay"
+    ]
+  },
+  "Classic NES Series - Super Mario Bros": {
+    "description": "The original NES masterpiece, perfectly preserved for the Game Boy Advance. Experience the legend anywhere.",
+    "genre": "Platformer",
+    "developer": "Nintendo",
+    "year": 2004,
+    "difficulty": "Medium",
+    "playtime": "2-5 hours",
+    "rating": 4.8,
+    "features": [
+      "Perfect Port",
+      "Wireless Adapter Support",
+      "Classic Gameplay",
+      "High Score Saving"
+    ]
+  },
+  "Crash Bandicoot: Purple": {
+    "description": "The ultimate crossover event! Crash Bandicoot and Spyro the Dragon join forces to stop the combined threat of Dr. Neo Cortex and Ripto. Master a variety of unique minigames and collectible cards in this innovative portal-jumping adventure.",
+    "genre": "Action",
+    "developer": "Vicarious Visions",
+    "year": 2004,
+    "difficulty": "Easy-Medium",
+    "playtime": "5-8 hours",
+    "rating": 3.9,
+    "features": [
+      "Spyro Crossover",
+      "Mini-games",
+      "Card Collection",
+      "Multiplayer"
+    ]
+  },
+  "GTA: Chinatown Wars": {
+    "description": "Navigate the gritty underworld of Liberty City as Huang Lee, the son of a murdered Triad boss. In this tale of crime and betrayal, you must reclaim your family's stolen heirloom sword while surviving a violent power struggle across the neon-lit criminal landscape.",
+    "genre": "Action",
+    "developer": "Rockstar Leeds",
+    "year": 2009,
+    "difficulty": "Medium-Hard",
+    "playtime": "15-25 hours",
+    "rating": 4.8,
+    "badge": "popular",
+    "features": [
+      "Top-down View",
+      "Touch Screen Crimes",
+      "Drug Dealing Mechanic",
+      "Liberty City"
+    ]
+  },
+  "The Legend of Zelda: Phantom Hourglass": {
+    "description": "Set sail on the SS Linebeck in a direct sequel to The Wind Waker. Rescue Tetra from a spectral Ghost Ship, explore uncharted islands in the Realm of the Ocean King, and use the titular Phantom Hourglass to navigate deadly temples and solve puzzles with the DS touchscreen.",
+    "genre": "Action-Adventure",
+    "developer": "Nintendo",
+    "year": 2007,
+    "difficulty": "Medium",
+    "playtime": "15-20 hours",
+    "rating": 4.3,
+    "features": [
+      "Touch Controls",
+      "Sailing",
+      "Temple of the Ocean King",
+      "Map Drawing"
+    ],
+    "boxArt": "https://upload.wikimedia.org/wikipedia/en/2/25/The_Legend_of_Zelda_Phantom_Hourglass.jpg"
+  },
+  "The Amazing Spider-Man": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Amazing Spider-Man, The.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Crash Bandicoot The Huge Adventure": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Crash Bandicoot_ The Huge Adventure.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Digimon World DS": {
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Digimon World DS (USA).zip",
+    "virtual": true,
+    "year": 2004,
+    "genre": "Retro"
+  },
+  "Doom II": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Doom II (USA).zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Doom": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Doom.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Dragon Ball - Advanced Adventure": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Dragon Ball - Advanced Adventure (USA).zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Dragon Ball Z Supersonic Warriors": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Dragon Ball Z_ Supersonic Warriors.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Final Fantasy 6 Advance GBA": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Final Fantasy 6 Advance GBA.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Gradius The Interstellar Assault": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Gradius_ The Interstellar Assault.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "James Bond 007": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/James Bond 007.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Kirby & the Amazing Mirror": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Kirby & the Amazing Mirror.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Marvel Ultimate Alliance": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Marvel_ Ultimate Alliance.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Mighty Morphin Power Rangers The Movie": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Mighty Morphin Power Rangers_ The Movie.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Naruto Ninja Council 2": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Naruto_ Ninja Council 2.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Need for Speed Most Wanted": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Need for Speed_ Most Wanted.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "One Piece": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/One Piece.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Plants vs. Zombies": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Plants vs. Zombies.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Pokemon - Yellow Version - Special Pikachu Edition": {
+    "console": "GB",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon - Yellow Version - Special Pikachu Edition (USA, Europe) (GBC,SGB Enhanced).zip",
+    "virtual": true,
+    "year": 1989,
+    "genre": "Retro"
+  },
+  "Pokemon Conquest": {
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon Conquest.zip",
+    "virtual": true,
+    "year": 2004,
+    "genre": "Retro"
+  },
+  "Pokemon Ranger": {
+    "console": "NDS",
+    "externalUrl": "https://archive.org/download/Retrorift/Pokemon Ranger.zip",
+    "virtual": true,
+    "year": 2004,
+    "genre": "Retro"
+  },
+  "Popeye 2": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Popeye 2.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "RoboCop 2": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/RoboCop 2.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Sonic Chronicles The Dark Brotherhood": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Sonic Chronicles_ The Dark Brotherhood.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Super Mario Advance 2 Super Mario World": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Super Mario Advance 2_ Super Mario World.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Super Mario Advance 3 Yoshi's Island": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Super Mario Advance 3_ Yoshi's Island.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Super Mario Advance": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Super Mario Advance.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Super Mario Land": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Super Mario Land (World) (Rev 1).zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Teenage Mutant Ninja Turtles III Radical Rescue": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Teenage Mutant Ninja Turtles III_ Radical Rescue.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Tekken Advance": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Tekken Advance.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Toy Story": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Toy Story.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Ultimate Mortal Kombat": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Ultimate Mortal Kombat.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Ultimate Spider-Man": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Ultimate Spider-Man.zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  },
+  "Yu-Gi-Oh! - World Championship Tournament 2004": {
+    "console": "GBA",
+    "externalUrl": "https://archive.org/download/Retrorift/Yu-Gi-Oh! - World Championship Tournament 2004 (E)(GBA).zip",
+    "virtual": true,
+    "year": 2001,
+    "genre": "Retro"
+  }
 }

@@ -1,294 +1,390 @@
 /* ==========================================================================
-   GameCard — Magnetic tilt + depth parallax hover effect
+   GameCard — Physical Cartridge Design
    ========================================================================== */
 
 .game-card {
     position: relative;
     width: 100%;
     aspect-ratio: 3/4;
-    border-radius: 14px;
     cursor: pointer;
     user-select: none;
     isolation: isolate;
-    --card-rx: 0deg;
-    --card-ry: 0deg;
+    perspective: 1200px;
 }
 
-/* ─── Premium glowing border on hover ─── */
-.game-card__border {
-    position: absolute;
-    inset: -2px;
-    border-radius: 16px;
-    background: conic-gradient(from var(--card-angle, 0deg), #ec4899, #8b5cf6, #22d3ee, #10b981, #8b5cf6, #ec4899);
-    background-size: 100% 100%;
-    opacity: 0;
-    transition: opacity 0.4s ease-out;
-    z-index: 0;
-    pointer-events: none;
-    filter: blur(6px);
-}
-
-.game-card:hover .game-card__border {
-    opacity: 1;
-    animation: gcBorderSpin 4s linear infinite, gcGlowPulse 2s ease-in-out infinite alternate;
-}
-
-@keyframes gcBorderSpin {
-    to { --card-angle: 360deg; }
-}
-
-@property --card-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-}
-
-@keyframes gcGlowPulse {
-    0% {
-        opacity: 0.6;
-        filter: blur(5px);
-    }
-    100% {
-        opacity: 1;
-        filter: blur(10px);
-    }
-}
-
-/* ─── Main container — Magnetic lift with spring ─── */
-.game-card__content {
-    position: absolute;
-    inset: 0;
-    border-radius: 14px;
-    background: #11111a;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    overflow: hidden;
-    z-index: 1;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-    transition: transform 0.5s cubic-bezier(0.03, 0.98, 0.52, 0.99),
-                box-shadow 0.5s cubic-bezier(0.03, 0.98, 0.52, 0.99),
-                border-color 0.3s ease;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-.game-card:hover .game-card__content {
-    transform: translateY(-10px) scale(1.02);
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow:
-        0 25px 50px rgba(0, 0, 0, 0.5),
-        0 12px 28px rgba(139, 92, 246, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-/* ─── Image — Parallax zoom with depth ─── */
-.game-card__image {
+.game-card__3d-wrapper {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.03, 0.98, 0.52, 0.99),
-                filter 0.4s ease;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
     will-change: transform;
 }
 
-.game-card:hover .game-card__image {
-    transform: scale(1.12);
-    filter: brightness(0.5) saturate(1.3) contrast(1.1);
+/* ─── Hover: Mag-Lev Breathing ─── */
+.game-card:hover .game-card__3d-wrapper {
+    /* Power up pop, then continuous floating breathing animation */
+    animation: 
+        cartridge-power-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+        cartridge-breathe 4s ease-in-out 0.4s infinite;
+    z-index: 20;
 }
 
-/* ─── Gradient overlay ─── */
-.game-card__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(8, 8, 14, 0.98) 0%, rgba(8, 8, 14, 0.6) 50%, transparent 100%);
-    opacity: 0.4;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-}
-
-.game-card:hover .game-card__overlay {
-    opacity: 1;
-}
-
-/* ─── Shine sweep on hover ─── */
-.game-card__content::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(110deg,
-            transparent 20%,
-            rgba(255, 255, 255, 0.03) 40%,
-            rgba(255, 255, 255, 0.08) 50%,
-            rgba(255, 255, 255, 0.03) 60%,
-            transparent 80%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: 4;
-    pointer-events: none;
-    transform: translateX(-100%);
-}
-
-.game-card:hover .game-card__content::after {
-    opacity: 1;
-    animation: gcShineSweep 1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
-}
-
-@keyframes gcShineSweep {
+@keyframes cartridge-power-up {
+    from {
+        transform: translateY(0) scale(1) translateZ(0);
+    }
     to {
-        transform: translateX(100%);
+        transform: translateY(-12px) scale(1.03) translateZ(15px) rotateX(2deg);
     }
 }
 
-
-/* ─── Badge ─── */
-.game-card__badge-wrap {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 10;
+@keyframes cartridge-breathe {
+    0%, 100% {
+        transform: translateY(-12px) scale(1.03) translateZ(15px) rotateX(2deg);
+    }
+    50% {
+        transform: translateY(-6px) scale(1.03) translateZ(15px) rotateX(2deg);
+    }
 }
 
-/* ─── Console tag ─── */
-.game-card__console-tag {
+/* Glowing aura on hover (Static to prevent expensive repaints) */
+.game-card:hover .game-card__shell {
+    box-shadow: 
+        inset 0 6px 8px rgba(255,255,255,0.2),
+        inset 5px 0 10px rgba(255,255,255,0.1),
+        inset -5px 0 10px rgba(0,0,0,0.3),
+        inset 0 -10px 20px rgba(0,0,0,0.6),
+        0 20px 35px rgba(0,0,0,0.7),
+        0 0 40px var(--dynamic-glow, rgba(255,255,255,0.2));
+}
+
+/* ─── Cartridge Shell (Plastic Body) ─── */
+.game-card__shell {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 5px 10px;
-    background: rgba(10, 10, 15, 0.5);
-    /* More transparent */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 24px;
+    inset: 0;
+    /* Default dark gray */
+    background: #3a3b40;
+    border-radius: 12px 12px 6px 6px;
+    border: 1px solid #5a5c64;
+    border-bottom: 3px solid #222;
+    overflow: hidden;
+    
+    /* Pre-insertion box shadow (floating) */
+    box-shadow: 
+        inset 0 6px 8px rgba(255,255,255,0.15),
+        inset 5px 0 10px rgba(255,255,255,0.05),
+        inset -5px 0 10px rgba(0,0,0,0.3),
+        inset 0 -10px 20px rgba(0,0,0,0.6),
+        0 18px 25px rgba(0,0,0,0.6);
+    
+    display: flex;
+    flex-direction: column;
+    padding: 12px 16px 20px 16px;
+    
+    transform-style: preserve-3d;
+    transition: box-shadow 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
+}
+
+
+
+
+/* ==========================================================================
+   CONSOLE SPECIFIC VARIANTS
+   ========================================================================== */
+
+/* NES */
+.game-card--nes .game-card__shell {
+    background: var(--dynamic-shell, #cacbcd); /* Light grey */
+    border-color: #d1d2d5;
+    border-bottom-color: #888;
+}
+.game-card--nes .game-card__branding-bar {
+    background: var(--dynamic-bar, linear-gradient(90deg, #b91c1c, #dc2626, #b91c1c)); /* Red bar */
+}
+
+/* GBA */
+.game-card--gba .game-card__shell {
+    background: var(--dynamic-shell, #27282b); /* Very dark grey */
+    border-radius: 20px 20px 6px 6px;
+    padding: 24px 10px 15px 10px; /* Thicker top to simulate wide cartridge */
+}
+.game-card--gba .game-card__branding-bar {
+    background: var(--dynamic-bar, linear-gradient(90deg, #1e3a8a, #2563eb, #1e3a8a)); /* Blue bar */
+}
+
+/* GB (Game Boy) */
+.game-card--gb .game-card__shell {
+    background: var(--dynamic-shell, #d9dbd4); /* Pale classic gray */
+    border-radius: 8px 8px 4px 4px;
+    padding: 24px 12px 12px 12px;
+}
+.game-card--gb .game-card__branding-bar {
+    background: var(--dynamic-bar, linear-gradient(90deg, #475569, #64748b, #475569)); /* Slate bar */
+}
+
+/* GBC (Game Boy Color) */
+.game-card--gbc .game-card__shell {
+    background: var(--dynamic-shell, rgba(40, 40, 45, 0.85)); /* Dark translucent */
+    backdrop-filter: blur(10px);
+    border-radius: 30px 30px 4px 4px; /* Convex top */
+    padding: 18px 12px 16px 12px;
+    border-top: 2px solid rgba(255,255,255,0.2);
+}
+.game-card--gbc .game-card__branding-bar {
+    background: var(--dynamic-bar, linear-gradient(90deg, #9333ea, #a855f7, #9333ea)); /* Purple bar */
+}
+
+/* NDS (Nintendo DS) */
+.game-card--nds .game-card__shell {
+    background: var(--dynamic-shell, #18181a); /* Almost Black */
+    border-radius: 4px; /* Squarish */
+    padding: 10px 8px 12px 8px; /* Thin border */
+}
+.game-card--nds .game-card__branding-bar {
+    background: var(--dynamic-bar, linear-gradient(90deg, #3f3f46, #52525b, #3f3f46)); /* Dark grey bar */
+}
+.game-card--nds .game-card__ridges {
+    display: none; /* DS cards don't have these ridges */
+}
+.game-card--nds .game-card__bottom-grip {
+    display: none;
+}
+
+/* ==========================================================================
+   CARTRIDGE DETAILS
+   ========================================================================== */
+
+/* ─── Top Ridges ─── */
+.game-card__ridges {
+    width: 100%;
+    height: 18px;
+    margin-bottom: 12px;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.3) 0px,
+        rgba(0, 0, 0, 0.3) 3px,
+        rgba(255, 255, 255, 0.15) 4px,
+        rgba(255, 255, 255, 0.15) 8px,
+        rgba(0, 0, 0, 0.15) 9px,
+        rgba(0, 0, 0, 0.15) 12px
+    );
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* ─── Label Recess (Inset area for the sticker) ─── */
+.game-card__label-recess {
+    flex: 1;
+    background: #1a1b1e;
+    border-radius: 8px 8px 4px 4px;
+    padding: 4px;
+    box-shadow: 
+        inset 0 3px 6px rgba(0,0,0,0.8),
+        inset 0 -2px 2px rgba(255,255,255,0.1),
+        0 2px 0 rgba(255,255,255,0.15);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.3s;
+}
+
+/* Glowing backlight inside the recess */
+.game-card:hover .game-card__label-recess {
+    box-shadow: 
+        inset 0 0 25px rgba(255,255,255,0.6),
+        0 0 15px var(--dynamic-glow, rgba(255,255,255,0.5));
+}
+
+/* ─── Holographic Glare Overlay ─── */
+.game-card__label-recess::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        105deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.3) 25%,
+        rgba(255, 255, 255, 0.7) 30%,
+        transparent 35%
+    );
+    background-size: 300% 300%;
+    background-position: 200% 0;
+    pointer-events: none;
+    z-index: 5;
+    mix-blend-mode: overlay;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-card:hover .game-card__label-recess::after {
+    opacity: 1;
+    animation: holo-sweep 3s ease-in-out infinite;
+}
+
+@keyframes holo-sweep {
+    0% { background-position: 200% 0; }
+    100% { background-position: -100% 0; }
+}
+
+/* ─── The Label Sticker ─── */
+.game-card__label {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #000;
+}
+
+/* ─── Scanlines Removed ─── */
+
+/* ─── Game Art ─── */
+.game-card__art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center center;
+    /* Slightly dimmed normally */
+    filter: brightness(0.85) contrast(1.1) saturate(0.9);
+}
+
+.game-card:hover .game-card__art {
+    /* Screen Boot Up: bright, saturated, popping out */
+    filter: brightness(1.2) contrast(1.2) saturate(1.3);
+    transform: scale(1.08) translateZ(-5px);
+}
+
+/* ─── Cartridge Branding Bar ─── */
+.game-card__branding-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.68rem;
-    font-weight: 600;
-    color: #f8fafc;
-    z-index: 10;
-    opacity: 0;
-    transform: translateY(-8px);
-    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s;
+    justify-content: center;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    z-index: 2;
 }
 
-.game-card:hover .game-card__console-tag {
-    opacity: 1;
-    transform: translateY(0);
+.game-card__branding-text {
+    font-family: var(--font-display, 'Orbitron', sans-serif);
+    font-size: 0.5rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
-/* ─── Favorite button ─── */
+/* ─── Bottom Finger Grips ─── */
+.game-card__bottom-grip {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.game-card__grip-indent {
+    width: 25px;
+    height: 6px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 10px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 1px rgba(255,255,255,0.2);
+}
+
+/* ─── Favorite button (Physical Tactile Button) ─── */
 .game-card__fav {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    bottom: 15px;
+    right: 15px;
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: none;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
+    border: 1px solid rgba(0,0,0,0.8);
+    background: linear-gradient(135deg, #555, #222);
+    box-shadow: 
+        0 4px 6px rgba(0,0,0,0.4),
+        inset 0 2px 3px rgba(255,255,255,0.3),
+        inset 0 -2px 3px rgba(0,0,0,0.6);
     cursor: pointer;
     z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.65);
-    transition: all 0.25s;
+    color: #111; /* Dark unlit engraved icon */
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(6px); /* Pop out in 3D */
+    transform-style: preserve-3d;
 }
 
+/* Button hover - slight press */
 .game-card__fav:hover {
-    color: #ec4899;
-    background: rgba(236, 72, 153, 0.15);
-    transform: scale(1.15);
+    transform: translateZ(4px);
+    box-shadow: 
+        0 2px 3px rgba(0,0,0,0.4),
+        inset 0 2px 3px rgba(255,255,255,0.3),
+        inset 0 -2px 3px rgba(0,0,0,0.6);
+    color: rgba(255, 0, 85, 0.4); /* Faint pre-glow */
 }
 
+/* Button active - pressed in, LED lit */
+.game-card__fav:active,
 .game-card__fav--active {
-    color: #ec4899;
-    background: rgba(236, 72, 153, 0.2);
+    transform: translateZ(1px); /* Physically pushed in */
+    background: linear-gradient(135deg, #222, #0a0a0a);
+    box-shadow: 
+        0 0 0 rgba(0,0,0,0.4),
+        inset 0 3px 6px rgba(0,0,0,0.9),
+        inset 0 -1px 2px rgba(255,255,255,0.1);
+    color: #ff0055; /* Bright neon lit up */
+}
+
+.game-card__fav--active .game-card__fav-icon {
+    filter: drop-shadow(0 0 4px rgba(255, 0, 85, 0.9));
 }
 
 @keyframes gcHeartPop {
-    0% {
-        transform: scale(1);
-    }
-
-    40% {
-        transform: scale(1.5);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); }
+    40% { transform: scale(1.4); }
+    100% { transform: scale(1); }
 }
 
 .game-card__fav--pop .game-card__fav-icon {
     animation: gcHeartPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* ─── Info panel — slides up ─── */
+/* ─── Info panel — slides up inside the label area ─── */
 .game-card__panel {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
-    padding: 16px;
-    background: rgba(8, 8, 14, 0.92);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    right: 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    z-index: 5;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 10;
 }
 
 .game-card:hover .game-card__panel {
     transform: translateY(0);
 }
 
-/* ─── Marquee Title ─── */
-.game-card__title-wrap {
-    overflow: hidden;
-    position: relative;
-    margin: 0 0 4px;
-    mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-}
-
+/* ─── Title ─── */
 .game-card__title {
     font-family: var(--font-display, 'Orbitron', sans-serif);
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: #fff;
-    margin: 0;
+    margin: 0 0 6px 0;
     white-space: nowrap;
-    text-rendering: optimizeLegibility;
-    display: inline-block;
-    padding-right: 2rem;
-}
-
-.game-card__title--clone {
-    display: none;
-    padding-right: 2rem;
-}
-
-/* On card hover, start the marquee scroll */
-.game-card:hover .game-card__title-wrap {
-    display: flex;
-}
-
-.game-card:hover .game-card__title {
-    animation: gcMarquee 5s linear 0.4s infinite;
-}
-
-.game-card:hover .game-card__title--clone {
-    display: inline-block;
-    animation: gcMarquee 5s linear 0.4s infinite;
-}
-
-@keyframes gcMarquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ─── Meta + Genre Pill ─── */
@@ -309,42 +405,58 @@
 .game-card__genre-pill {
     padding: 1px 8px;
     border-radius: 20px;
-    background: rgba(139, 92, 246, 0.12);
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    color: #a78bfa;
+    background: #334155;
+    color: #e2e8f0;
     font-size: 0.65rem;
     font-weight: 600;
-    letter-spacing: 0.03em;
-    transition: all 0.3s;
 }
 
-.game-card:hover .game-card__genre-pill {
-    background: rgba(139, 92, 246, 0.2);
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
-    color: #c4b5fd;
-}
-
-/* ─── Play button ─── */
+/* ─── Insert Cartridge (Play) button ─── */
 .game-card__play-btn {
     width: 100%;
     padding: 8px;
     border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #8b5cf6, #22d3ee);
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.8rem;
+    border-radius: 6px;
+    background: #eab308; /* Retro gold/yellow */
+    color: #422006;
+    font-family: var(--font-display, sans-serif);
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     cursor: pointer;
-    transition: all 0.25s;
-    box-shadow: 0 2px 10px rgba(139, 92, 246, 0.25);
+    transition: all 0.2s;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3);
 }
 
 .game-card__play-btn:hover {
-    box-shadow: 0 4px 18px rgba(139, 92, 246, 0.4);
+    background: #fde047;
     transform: translateY(-1px);
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2), 0 4px 10px rgba(234, 179, 8, 0.4);
+}
+
+.game-card__play-btn:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ─── Badge ─── */
+.game-card__badge-wrap {
+    position: absolute;
+    top: 25px;
+    right: 15px; /* Stick it to the top right corner */
+    left: auto;
+    z-index: 10;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateZ(10px); /* Base 3D elevation */
+    transform-style: preserve-3d;
+}
+
+/* 3D sticker bump */
+.game-card:hover .game-card__badge-wrap {
+    transform: translateZ(35px) scale(1.15);
 }

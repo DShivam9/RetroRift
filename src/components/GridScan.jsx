@@ -395,13 +395,19 @@ export const GridScan = ({
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         rendererRef.current = renderer;
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.NoToneMapping;
         renderer.autoClear = false;
         renderer.setClearColor(0x000000, 0);
         container.appendChild(renderer.domElement);
+
+        let isVisible = true;
+        const observer = new IntersectionObserver(([entry]) => {
+            isVisible = entry.isIntersecting;
+        });
+        observer.observe(container);
 
         const uniforms = {
             iResolution: {
@@ -481,6 +487,9 @@ export const GridScan = ({
 
         let last = performance.now();
         const tick = () => {
+            rafRef.current = requestAnimationFrame(tick);
+            if (!isVisible) return;
+
             const now = performance.now();
             const dt = Math.max(0, Math.min(0.1, (now - last) / 1000));
             last = now;
@@ -523,7 +532,6 @@ export const GridScan = ({
             } else {
                 renderer.render(scene, camera);
             }
-            rafRef.current = requestAnimationFrame(tick);
         };
         rafRef.current = requestAnimationFrame(tick);
 
@@ -537,6 +545,7 @@ export const GridScan = ({
                 composerRef.current.dispose();
                 composerRef.current = null;
             }
+            observer.disconnect();
             renderer.dispose();
             if (container.contains(renderer.domElement)) {
                 container.removeChild(renderer.domElement);

@@ -238,6 +238,49 @@
 }
 
 /* ==========================================================================
+   ERA TOGGLE
+   ========================================================================== */
+
+.era-toggle {
+    display: flex;
+    gap: 8px;
+    margin-top: 0;
+    margin-bottom: 24px;
+    background: rgba(22, 22, 30, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    width: fit-content;
+    flex-wrap: wrap;
+}
+
+.era-toggle__btn {
+    background: transparent;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    letter-spacing: 0.05em;
+}
+
+.era-toggle__btn:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.era-toggle__btn--active {
+    color: #fff;
+    background: rgba(139, 92, 246, 0.2);
+    box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.3);
+}
+
+/* ==========================================================================
    SECTIONS
    ========================================================================== */
 

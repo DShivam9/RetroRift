@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import GameCard from '../components/GameCard'
 import GridScan from '../components/GridScan'
-import { getFeaturedGames, getGameById, getAllGames } from '../data/games'
+import { getFeaturedGames, getGameById, getAllGames, getConsoleEra } from '../data/games'
 import {
   Play, ChevronRight, Sparkles, Trophy,
   Gamepad2, Music, Shuffle, Settings, Heart
@@ -87,10 +87,29 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
   // Gamer Telemetry Stats
   const [xpStats, setXpStats] = useState(null)
 
-  // Load 12 games for a rich scrolling marquee
-  const featuredGames = React.useMemo(() => getFeaturedGames(12), [])
-  const [activeGame, setActiveGame] = useState(featuredGames[0] || null)
+  const [selectedEra, setSelectedEra] = useState('ALL')
+
   const allGames = getAllGames()
+  
+  // Load games for marquee and featured grid, filtered by era
+  const featuredGames = React.useMemo(() => {
+    let base = getFeaturedGames(50); // Get top randomized games
+    if (selectedEra !== 'ALL') {
+      base = base.filter(g => getConsoleEra(g.console) === selectedEra)
+    }
+    return base.slice(0, 12)
+  }, [selectedEra])
+  
+  const [activeGame, setActiveGame] = useState(featuredGames[0] || null)
+
+  // When era changes, reset active game
+  useEffect(() => {
+    if (featuredGames.length > 0) {
+      setActiveGame(featuredGames[0])
+    } else {
+      setActiveGame(null)
+    }
+  }, [featuredGames])
   const toast = useToast()
   const [isChanging, setIsChanging] = useState(false)
 
@@ -133,8 +152,8 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
         })
       },
       {
-        threshold: 0.1,
-        rootMargin: '0px 0px -10% 0px'
+        threshold: 0.05,
+        rootMargin: '0px 0px 100px 0px'
       }
     )
 
@@ -221,7 +240,7 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
                 onClick={() => activeGame && onPlayGame(activeGame)}
               >
                 <Play className="hero__btn-icon" />
-                Play <GlitchText text={activeGame?.title || 'Now'} isChanging={isChanging} />
+                Play <GlitchText text={activeGame ? activeGame.title : "Now"} isChanging={isChanging} />
               </button>
               <button
                 className="hero__btn hero__btn--ghost"
@@ -461,6 +480,19 @@ export default function HomePage({ navigate, favorites, toggleFavorite, lastPlay
             <button className="section__more" onClick={() => navigate('library')}>
               View All <ChevronRight className="section__more-icon" />
             </button>
+          </div>
+
+          {/* Era Sorting Toggle */}
+          <div className="era-toggle">
+            {['ALL', '8-bit', '16-bit', '32-bit', '64-bit'].map(era => (
+              <button
+                key={era}
+                className={`era-toggle__btn ${selectedEra === era ? 'era-toggle__btn--active' : ''}`}
+                onClick={() => setSelectedEra(era)}
+              >
+                {era}
+              </button>
+            ))}
           </div>
 
           <div className="game-grid">
