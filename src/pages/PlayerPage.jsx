@@ -448,114 +448,71 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
         }
       }
 
-      const proxies = [
-        { name: 'Direct', fn: (url) => url, type: 'raw' },
-        { name: 'CorsProxyIO', fn: (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`, type: 'raw' },
-        { name: 'AllOriginsRaw', fn: (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, type: 'raw' },
-        { name: 'CorsProxyOrg', fn: (url) => `https://corsproxy.org/?${encodeURIComponent(url)}`, type: 'raw' },
-        { name: 'ThingProxy', fn: (url) => `https://thingproxy.freeboard.io/fetch/${encodeURI(url)}`, type: 'raw' },
-        { name: 'CodeTabs', fn: (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, type: 'raw' },
-        { name: 'AllOriginsJSON', fn: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, type: 'json' },
-        { name: 'InternalProxy', fn: (url) => `/api/proxy?url=${encodeURIComponent(url)}`, type: 'raw' }
-      ]
-
-      let lastError = null
-      let success = false
-      const consoleType = currentGame.console?.toUpperCase()
-
-      for (const proxy of proxies) {
-        try {
-          const cleanUrl = decodeURIComponent(currentGame.externalUrl)
-          const proxyUrl = proxy.fn(cleanUrl)
-          log(`[Player] Attempting ${proxy.name} fetch (${proxy.type})...`)
+      try {
+        const cleanUrl = decodeURIComponent(currentGame.externalUrl)
+        log(`[Player] Fetching ROM directly: ${cleanUrl}`)
+        
+        const controller = new AbortController()
+        // NDS files might take a bit longer if large
+        const timeoutMs = consoleType === 'NDS' ? 300000 : 60000
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+        
+        const response = await fetch(cleanUrl, { 
+          signal: controller.signal,
+          mode: 'cors'
+        })
+        
+        if (response.ok) {
+          const data = await response.arrayBuffer()
+          clearTimeout(timeoutId)
+          const size = data.byteLength
+          const uint8 = new Uint8Array(data)
           
-          const controller = new AbortController()
-          // 10 MINUTE TIMEOUT: Archive.org is heavily throttled for NDS files.
-          const timeoutMs = consoleType === 'NDS' ? 600000 : 180000
-          const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
-          
-          const response = await fetch(proxyUrl, { 
-            signal: controller.signal,
-            mode: proxy.name === 'Direct' ? 'cors' : 'cors'
-          })
-          
-          if (response.ok) {
-            let data;
-            if (proxy.type === 'json') {
-              log('[Player] Proxy returned metadata, decoding base64...');
-              const json = await response.json()
-              if (!json.contents) throw new Error('Proxy returned empty contents')
-              
-              const base64 = json.contents.split(',')[1] || json.contents
-              const binaryString = window.atob(base64)
-              const len = binaryString.length
-              const bytes = new Uint8Array(len)
-              for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i)
-              }
-              data = bytes.buffer
-            } else {
-              data = await response.arrayBuffer()
-            }
-            
-            clearTimeout(timeoutId)
-            const size = data.byteLength
-            const uint8 = new Uint8Array(data)
-            
-            // ZIP INTEGRITY CHECK
-            let isZip = uint8[0] === 0x50 && uint8[1] === 0x4B && uint8[2] === 0x03 && uint8[3] === 0x04
-            if (isZip && size > 100) {
-              let foundEOCD = false
-              const scanRange = Math.min(size, 2048)
-              for (let i = size - 4; i > size - scanRange && i >= 0; i--) {
-                if (uint8[i] === 0x50 && uint8[i+1] === 0x4B && uint8[i+2] === 0x05 && uint8[i+3] === 0x06) {
-                  foundEOCD = true
-                  break
-                }
-              }
-              if (!foundEOCD) {
-                warn(`[Player] ${proxy.name} data is truncated (${size} bytes). Trying next...`)
-                continue
+          // ZIP INTEGRITY CHECK
+          let isZip = uint8[0] === 0x50 && uint8[1] === 0x4B && uint8[2] === 0x03 && uint8[3] === 0x04
+          if (isZip && size > 100) {
+            let foundEOCD = false
+            const scanRange = Math.min(size, 2048)
+            for (let i = size - 4; i > size - scanRange && i >= 0; i--) {
+              if (uint8[i] === 0x50 && uint8[i+1] === 0x4B && uint8[i+2] === 0x05 && uint8[i+3] === 0x06) {
+                foundEOCD = true
+                break
               }
             }
-
-            // DYNAMIC THRESHOLD
-            let minSize = 100000
-            if (consoleType === 'NDS') minSize = 25000000
-            if (consoleType === 'GBA') minSize = 2000000
-            
-            if (size < minSize) {
-              warn(`[Player] ${proxy.name} payload too small (${size} bytes). Trying next...`)
-              continue
+            if (!foundEOCD) {
+              throw new Error(`Downloaded data is truncated (${size} bytes).`)
             }
-
-            log(`[Player] ✅ ${proxy.name} Success: ${size} bytes received.`)
-            setRomData(data)
-            
-            try {
-              await setCachedROM(currentGame.id, data)
-              log('[Player] ROM cached locally.')
-            } catch (cacheErr) {}
-            
-            success = true
-            setLoading(false)
-            break
-          } else {
-            clearTimeout(timeoutId)
-            warn(`[Player] ${proxy.name} HTTP Error: ${response.status}`)
           }
-        } catch (err) {
-          warn(`[Player] ${proxy.name} failed: ${err.message}`)
-          lastError = err
-        }
-      }
 
-      if (!success) {
+          // DYNAMIC THRESHOLD
+          let minSize = 100000
+          if (consoleType === 'NDS') minSize = 25000000
+          if (consoleType === 'GBA') minSize = 2000000
+          
+          if (size < minSize) {
+             throw new Error(`Payload too small (${size} bytes).`)
+          }
+
+          log(`[Player] ✅ Success: ${size} bytes received.`)
+          setRomData(data)
+          
+          try {
+            await setCachedROM(currentGame.id, data)
+            log('[Player] ROM cached locally.')
+          } catch (cacheErr) {}
+          
+          setLoading(false)
+          return
+        } else {
+          clearTimeout(timeoutId)
+          throw new Error(`HTTP Error: ${response.status}`)
+        }
+      } catch (err) {
         setLoading(false)
-        const isTimeout = lastError?.name === 'AbortError'
+        const isTimeout = err?.name === 'AbortError'
         setError(isTimeout 
-          ? 'The download is taking too long (Archive.org throttling). Please try again or upload your own ROM.' 
-          : 'Archive.org is currently blocking all access. Please try the "Force Refresh" button or upload a ROM.')
+          ? 'The download timed out. Please try again or check your internet connection.' 
+          : 'Failed to download the game. Please try the "Force Refresh" button or upload a ROM.')
         return
       }
     } catch (err) {
@@ -1080,7 +1037,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                     <div className="player-error__fallback">
                       <p>Still failing? Download directly and upload below:</p>
                       <a href={currentGame.externalUrl} target="_blank" rel="noopener noreferrer" className="btn btn--outline btn--sm">
-                        Download from Archive.org
+                        Download Game File
                       </a>
                     </div>
                   )}
