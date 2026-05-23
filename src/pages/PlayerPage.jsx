@@ -1033,14 +1033,6 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                     <button onClick={loadROM} className="btn btn--secondary">Retry</button>
                     <button onClick={handleForceRefresh} className="btn btn--ghost">Clear Cache & Refresh</button>
                   </div>
-                  {currentGame.externalUrl && (
-                    <div className="player-error__fallback">
-                      <p>Still failing? Download directly and upload below:</p>
-                      <a href={currentGame.externalUrl} target="_blank" rel="noopener noreferrer" className="btn btn--outline btn--sm">
-                        Download Game File
-                      </a>
-                    </div>
-                  )}
                 </div>
               ) : loading ? (
                 <div className="player-loading-container">
