@@ -403,6 +403,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
     try {
       setLoading(true)
       setError(null)
+      const consoleType = currentGame.console?.toUpperCase()
 
       if (!currentGame.romPath && !currentGame.externalUrl && currentGame.requiresUpload) {
         setLoading(false)
@@ -413,7 +414,6 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       if (currentGame.externalUrl) {
         const cachedData = await getCachedROM(currentGame.id)
         if (cachedData) {
-          const consoleType = currentGame.console?.toUpperCase()
           // Use the same dynamic thresholds as the fetcher
           let minSize = 10000
           if (consoleType === 'NDS') minSize = 8000000
@@ -510,6 +510,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           throw new Error(`HTTP Error: ${response.status}`)
         }
       } catch (err) {
+        console.error('[Player] 🔴 FETCH FATAL ERROR:', err)
         setLoading(false)
         const isTimeout = err?.name === 'AbortError'
         setError(isTimeout 
