@@ -449,10 +449,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
       }
 
       const proxies = [
-        { name: 'InternalProxy', fn: (url) => `/api/proxy?url=${encodeURIComponent(url)}`, type: 'raw' },
-        { name: 'Direct', fn: (url) => url, type: 'raw' },
+        { name: 'CorsProxyIO', fn: (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`, type: 'raw' },
+        { name: 'AllOriginsRaw', fn: (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, type: 'raw' },
+        { name: 'CorsProxyOrg', fn: (url) => `https://corsproxy.org/?${encodeURIComponent(url)}`, type: 'raw' },
+        { name: 'ThingProxy', fn: (url) => `https://thingproxy.freeboard.io/fetch/${encodeURI(url)}`, type: 'raw' },
+        { name: 'CodeTabs', fn: (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, type: 'raw' },
         { name: 'AllOriginsJSON', fn: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, type: 'json' },
-        { name: 'CorsProxyIO', fn: (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`, type: 'raw' }
+        { name: 'Direct', fn: (url) => url, type: 'raw' },
+        { name: 'InternalProxy', fn: (url) => `/api/proxy?url=${encodeURIComponent(url)}`, type: 'raw' }
       ]
 
       let lastError = null
