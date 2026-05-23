@@ -20,60 +20,10 @@
     
     <title>RetroRift | Play GBA, NDS & Retro Games Online</title>
     
-    <!-- SEO & Social Media (OpenGraph) -->
-    <meta property="og:site_name" content="RetroRift" />
-    <meta property="og:title" content="RetroRift | The Elite Retro Gaming Hub" />
-    <meta property="og:description" content="Immerse yourself in a premium retro gaming experience. Play classic titles with secure online storage and a cinematic dashboard." />
-    <meta property="og:image" content="https://retrorift.online/og-image.png" />
-    <meta property="og:url" content="https://retrorift.online/" />
-    <meta property="og:type" content="website" />
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@RetroRift" />
-    <meta name="twitter:title" content="RetroRift | Play GBA & NDS Games Online" />
-    <meta name="twitter:description" content="Play classic retro games with a futuristic, high-end dashboard. Sync your progress across devices securely." />
-    <meta name="twitter:image" content="https://retrorift.online/og-image.png" />
-
+    <!-- SEO & Social Media (OpenGraph) - Handled dynamically via React Helmet -->
     <meta name="theme-color" content="#06060e" />
-    <link rel="canonical" href="https://retrorift.online/" />
-    
-    <script type="application/ld+json">
-    [
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "RetroRift",
-        "url": "https://retrorift.online/",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://retrorift.online/library?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "RetroRift",
-        "operatingSystem": "Web Browser",
-        "applicationCategory": "GameApplication",
-        "url": "https://retrorift.online/",
-        "description": "Elite retro gaming platform with high-performance emulation and secure online sync.",
-        "featureList": [
-          "GBA, NDS, NES, SNES Emulation",
-          "Secure Online Storage & Progress Sync",
-          "Zero Download Instant Play",
-          "Cinematic Retro Dashboard",
-          "Achievement System & Global XP"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      }
-    ]
-    </script>
+
+    <!-- Schema handled dynamically via React Helmet -->
   </head>
   <body>
     <div id="root"></div>

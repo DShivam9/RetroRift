@@ -1,142 +1,127 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { games } from '../data/games';
 
 const DynamicSEO = ({ currentPage, currentGame }) => {
-  useEffect(() => {
-    // 1. Update Title and Meta Description
-    const titles = {
-      home: 'RetroRift | Play GBA, NDS & Retro Games Online',
-      library: 'RetroRift | 100+ Classic Games - Play in Browser',
-      favorites: 'RetroRift | Your Collection - Quick Access Saves',
-      profile: 'RetroRift | Profile - Achievements & Progress',
-      login: 'RetroRift | Sign In - Secure Online Sync',
-      player: currentGame ? `${currentGame.title} | Play on RetroRift` : 'RetroRift | Play Retro Games'
-    };
-    
-    const descriptions = {
-      home: 'Play GBA, NDS, NES, and SNES games instantly with secure online storage for save states. Experience high-performance emulation with a premium cinematic interface.',
-      library: 'Browse over 100+ classic retro games. No downloads required, featuring high-speed browser-based emulation for the best gaming experience.',
-      favorites: 'Access your favorited retro games instantly. All your progress is synced securely via your personal online storage.',
-      profile: 'Track your retro gaming journey. View your global XP, unlock rare achievements, and customize your atmospheric dashboard.',
-      login: 'Sign in to RetroRift to enable secure online sync, persistent save states, and achievement tracking across all your devices.',
-      player: `Currently playing ${currentGame?.title || 'a classic retro game'} on RetroRift. Enjoy lag-free emulation with persistent save state support.`
-    };
+  // 1. Titles and Meta Descriptions
+  const titles = {
+    home: 'RetroRift | Play GBA, NDS & Retro Games Online',
+    library: 'RetroRift | 100+ Classic Games - Play in Browser',
+    favorites: 'RetroRift | Your Collection - Quick Access Saves',
+    profile: 'RetroRift | Profile - Achievements & Progress',
+    login: 'RetroRift | Sign In - Secure Online Sync',
+    player: currentGame ? `${currentGame.title} | Play on RetroRift` : 'RetroRift | Play Retro Games'
+  };
+  
+  const descriptions = {
+    home: 'Play GBA, NDS, NES, and SNES games instantly with secure online storage for save states. Experience high-performance emulation with a premium cinematic interface.',
+    library: 'Browse over 100+ classic retro games. No downloads required, featuring high-speed browser-based emulation for the best gaming experience.',
+    favorites: 'Access your favorited retro games instantly. All your progress is synced securely via your personal online storage.',
+    profile: 'Track your retro gaming journey. View your global XP, unlock rare achievements, and customize your atmospheric dashboard.',
+    login: 'Sign in to RetroRift to enable secure online sync, persistent save states, and achievement tracking across all your devices.',
+    player: `Currently playing ${currentGame?.title || 'a classic retro game'} on RetroRift. Enjoy lag-free emulation with persistent save state support.`
+  };
 
-    document.title = titles[currentPage] || titles.home || 'RetroRift | Play Retro Games Online';
-    
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute('content', descriptions[currentPage] || descriptions.home || '');
-    }
+  const currentTitle = titles[currentPage] || titles.home || 'RetroRift | Play Retro Games Online';
+  const currentDesc = descriptions[currentPage] || descriptions.home || '';
+  const defaultImage = 'https://retrorift.online/og-image.png';
+  const gameImage = currentGame?.thumbnail ? `https://retrorift.online${currentGame.thumbnail}` : defaultImage;
 
-    // 2. Update Social Meta Tags (OpenGraph & Twitter)
-    const updateMeta = (name, content, attr = 'name') => {
-      let tag = document.querySelector(`meta[${attr}="${name}"]`);
-      if (tag) tag.setAttribute('content', content);
-    };
+  // 2. Canonical URL
+  let cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;
+  if (currentPage === 'player' && currentGame) {
+    const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/pok-mon/g, 'pokemon').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    cleanPath = `/play/${normalize(currentGame.title)}`;
+  }
+  const canonicalUrl = `https://retrorift.online${cleanPath}`;
 
-    const currentTitle = titles[currentPage] || titles.home;
-    const currentDesc = descriptions[currentPage] || descriptions.home;
-    const defaultImage = 'https://retrorift.online/og-image.png';
-    const gameImage = currentGame?.thumbnail ? `https://retrorift.online${currentGame.thumbnail}` : defaultImage;
-
-    updateMeta('og:title', currentTitle, 'property');
-    updateMeta('og:description', currentDesc, 'property');
-    updateMeta('og:image', gameImage, 'property');
-    updateMeta('twitter:title', currentTitle);
-    updateMeta('twitter:description', currentDesc);
-    updateMeta('twitter:image', gameImage);
-
-    // 3. Inject Game Schema (JSON-LD) for better Google indexing
-    const existingSchema = document.getElementById('game-list-schema');
-    if (existingSchema) existingSchema.remove();
-
-    if (currentPage === 'library' || currentPage === 'home') {
-      const featuredGames = games.slice(0, 10); // Focus on top 10 for schema clarity
-      const schemaData = {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "itemListElement": featuredGames.map((game, index) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "item": {
-            "@type": "SoftwareApplication",
-            "name": game.title,
-            "applicationCategory": "Game",
-            "operatingSystem": "Web Browser",
-            "image": `https://retrorift.online${game.thumbnail}`,
-            "description": game.description,
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": game.rating || "4.5",
-              "reviewCount": "128"
-            },
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "USD"
-            }
-          }
-        }))
-      };
-
-      const script = document.createElement('script');
-      script.id = 'game-list-schema';
-      script.type = 'application/ld+json';
-      script.text = JSON.stringify(schemaData);
-      document.head.appendChild(script);
-    }
-
-    // 3. Inject Breadcrumb Schema
-    const existingBreadcrumb = document.getElementById('breadcrumb-schema');
-    if (existingBreadcrumb) existingBreadcrumb.remove();
-
-    if (currentPage !== 'home') {
-      const breadcrumbData = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://retrorift.online/"
+  // 3. Game Schema (JSON-LD)
+  let gameListSchema = null;
+  if (currentPage === 'library' || currentPage === 'home') {
+    const featuredGames = games.slice(0, 10);
+    gameListSchema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": featuredGames.map((game, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "SoftwareApplication",
+          "name": game.title,
+          "applicationCategory": "Game",
+          "operatingSystem": "Web Browser",
+          "image": `https://retrorift.online${game.thumbnail}`,
+          "description": game.description,
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": game.rating || "4.5",
+            "reviewCount": "128"
           },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": titles[currentPage]?.split('|')[1]?.trim() || currentPage,
-            "item": (currentPage === 'player' && currentGame) 
-              ? `https://retrorift.online/play/${currentGame.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/pok-mon/g, 'pokemon').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}`
-              : `https://retrorift.online/${currentPage}`
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
           }
-        ]
-      };
+        }
+      }))
+    };
+  }
 
-      const bScript = document.createElement('script');
-      bScript.id = 'breadcrumb-schema';
-      bScript.type = 'application/ld+json';
-      bScript.text = JSON.stringify(breadcrumbData);
-      document.head.appendChild(bScript);
-    }
+  // 4. Breadcrumb Schema
+  let breadcrumbSchema = null;
+  if (currentPage !== 'home') {
+    breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://retrorift.online/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": titles[currentPage]?.split('|')[1]?.trim() || currentPage,
+          "item": canonicalUrl
+        }
+      ]
+    };
+  }
 
-    // 5. Update Canonical URL
-    const existingCanonical = document.querySelector('link[rel="canonical"]');
-    if (existingCanonical) {
-      let cleanPath = currentPage === 'home' ? '/' : `/${currentPage}`;
-      
-      // Handle deep links for player
-      if (currentPage === 'player' && currentGame) {
-        const normalize = (str) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/pok-mon/g, 'pokemon').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
-        cleanPath = `/play/${normalize(currentGame.title)}`;
-      }
-      
-      existingCanonical.setAttribute('href', `https://retrorift.online${cleanPath}`);
-    }
+  return (
+    <Helmet>
+      {/* Standard SEO Tags */}
+      <title>{currentTitle}</title>
+      <meta name="description" content={currentDesc} />
+      <link rel="canonical" href={canonicalUrl} />
 
-  }, [currentPage, currentGame]);
+      {/* OpenGraph / Facebook */}
+      <meta property="og:title" content={currentTitle} />
+      <meta property="og:description" content={currentDesc} />
+      <meta property="og:image" content={gameImage} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:type" content="website" />
 
-  return null; // This component doesn't render anything
+      {/* Twitter */}
+      <meta name="twitter:title" content={currentTitle} />
+      <meta name="twitter:description" content={currentDesc} />
+      <meta name="twitter:image" content={gameImage} />
+
+      {/* Structured Data / JSON-LD */}
+      {gameListSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(gameListSchema)}
+        </script>
+      )}
+      {breadcrumbSchema && (
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+      )}
+    </Helmet>
+  );
 };
 
 export default DynamicSEO;
