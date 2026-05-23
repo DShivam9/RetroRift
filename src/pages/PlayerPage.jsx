@@ -450,14 +450,16 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
       try {
         const cleanUrl = decodeURIComponent(currentGame.externalUrl)
-        log(`[Player] Fetching ROM directly: ${cleanUrl}`)
+        // Ensure URL is properly encoded (fixes Safari fetch) and add a cache-buster (fixes Cloudflare CORS cache)
+        const fetchUrl = `${encodeURI(cleanUrl)}?t=${Date.now()}`
+        log(`[Player] Fetching ROM directly: ${fetchUrl}`)
         
         const controller = new AbortController()
         // NDS files might take a bit longer if large
         const timeoutMs = consoleType === 'NDS' ? 300000 : 60000
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
         
-        const response = await fetch(cleanUrl, { 
+        const response = await fetch(fetchUrl, { 
           signal: controller.signal,
           mode: 'cors'
         })
