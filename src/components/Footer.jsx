@@ -154,8 +154,8 @@ export default function Footer({ navigate }) {
             )}
           </div>
           <div className="flex gap-6 text-gray-600 text-xs">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <button onClick={() => navigate('privacy-policy')} className="hover:text-white transition-colors text-left">Privacy Policy</button>
+            <button onClick={() => navigate('terms-of-service')} className="hover:text-white transition-colors text-left">Terms of Service</button>
           </div>
         </div>
 

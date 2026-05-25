@@ -1297,6 +1297,25 @@
     .continue-left {
         max-width: 360px;
     }
+
+    .hero__layout {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .hero__text-col {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .hero__visual-col {
+        display: none;
+    }
+
+    .hero__buttons {
+        justify-content: center;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1339,6 +1358,7 @@
     height: 1.5em;
     /* Height for text */
     width: 380px;
+    max-width: 100vw;
     /* Fixed width */
     justify-content: center;
     /* overflow: hidden; -- Removing hard clip */

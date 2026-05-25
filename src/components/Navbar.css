@@ -1237,4 +1237,12 @@
     color: #c084fc;
     transform: scale(1.2);
     filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.6));
+}
+
+/* --- Mobile Responsive Fixes for GSC --- */
+@media (max-width: 768px) {
+    .nav-actions .nav-search,
+    .nav-actions .nav-icon-btn {
+        display: none !important;
+    }
 }

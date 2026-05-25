@@ -3,7 +3,14 @@ import { Monitor, X } from 'lucide-react';
 import './MobileWarning.css';
 
 const MobileWarning = () => {
-  const [isVisible, setIsVisible] = React.useState(true);
+  const [isVisible, setIsVisible] = React.useState(() => {
+    return localStorage.getItem('mobileWarningDismissed') !== 'true';
+  });
+
+  const handleDismiss = () => {
+    setIsVisible(false);
+    localStorage.setItem('mobileWarningDismissed', 'true');
+  };
 
   if (!isVisible) return null;
 
@@ -15,9 +22,9 @@ const MobileWarning = () => {
         </div>
         <div className="mobile-warning__text">
           <strong>Desktop Recommended</strong>
-          <span>High-performance emulation requires a keyboard and desktop browser for the best experience.</span>
+          <span>You can play on mobile, but switching to a desktop browser gives the best experience.</span>
         </div>
-        <button className="mobile-warning__close" onClick={() => setIsVisible(false)} aria-label="Dismiss">
+        <button className="mobile-warning__close" onClick={handleDismiss} aria-label="Dismiss">
           <X size={14} />
         </button>
       </div>

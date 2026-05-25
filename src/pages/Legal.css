@@ -1,0 +1,7 @@
+/* Legal Pages specific CSS overrides if needed. 
+   Currently utilizing Tailwind utility classes for seamless integration with the main theme. 
+*/
+
+.legal-page-container {
+  /* Retained for backward compatibility if any external component references it */
+}

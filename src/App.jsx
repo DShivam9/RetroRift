@@ -45,6 +45,8 @@ const ProfilePage = lazyWithRetry(() => import('./pages/ProfilePage'))
 const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'))
 const FeedbackPage = lazyWithRetry(() => import('./pages/FeedbackPage'))
 const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage'))
+const PrivacyPolicyPage = lazyWithRetry(() => import('./pages/PrivacyPolicyPage'))
+const TermsOfServicePage = lazyWithRetry(() => import('./pages/TermsOfServicePage'))
 import DynamicSEO from './components/DynamicSEO'
 import MobileWarning from './components/MobileWarning'
 
@@ -415,7 +417,9 @@ function AppContent() {
             {currentPage === 'profile' && <ProfilePage {...pageProps} />}
             {currentPage === 'login' && <LoginPage navigate={navigate} />}
             {currentPage === 'feedback' && <FeedbackPage navigate={navigate} user={user} />}
-            {!['home', 'library', 'favorites', 'player', 'profile', 'login', 'feedback'].includes(currentPage) && <NotFoundPage navigate={navigate} />}
+            {currentPage === 'privacy-policy' && <PrivacyPolicyPage navigate={navigate} />}
+            {currentPage === 'terms-of-service' && <TermsOfServicePage navigate={navigate} />}
+            {!['home', 'library', 'favorites', 'player', 'profile', 'login', 'feedback', 'privacy-policy', 'terms-of-service'].includes(currentPage) && <NotFoundPage navigate={navigate} />}
           </div>
         </Suspense>
       </main>
