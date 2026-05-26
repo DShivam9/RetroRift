@@ -569,7 +569,7 @@ function createDefaultThumbnail() {
 
 // ─── Generate Sitemap XML ──────────────────────────────────────────────
 function generateSitemap(scannedGames) {
-    const baseUrl = 'https://retrorift.online'
+    const baseUrl = 'https://retrorift.online';
     const date = new Date().toISOString().split('T')[0]
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
