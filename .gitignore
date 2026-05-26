@@ -40,3 +40,6 @@ _agent/
 # Optional: Exclude all ROM files over 50MB (GitHub's recommended limit)
 # Uncomment the line below if you want to exclude larger files
 # public/roms/sonic3dblast/Sonic\ 3D\ Blast\ \(USA\)\ \(Track\ 01\).bin
+
+# Local project documents
+future_roadmap.md
