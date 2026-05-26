@@ -600,8 +600,8 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           let system = 'gba'
           const rawConsole = currentGame.console ? currentGame.console.toUpperCase() : ''
           
-          if (rawConsole === 'NES') system = 'fceumm'
-          if (rawConsole === 'SNES') system = 'snes9x'
+          if (rawConsole === 'NES') system = 'nes'
+          if (rawConsole === 'SNES') system = 'snes'
           if (rawConsole === 'SEGACD') system = 'genesis_plus_gx'
           if (rawConsole === 'NDS') system = 'melonds'
           if (rawConsole === 'GB' || rawConsole === 'GBC' || rawConsole === 'GBA') system = 'mgba'

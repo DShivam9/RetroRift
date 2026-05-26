@@ -46,7 +46,7 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
         "@type": "ListItem",
         "position": index + 1,
         "item": {
-          "@type": "SoftwareApplication",
+          "@type": "VideoGame",
           "name": game.title,
           "applicationCategory": "Game",
           "operatingSystem": "Web Browser",
