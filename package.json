@@ -12,7 +12,8 @@
     "predev": "node scripts/scan-roms.js",
     "prebuild": "node scripts/scan-roms.js",
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.js",
+    "build": "vite build",
+    "prerender": "node scripts/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
