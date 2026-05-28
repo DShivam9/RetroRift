@@ -39,35 +39,7 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/:path((?!api/).*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.retrorift.online"
-        }
-      ],
-      "destination": "https://retrorift.online/:path",
-      "permanent": true
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "retro-rift.vercel.app"
-        }
-      ],
-      "destination": "https://retrorift.online/$1",
-      "permanent": true
-    },
-    {
-      "source": "/:path+/",
-      "destination": "https://retrorift.online/:path+",
-      "permanent": true
-    }
-  ],
+  "redirects": [],
   "rewrites": [
     {
       "source": "/__/auth/:path*",
