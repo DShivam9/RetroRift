@@ -16,6 +16,7 @@ import {
 import ShinyText from '../components/ShinyText'
 import '../styles/components.css'
 import './PlayerPage.css'
+import CartridgeLoader from '../components/CartridgeLoader'
 import { getCachedROM, setCachedROM, deleteCachedROM } from '../lib/rom-cache'
 
 // Safe production logging utility: active on localhost, Vercel previews, or when private debug flag is set in localStorage
@@ -247,6 +248,10 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
 
   const [loading, setLoading] = useState(true)
   const [isEngineReady, setIsEngineReady] = useState(false)
+  const frameRef = useRef(null)
+
+  const handleMouseMove = () => {};
+  const handleMouseLeave = () => {};
   const [error, setError] = useState(null)
   const [playtime, setPlaytime] = useState(0)
   const playtimeRef = useRef(0)
@@ -399,8 +404,11 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
   }, [setXpData])
 
   // Load ROM with fallback proxies
+  const loaderStartTimeRef = useRef(0)
+
   const loadROM = useCallback(async () => {
     try {
+      loaderStartTimeRef.current = Date.now()
       setLoading(true)
       setError(null)
       const consoleType = currentGame.console?.toUpperCase()
@@ -626,9 +634,15 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           const loadSuccess = await emulatorRef.current.loadROM(romData, () => {
             clearTimeout(startTimeout)
             if (isComponentMounted.current && !isEngineReady) {
-              log('[Player] Engine active! Dismissing loader.')
-              setIsEngineReady(true)
-              setLoading(false)
+              const elapsed = Date.now() - loaderStartTimeRef.current;
+              const remaining = Math.max(0, 1500 - elapsed);
+              setTimeout(() => {
+                if (isComponentMounted.current) {
+                  log('[Player] Engine active! Dismissing loader.')
+                  setIsEngineReady(true)
+                  setLoading(false)
+                }
+              }, remaining);
             }
           })
           
@@ -1017,48 +1031,65 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             </div>
           </div>
 
-          {/* Emulator Frame - V3 Cinematic */}
-          <div className="player-emulator">
-            <div className="player-emulator__label">
-              <span className="player-emulator__label-text">System Status: Active</span>
-              <div className="player-emulator__leds">
-                <div className="player-led player-led--power"></div>
-                <div className="player-led player-led--activity"></div>
-              </div>
+          {/* Emulator Frame - Sleek Premium TV Layout */}
+          <div 
+            ref={frameRef}
+            className={`player-emulator ${isEngineReady ? 'engine-ready' : ''}`}
+            style={{ 
+              '--console-primary': getCartridgeColor(currentGame.title, currentGame.console).primary,
+              '--console-border': getCartridgeColor(currentGame.title, currentGame.console).border
+            }}
+          >
+            {/* Removed static text labels, adding dynamic alive effects instead */}
+
+            {/* Power LED Embedded in Frame */}
+            <div className="player-frame-led-container">
+              <div className={`player-led player-led--power ${isEngineReady ? 'on' : ''}`}></div>
+              <span className="player-frame-led-text">POWER</span>
             </div>
-            
+
             <div className="player-frame">
-              {error ? (
-                <div className="player-error">
-                  <span>⚠️</span>
-                  <p>{error}</p>
-                  <div className="player-error__actions">
-                    <button onClick={loadROM} className="btn btn--secondary">Retry</button>
-                    <button onClick={handleForceRefresh} className="btn btn--ghost">Clear Cache & Refresh</button>
-                  </div>
+
+              {error && (
+                <div className="player-engine-loading" style={{ zIndex: 10 }}>
+                  <CartridgeLoader 
+                    game={currentGame} 
+                    colorTheme={getCartridgeColor(currentGame.title, currentGame.console)} 
+                    loadError={true} 
+                    errorMessage={error}
+                    onClearCache={handleForceRefresh}
+                  />
                 </div>
-              ) : loading ? (
-                <div className="player-loading-container">
-                  <Loader text={`Loading ${currentGame.title}...`} />
-                  {currentGame.console === 'NDS' && (
-                    <p className="player-loading-note">Large game detected. Initial download may take 2-3 minutes...</p>
+              )}
+
+              {(loading || (!isEngineReady && romData)) && !error && (
+                <div className="player-engine-loading" style={{ zIndex: 10 }}>
+                  <CartridgeLoader game={currentGame} colorTheme={getCartridgeColor(currentGame.title, currentGame.console)} />
+                  {loading && currentGame.console === 'NDS' && (
+                    <p className="player-loading-note" style={{ position: 'absolute', bottom: '30px', zIndex: 100, color: 'rgba(255,255,255,0.7)' }}>Large game detected. Initial download may take 2-3 minutes...</p>
                   )}
                 </div>
-              ) : (currentGame.requiresUpload && !romData) ? (
+              )}
+
+              {(currentGame.requiresUpload && !romData) && !loading && !error && (
                 <UploadRomArea onUpload={(buffer) => setRomData(buffer)} title={currentGame.title} />
-              ) : (
-                <>
-                  {!isEngineReady && (
-                    <div className="player-engine-loading">
-                      <Loader text="Starting engine..." />
-                    </div>
-                  )}
+              )}
+
+              {(!loading && romData && !error) && (
+                <div className="player-canvas-wrapper">
                   <canvas 
                     ref={canvasRef} 
                     className={`player-canvas ${!isEngineReady ? 'player-canvas--loading' : ''}`}
                     id="canvas"
                   />
-                </>
+                  {isEngineReady && (
+                    <>
+                      <div className="screen-glare"></div>
+                      <div className="scanlines"></div>
+                      <div className="screen-vignette"></div>
+                    </>
+                  )}
+                </div>
               )}
             </div>
           </div>

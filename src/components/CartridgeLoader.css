@@ -1,0 +1,484 @@
+.cartridge-loader-container.cinematic-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: #050508; /* Deep dark room */
+  perspective: 1200px;
+  z-index: 1000;
+}
+
+/* Atmospheric Glow */
+.ambient-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150vw;
+  height: 150vh;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at center, var(--glow-color) 0%, transparent 40%);
+  opacity: 0.15;
+  filter: blur(40px);
+  pointer-events: none;
+  animation: breathe-glow 4s ease-in-out infinite alternate;
+}
+
+@keyframes breathe-glow {
+  0% { opacity: 0.1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+/* Dust Particles */
+.dust-particles {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dust {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.2);
+  animation: float-dust linear infinite;
+  opacity: 0;
+}
+
+@keyframes float-dust {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.6; }
+  100% { transform: translateY(-100px) translateX(20px); opacity: 0; }
+}
+
+/* Hardware Assembly */
+.hardware-assembly {
+  position: relative;
+  width: 320px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 20;
+}
+
+.slot-lip-back {
+  position: absolute;
+  bottom: 0;
+  width: 320px;
+  height: 60px;
+  background: #000;
+  border-radius: 8px 8px 0 0;
+  box-shadow: inset 0 20px 30px rgba(0,0,0,1);
+  z-index: 10;
+}
+
+/* 3D Cartridge Model */
+.cinematic-cartridge {
+  width: 240px;
+  height: 260px;
+  position: absolute;
+  bottom: 60px; /* Rest just above the slot abyss */
+  z-index: 20; /* Between back and front slot lips */
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-in-out;
+  filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8));
+}
+
+.cartridge-3d-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1f2029 0%, #111118 100%);
+  border-radius: 12px 12px 0 0;
+  border: 2px solid rgba(255,255,255,0.05);
+  box-shadow: 
+    inset 0 2px 1px rgba(255,255,255,0.2),
+    inset 4px 0 10px rgba(255,255,255,0.05),
+    inset -4px 0 10px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fake 3D Bevel Edge */
+.cartridge-3d-body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 10px 10px 0 0;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cartridge-top-grooves {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+  z-index: 2;
+}
+
+.groove {
+  width: 18px;
+  height: 35px;
+  background: #0a0a0f;
+  border-radius: 8px;
+  box-shadow: 
+    inset 0 4px 8px rgba(0,0,0,0.9),
+    0 1px 0 rgba(255,255,255,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Energy/Data fill inside the tubes */
+.groove::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 0%;
+  background: var(--glow-color, var(--primary-color));
+  box-shadow: 0 0 10px var(--glow-color, var(--primary-color));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cinematic-cartridge.loading .groove::after {
+  opacity: 0.8;
+  animation: groove-energy-pulse 0.6s ease-in-out infinite alternate;
+}
+
+/* Stagger the pulses */
+.cinematic-cartridge.loading .groove:nth-child(1)::after { animation-delay: 0s; }
+.cinematic-cartridge.loading .groove:nth-child(2)::after { animation-delay: 0.2s; }
+.cinematic-cartridge.loading .groove:nth-child(3)::after { animation-delay: 0.4s; }
+
+@keyframes groove-energy-pulse {
+  0% { height: 20%; filter: brightness(0.5); }
+  100% { height: 90%; filter: brightness(1.8); }
+}
+
+.cartridge-front-face {
+  flex: 1;
+  width: 85%;
+  margin-top: 20px;
+  margin-bottom: 25px;
+  background: #0a0a0f;
+  border-radius: 8px;
+  padding: 4px;
+  position: relative;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.9), 0 2px 0 rgba(255,255,255,0.05);
+  z-index: 2;
+}
+
+.cartridge-led-indicator {
+  position: absolute;
+  top: 10px;
+  right: -25px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #222;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.cinematic-cartridge.loading .cartridge-led-indicator {
+  background-color: var(--led-color);
+  box-shadow: 
+    0 0 15px var(--led-color), 
+    0 0 30px var(--led-color), 
+    inset 0 2px 4px rgba(255,255,255,0.5);
+  animation: cinematic-led-pulse 0.2s infinite alternate;
+}
+
+@keyframes cinematic-led-pulse {
+  0% { opacity: 0.7; filter: brightness(0.8); }
+  100% { opacity: 1; filter: brightness(1.3); }
+}
+
+.cartridge-sticker-area {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  background: #111;
+}
+
+/* Beautiful Cover Art Integration */
+.cartridge-cover-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.1) saturate(1.2);
+}
+
+/* Plastic Gloss Reflection over sticker */
+.cartridge-sticker-area::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0) 70%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+}
+
+.cartridge-placeholder-art {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  color: white;
+  font-weight: bold;
+  font-family: sans-serif;
+  background: linear-gradient(45deg, #222, #444);
+}
+
+.cartridge-seal-cinematic {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="gold" stroke="darkgoldenrod" stroke-width="2"/><text x="50" y="45" font-size="14" text-anchor="middle" font-family="sans-serif" font-weight="bold" fill="darkgoldenrod">OFFICIAL</text><text x="50" y="65" font-size="14" text-anchor="middle" font-family="sans-serif" font-weight="bold" fill="darkgoldenrod">SEAL</text></svg>') center/contain no-repeat;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  opacity: 0.9;
+}
+
+/* Animations */
+.cinematic-cartridge.dropping {
+  animation: cinematic-drop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.cinematic-cartridge.snapped {
+  transform: translateY(40px);
+  animation: cinematic-snap 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.cinematic-cartridge.loading {
+  transform: translateY(40px);
+  animation: cinematic-vibrate 0.05s linear infinite;
+}
+
+.cinematic-cartridge.error {
+  transform: translateY(40px) rotateX(5deg) rotateZ(-2deg);
+  animation: none;
+}
+.cinematic-cartridge.error .cartridge-led-indicator {
+  background-color: #ef4444;
+  box-shadow: 0 0 15px #ef4444, 0 0 30px #ef4444, inset 0 2px 4px rgba(255,255,255,0.5);
+  animation: error-led-blink 0.1s infinite;
+}
+.cinematic-cartridge.error .groove::after {
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+  opacity: 1;
+  animation: none;
+}
+
+@keyframes error-led-blink {
+  0%, 49% { opacity: 0; filter: brightness(0.5); }
+  50%, 100% { opacity: 1; filter: brightness(1.5); }
+}
+
+@keyframes cinematic-drop {
+  0% { transform: translateY(-300px) scale(1.1) rotateX(20deg); opacity: 0; filter: blur(10px); }
+  50% { opacity: 1; filter: blur(0px); }
+  100% { transform: translateY(0px) scale(1) rotateX(0deg); }
+}
+
+@keyframes cinematic-snap {
+  0% { transform: translateY(0px); }
+  40% { transform: translateY(60px); }
+  100% { transform: translateY(50px); }
+}
+
+@keyframes cinematic-vibrate {
+  0% { transform: translateY(50px) translateX(0); }
+  25% { transform: translateY(50.5px) translateX(-0.5px); }
+  50% { transform: translateY(50px) translateX(0); }
+  75% { transform: translateY(49.5px) translateX(0.5px); }
+  100% { transform: translateY(50px) translateX(0); }
+}
+
+/* Console Slot */
+.console-slot-3d {
+  position: absolute;
+  bottom: 0;
+  width: 320px;
+  height: 50px;
+  z-index: 30; /* Overlaps the bottom of the cartridge */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.slot-lip-front {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #1f1f24, #0a0a0f);
+  border-top: 2px solid rgba(255,255,255,0.15);
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 -10px 20px rgba(0,0,0,0.9);
+}
+
+.slot-glow {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: var(--glow-color);
+  box-shadow: 0 0 20px 5px var(--glow-color);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.console-slot-3d.slot-engaged .slot-glow {
+  opacity: 0.6;
+}
+
+/* Typography */
+.loading-typography {
+  position: absolute;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 50;
+  animation: fade-in 1s forwards;
+}
+
+.loading-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 12px;
+  color: #fff;
+  opacity: 0.8;
+  margin-left: 12px; /* Offset the letter spacing for centering */
+}
+
+.error-typography {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 400px;
+  z-index: 40;
+}
+
+.error-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 8px;
+  color: #ef4444;
+  margin-left: 8px; /* Optical centering */
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.error-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 10px;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  padding: 0 20px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.eject-button {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 8px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.eject-button:hover {
+  background: #ef4444;
+  color: #000;
+  box-shadow: 0 0 15px #ef4444;
+}
+
+.loading-bar-container {
+  width: 150px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 50%;
+  background: #fff;
+  animation: loading-sweep 2s ease-in-out infinite;
+  box-shadow: 0 0 10px #fff;
+}
+
+@keyframes loading-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scanlines overlay */
+.cartridge-loader-container.cinematic-mode::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 100;
+  animation: cinematic-scanlines 10s linear infinite;
+}
+
+@keyframes cinematic-scanlines {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 40px; }
+}

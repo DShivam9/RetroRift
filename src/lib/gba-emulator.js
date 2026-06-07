@@ -241,12 +241,7 @@ class GBAEmulator {
       
       log(`[Emulator] Handing over to engine: core=${window.EJS_core}`);
       
-      // Global hook for game start
-      window.EJS_onGameStart = () => {
-        log('[Emulator] 🚀 Engine started!');
-        if (onStart) onStart();
-      };
-      
+      // Global hook for game start is now handled below with safety fallback
       await new Promise(resolve => setTimeout(resolve, 500));
 
       this.emulatorInstance = new window.EmulatorJS('#game', {
@@ -261,34 +256,47 @@ class GBAEmulator {
         }
       });
 
-      // PROACTIVE START: Don't just wait for callbacks, consider it 'started' once initialized
-      // This solves the 'Starting engine...' hang on some browsers
-      setTimeout(() => {
-        log('[Emulator] ⚡ Forcing ready state...');
+      // IMMERSIVE BOOT TIMINGS: 
+      // EmulatorJS 'onGameStart' is highly unreliable across different cores.
+      // We will use generous fixed wait times to allow the CartridgeLoader animation
+      // to play out while hiding the internal decompression. 
+      // (The internal text is also hidden via CSS in PlayerPage.css)
+      
+      const bootTimes = {
+        'NDS': 10000, // NDS takes a long time to decompress
+        'N64': 6000,
+        'PSX': 8000,
+        'GBA': 4000,
+        'GBC': 3000,
+        'GB': 3000,
+        'SNES': 3500,
+        'NES': 3000,
+        'DEFAULT': 4000
+      };
+      
+      const waitTime = bootTimes[this.system.toUpperCase()] || bootTimes['DEFAULT'];
+      
+      let isStarted = false;
+      
+      const triggerStart = () => {
+        if (isStarted) return;
+        isStarted = true;
+        log(`[Emulator] 🛡️ Engine ready triggered!`);
         if (onStart) onStart();
-      }, 1500);
+      };
 
-      // ROBUST FALLBACK: Detect engine presence via DOM/Global state
-      let pollCount = 0;
-      const startPoll = setInterval(() => {
-        pollCount++;
-        
-        // Look for the iframe and canvas created by EmulatorJS
-        const iframe = this.emulatorDiv?.querySelector('iframe');
-        const internalCanvas = this.emulatorDiv?.querySelector('canvas') || 
-                               iframe?.contentDocument?.querySelector('canvas');
-        
-        // Check for indicators that the engine is running
-        const isReady = !!(window.EJS_emulator || window.EJS_player || internalCanvas);
-        
-        if (isReady || pollCount > 40) { 
-          clearInterval(startPoll);
-          if (isReady) {
-            log('[Emulator] 🛡️ Engine detected via polling!');
-            if (onStart) onStart();
-          }
-        }
-      }, 500);
+      // 1. Official hook (if the core supports it and it fires in time)
+      window.EJS_onGameStart = () => {
+        log('[Emulator] 🚀 Engine started (Global callback)!');
+        triggerStart();
+      };
+      
+      // 2. Fixed immersive boot time fallback
+      setTimeout(() => {
+        log(`[Emulator] ⏱️ Immersive boot sequence complete (${waitTime}ms)`);
+        triggerStart();
+      }, waitTime);
+
 
       return true;
     } catch (error) {
