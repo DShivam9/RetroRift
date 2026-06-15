@@ -1125,14 +1125,14 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             <div className="editorial-card editorial-card--lore">
               <div className="editorial-header">
                 <div className="editorial-icon"><BookOpen size={16} /></div>
-                <h3>Game Lore</h3>
+                <h2>Game Lore</h2>
               </div>
               <div className="lore-content">
                 <p className="player-description">{details.description}</p>
                 
                 {details.features && details.features.length > 0 && (
                   <div className="player-features">
-                    <h4 className="player-features__title">Key Highlights</h4>
+                    <h3 className="player-features__title">Key Highlights</h3>
                     <ul className="player-features__list">
                       {details.features.map((feature, i) => (
                         <li key={i} className="player-feature-item">
@@ -1150,7 +1150,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
             <div className="editorial-card editorial-card--dna">
               <div className="editorial-header">
                 <div className="editorial-icon"><Zap size={16} /></div>
-                <h3>Game Specifications</h3>
+                <h2>Game Specifications</h2>
               </div>
               <div className="dna-grid">
                 <div className="dna-item">
@@ -1179,21 +1179,21 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
               <div className="matrix-item">
                 <Gamepad2 size={20} className="matrix-icon" />
                 <div className="matrix-info">
-                  <h4>Control Interface</h4>
+                  <h3>Control Interface</h3>
                   <p>Primary: Z / X • Movement: Arrows</p>
                 </div>
               </div>
               <div className="matrix-item">
                 <ShieldCheck size={20} className="matrix-icon" />
                 <div className="matrix-info">
-                  <h4>Integrity Status</h4>
+                  <h3>Integrity Status</h3>
                   <p>{isAuthenticated ? 'Cluster Verified' : 'Local Sandbox'}</p>
                 </div>
               </div>
               <div className="matrix-item">
                 <Trophy size={20} className="matrix-icon" />
                 <div className="matrix-info">
-                  <h4>Accumulated Time</h4>
+                  <h3>Accumulated Time</h3>
                   <p>{details.playtime}</p>
                 </div>
               </div>
@@ -1208,7 +1208,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
                 <div className="editorial-header">
                   <div className="editorial-icon"><Save size={16} /></div>
                   <div className="editorial-header__flex">
-                    <h3>Save Archive</h3>
+                    <h2>Save Archive</h2>
                     <span className="player-saves-count">{saveSlots.length} / {MAX_SAVE_SLOTS}</span>
                   </div>
                   {saveMessage && (
@@ -1358,7 +1358,7 @@ export default function PlayerPage({ navigate, game, favorites = [], toggleFavor
           {/* Similar Games */}
           {similarGames.length > 0 && (
             <div className="player-similar">
-              <h3 className="player-similar__title">Similar Games</h3>
+              <h2 className="player-similar__title">Similar Games</h2>
               <div className="player-similar__list">
                 {similarGames.map(g => (
                   <button

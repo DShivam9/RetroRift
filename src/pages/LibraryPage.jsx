@@ -224,11 +224,11 @@ export default function LibraryPage({
               <div className="empty-state__glow"></div>
             </div>
 
-            <h3 className="empty-state__title">
+            <h2 className="empty-state__title">
               {isFavoritesPage || selectedConsole === 'FAVORITES'
                 ? 'No Favorites Yet'
                 : 'No Games Found'}
-            </h3>
+            </h2>
 
             <p className="empty-state__text">
               {isFavoritesPage || selectedConsole === 'FAVORITES'
