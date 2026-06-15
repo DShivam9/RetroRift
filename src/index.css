@@ -267,3 +267,15 @@ body.reduced-motion *::after {
   animation: scan-fast 3s linear infinite;
 }
 
+/* Screen reader only class for SEO fallbacks */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

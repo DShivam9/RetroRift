@@ -15,7 +15,7 @@ const DynamicSEO = ({ currentPage, currentGame }) => {
   
   const descriptions = {
     home: 'Play GBA, NDS, NES, SNES, and GB games instantly on RetroRift. High-performance browser emulation with secure cloud saves. No downloads required.',
-    library: 'Browse over 100+ classic retro games. No downloads required. Experience high-speed browser-based emulation for the best gaming experience.',
+    library: `Browse over ${games.length} classic retro games. No downloads required. Experience high-speed browser-based emulation for the best gaming experience.`,
     favorites: 'Access your favorited retro games instantly. All your progress is synced securely via your personal online storage.',
     profile: 'Track your retro gaming journey. View your global XP, unlock rare achievements, and customize your atmospheric dashboard.',
     login: 'Sign in to RetroRift to enable secure online sync, persistent save states, and achievement tracking across all your devices.',
